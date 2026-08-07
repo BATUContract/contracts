@@ -1446,7 +1446,6 @@
             }
         }
 
-        // ترحيل العمليات أوتوماتيكياً وتصنيفها في تبويبها الصحيح (مناقصة، أمر مباشر، أو تجديد/تمديد)
         function commitStagingDataToDB() {
             try {
                 if(!DB.operations) DB.operations = [];
@@ -1476,7 +1475,6 @@
                 let opType = document.getElementById('st-op-type').value || globalParsedData.opType || 'مناقصة عامة';
                 let opEst = document.getElementById('st-op-est').value || globalParsedData.opEst || 'مظروف مغلق';
                 
-                // تصنيف أوتوماتيكي دقيق لقسم العمليات والترسيات
                 let category = 'tender';
                 if (opType && (opType.includes('أمر مباشر') || opType.includes('مباشر'))) {
                     category = 'direct';
@@ -1600,19 +1598,9 @@
         }
 
         const defaultDB = {
-            operations: [
-                { id: 8, category: 'tender', name: "إنشاء ورشة مركزية للتدريب والتصنيع", entity: "كلية الصناعة والطاقة", budget: "نعم", type: "مناقصة عامة", portal: "نعم", isDivided: "نعم - قابلة للتجزئة", approvalDate: "2026-03-25", guideline: 500000, date1: "2026-05-01", date2: "2026-05-15", date3: "2026-05-20", date4: "2026-05-25", date5: "2026-06-01", date6: "2026-06-05", est: "قيمة تقديرية في مظروف مغلق", status: "مكتمل", total: 4806211.50 },
-                { id: 2, category: 'tender', name: "برنامج تكنولوجيا صناعة الغزل والنسيج", entity: "الجامعة", budget: "نعم", type: "مناقصة عامة", portal: "نعم", isDivided: "لا - ترسية كلية", approvalDate: "2026-05-10", guideline: 0, date1: "2026-06-01", date2: "2026-06-20", date3: "2026-06-25", date4: "", date5: "", date6: "", est: "11,999,999.00", status: "جاري الدراسة الفنية", total: 2098000 }
-            ],
-            awards: [
-                { opId: 8, item: "ورشة النجارة", supp: "شركة المتحدة للمقاولات", estVal: 5000000, val: 4081200.00, gVal: 204060.00, awardStatus: "تم الترسية", gType: "خطاب ضمان", gNum: "129GULP261680002", gIssuance: "2026-06-01", gBank: "بنك التعمير والإسكان", ret: "نعم", contract: "نعم", poNum: 41, poDate: "2026-06-15", days: 30, del: "نعم" },
-                { opId: 8, item: "ورشة الحدادة", supp: "شركة المتحدة للمقاولات", estVal: 1000000, val: 725011.50, gVal: 36250.58, awardStatus: "تم الترسية", gType: "خطاب ضمان", gNum: "129GULP261680003", gIssuance: "2025-08-15", gBank: "بنك التعمير والإسكان", ret: "لا", contract: "نعم", poNum: 41, poDate: "2026-06-15", days: 30, del: "لا" },
-                { opId: 2, item: "جهاز قياس سمك", supp: "شركة إنجاز الذكية", estVal: 400000, val: 322000.00, gVal: 16100.00, awardStatus: "تم الترسية", gType: "نقدي", gNum: "", gIssuance: "", gBank: "بنك مصر", ret: "لا", contract: "لا", poNum: 21, poDate: "2026-07-01", days: 60, del: "لا" }
-            ],
-            suppliers: [
-                { id: "V-001", name: "شركة المتحدة للمقاولات", cr: "1592", tax: "215-66", signAuth: "أحمد محمود", addr: "القاهرة", phone: "025905082", bankAcc: "EG1200000000", bankName: "الأهلي", bankBranch: "الرئيسي" },
-                { id: "V-002", name: "شركة إنجاز الذكية", cr: "7841", tax: "100-22", signAuth: "خالد حسن", addr: "أكتوبر", phone: "01067399352", bankAcc: "EG4500000000", bankName: "مصر", bankBranch: "أكتوبر" }
-            ],
+            operations: [],
+            awards: [],
+            suppliers: [],
             archives: {}
         };
 
