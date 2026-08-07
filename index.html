@@ -428,41 +428,77 @@
             </div>
         </div>
 
-        <!-- DASHBOARD -->
+        <!-- DASHBOARD (محدث بالكامل مع تفاصيل أعداد وترسيات كل نوع وأيقونات متحركة) -->
         <div id="view-dashboard" class="view-section p-3 md:p-6">
-            <div class="flex justify-between items-center mb-4 no-print"><h2 class="text-xl font-black text-slate-900 dark:text-white">مؤشرات الأداء الرئيسية (KPIs)</h2></div>
+            <div class="flex justify-between items-center mb-4 no-print"><h2 class="text-xl font-black text-slate-900 dark:text-white"><i class="fa-solid fa-chart-pie text-primary ml-2"></i> لوحة القيادة ومؤشرات الأداء (KPIs)</h2></div>
+            
+            <!-- الصف الأول: المؤشرات العامة -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border-b-4 border-blue-600 shadow-sm flex items-center justify-between app-card">
-                    <div><p class="text-slate-500 dark:text-slate-400 text-xs font-black mb-1">إجمالي العمليات</p><h3 class="text-2xl font-black text-blue-600 dark:text-blue-400" id="kpi-total-ops">0</h3></div>
-                    <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-lg"><i class="fa-solid fa-folder-open"></i></div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-black mb-1">إجمالي العمليات ككل</p>
+                        <h3 class="text-2xl font-black text-blue-600 dark:text-blue-400" id="kpi-total-ops">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xl"><i class="fa-solid fa-folder-open anim-chart"></i></div>
                 </div>
+                
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border-b-4 border-green-600 shadow-sm flex items-center justify-between app-card">
-                    <div><p class="text-slate-500 dark:text-slate-400 text-xs font-black mb-1">إجمالي الترسيات (ج.م)</p><h3 class="text-xl font-black text-green-600 dark:text-green-400" id="kpi-total-val">0.00</h3></div>
-                    <div class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 text-lg"><i class="fa-solid fa-money-bill-wave"></i></div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-black mb-1">إجمالي الترسيات الكلية (ج.م)</p>
+                        <h3 class="text-xl font-black text-green-600 dark:text-green-400" id="kpi-total-val">0.00</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 text-xl"><i class="fa-solid fa-money-bill-wave anim-money text-amber-400"></i></div>
                 </div>
+                
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border-b-4 border-slate-800 dark:border-slate-500 shadow-sm flex items-center justify-between app-card">
-                    <div><p class="text-slate-500 dark:text-slate-400 text-xs font-black mb-1">عمليات مكتملة</p><h3 class="text-2xl font-black text-slate-800 dark:text-slate-200" id="kpi-comp-ops">0</h3></div>
-                    <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-800 dark:text-slate-200 text-lg"><i class="fa-solid fa-check-double"></i></div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-black mb-1">عمليات مكتملة</p>
+                        <h3 class="text-2xl font-black text-slate-800 dark:text-slate-200" id="kpi-comp-ops">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-800 dark:text-slate-200 text-xl"><i class="fa-solid fa-check-double anim-glow"></i></div>
                 </div>
+                
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border-b-4 border-amber-500 shadow-sm flex items-center justify-between app-card">
                     <div>
                         <div class="flex items-center gap-2 mb-1">
                             <p class="text-slate-500 dark:text-slate-400 text-xs font-black">عمليات جارية</p>
-                            <div class="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
                         </div>
                         <h3 class="text-2xl font-black text-amber-500 dark:text-amber-400" id="kpi-active-ops">0</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-500 dark:text-amber-400 text-lg"><i class="fa-solid fa-spinner animate-spin"></i></div>
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-500 dark:text-amber-400 text-xl"><i class="fa-solid fa-spinner anim-sync"></i></div>
                 </div>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm">تحليل الموقف التنفيذي للإجراءات</h3>
-                    <div id="dash-status-bars" class="space-y-3"></div>
+
+            <!-- الصف الثاني: تفصيلي أنواع العمليات وإجمالي الترسيات لكل نوع -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4 lg:col-span-2 flex flex-col">
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-layer-group text-indigo-500"></i> تفصيلي أعداد وترسيات كل نوع عملية</h3>
+                    <div class="excel-table-container flex-1">
+                        <table class="excel-table w-full">
+                            <thead>
+                                <tr class="bg-slate-100 dark:bg-slate-900">
+                                    <th>نوع العملية</th>
+                                    <th>عدد العمليات</th>
+                                    <th>نسبة الاستحواذ</th>
+                                    <th>إجمالي الترسيات (ج.م)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dash-type-breakdown-tbody"></tbody>
+                        </table>
+                    </div>
                 </div>
+
                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4 flex flex-col">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm">أحدث العمليات الجارية</h3>
-                    <div class="flex-1 overflow-y-auto pr-1" id="dash-recent-list"></div>
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-bar text-cyan-500"></i> موقف الإجراءات التنفيذية</h3>
+                    <div id="dash-status-bars" class="space-y-3 flex-1"></div>
+                </div>
+            </div>
+
+            <!-- الصف الثالث: أحدث العمليات الجارية -->
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4">
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-500"></i> أحدث العمليات الجارية بالمنظومة</h3>
+                    <div class="overflow-y-auto max-h-48 pr-1" id="dash-recent-list"></div>
                 </div>
             </div>
         </div>
@@ -1402,26 +1438,43 @@
             }
         }
 
-        // دالة الترحيل الذكية والشاملة لجميع العمليات والترسيات والشركات وأوامر التوريد والضمانات
         function commitStagingDataToDB() {
             try {
                 if(!DB.operations) DB.operations = [];
                 if(!DB.awards) DB.awards = [];
                 if(!DB.suppliers) DB.suppliers = [];
 
-                let opId = parseInt(document.getElementById('st-op-id').value) || (globalParsedData ? globalParsedData.opId : null) || Math.floor(Math.random()*90+10);
-                let opName = document.getElementById('st-op-name').value || (globalParsedData ? globalParsedData.opName : null) || 'عملية توريد عامة';
-                let opEntity = document.getElementById('st-op-entity').value || (globalParsedData ? globalParsedData.opEntity : null) || 'جامعة برج العرب التكنولوجية';
-                let opType = document.getElementById('st-op-type').value || (globalParsedData ? globalParsedData.opType : null) || 'مناقصة عامة';
-                let opEst = document.getElementById('st-op-est').value || (globalParsedData ? globalParsedData.opEst : null) || 'مظروف مغلق';
+                if (!globalParsedData) {
+                    globalParsedData = {
+                        opId: parseInt(document.getElementById('st-op-id').value) || Math.floor(Math.random()*90+10),
+                        opName: document.getElementById('st-op-name').value || 'عملية توريد عامة',
+                        opEntity: document.getElementById('st-op-entity').value || 'جامعة برج العرب التكنولوجية',
+                        opType: document.getElementById('st-op-type').value || 'مناقصة عامة',
+                        opEst: document.getElementById('st-op-est').value || 'مظروف مغلق',
+                        budget: 'نعم',
+                        isDivided: 'نعم - قابلة للتجزئة',
+                        status: 'مكتمل',
+                        portal: 'نعم',
+                        approvalDate: new Date().toISOString().slice(0,10),
+                        date1: new Date().toISOString().slice(0,10),
+                        awards: []
+                    };
+                }
+
+                let opId = parseInt(document.getElementById('st-op-id').value) || globalParsedData.opId || Math.floor(Math.random()*90+10);
+                let opName = document.getElementById('st-op-name').value || globalParsedData.opName || 'عملية توريد';
+                let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || 'جامعة برج العرب التكنولوجية';
+                let opType = document.getElementById('st-op-type').value || globalParsedData.opType || 'مناقصة عامة';
                 
                 let category = 'tender';
-                if (opType && opType.includes('أمر مباشر')) {
+                if (opType && (opType.includes('أمر مباشر') || opType.includes('مباشر'))) {
                     category = 'direct';
+                } else if (opType && (opType.includes('تجديد') || opType.includes('تمديد'))) {
+                    category = 'renewal';
                 }
 
                 let totalVal = 0;
-                let awardsList = (globalParsedData && globalParsedData.awards) ? globalParsedData.awards : [];
+                let awardsList = globalParsedData.awards || [];
                 
                 if (awardsList.length === 0) {
                     awardsList = [{
@@ -1468,7 +1521,7 @@
                     });
                 });
 
-                let suppliersToProcess = (globalParsedData && globalParsedData.suppliers) ? globalParsedData.suppliers : [];
+                let suppliersToProcess = globalParsedData.suppliers || [];
                 if (suppliersToProcess.length === 0) {
                     let uniqueSuppliers = [...new Set(awardsList.map(a => a.supp))];
                     suppliersToProcess = uniqueSuppliers.map(name => ({ name: name }));
@@ -1498,19 +1551,19 @@
                         name: opName,
                         entity: opEntity,
                         type: opType,
-                        budget: (globalParsedData && globalParsedData.budget) || 'نعم',
-                        isDivided: (globalParsedData && globalParsedData.isDivided) || 'نعم - قابلة للتجزئة',
-                        est: opEst,
+                        budget: globalParsedData.budget || 'نعم',
+                        isDivided: globalParsedData.isDivided || 'نعم - قابلة للتجزئة',
+                        est: document.getElementById('st-op-est').value || globalParsedData.opEst || 'مظروف مغلق',
                         guideline: category === 'direct' ? totalVal : 0,
-                        status: (globalParsedData && globalParsedData.status) || 'مكتمل',
-                        portal: (globalParsedData && globalParsedData.portal) || 'نعم',
-                        approvalDate: (globalParsedData && globalParsedData.approvalDate) || new Date().toISOString().slice(0,10),
-                        date1: (globalParsedData && globalParsedData.date1) || new Date().toISOString().slice(0,10),
-                        date2: (globalParsedData && globalParsedData.date2) || '',
-                        date3: (globalParsedData && globalParsedData.date3) || '',
-                        date4: (globalParsedData && globalParsedData.date4) || '',
-                        date5: (globalParsedData && globalParsedData.date5) || '',
-                        date6: (globalParsedData && globalParsedData.date6) || '',
+                        status: globalParsedData.status || 'مكتمل',
+                        portal: globalParsedData.portal || 'نعم',
+                        approvalDate: globalParsedData.approvalDate || new Date().toISOString().slice(0,10),
+                        date1: globalParsedData.date1 || new Date().toISOString().slice(0,10),
+                        date2: globalParsedData.date2 || '',
+                        date3: globalParsedData.date3 || '',
+                        date4: globalParsedData.date4 || '',
+                        date5: globalParsedData.date5 || '',
+                        date6: globalParsedData.date6 || '',
                         total: totalVal
                     });
                 } else {
@@ -1884,6 +1937,7 @@
             window.requestAnimationFrame(step);
         }
 
+        // دالة عرض لوحة القيادة مع تفصيلي الأنواع والترسيات
         function renderDashboard() {
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
@@ -1901,19 +1955,69 @@
             animateCounter('kpi-comp-ops', comp, false);
             animateCounter('kpi-active-ops', act, false);
 
-            const sb = document.getElementById('dash-status-bars'); sb.innerHTML = '';
-            for (let status in stats) {
-                let perc = Math.round((stats[status] / DB.operations.length) * 100);
-                sb.innerHTML += `
-                    <div>
-                        <div class="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
-                            <span>${status}</span>
-                            <span>${perc}% (${stats[status]})</span>
-                        </div>
-                        <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
-                            <div class="progress-fill bg-gradient-to-r from-primary to-cyan-500 h-2 rounded-full" style="width: 0%" data-target-width="${perc}%"></div>
-                        </div>
-                    </div>`;
+            // تجميع وتفصيل العمليات والترسيات لكل نوع
+            const typeBreakdown = {};
+            DB.operations.forEach(op => {
+                let typeName = op.type || 'أخرى';
+                if(!typeBreakdown[typeName]) {
+                    typeBreakdown[typeName] = { count: 0, totalVal: 0 };
+                }
+                typeBreakdown[typeName].count++;
+            });
+
+            DB.awards.forEach(aw => {
+                const op = DB.operations.find(o => o.id == aw.opId);
+                if(op) {
+                    let typeName = op.type || 'أخرى';
+                    if(!typeBreakdown[typeName]) {
+                        typeBreakdown[typeName] = { count: 0, totalVal: 0 };
+                    }
+                    typeBreakdown[typeName].totalVal += parseFloat(aw.val || 0);
+                }
+            });
+
+            const typeTbody = document.getElementById('dash-type-breakdown-tbody');
+            if(typeTbody) {
+                typeTbody.innerHTML = '';
+                if(Object.keys(typeBreakdown).length === 0) {
+                    typeTbody.innerHTML = '<tr><td colspan="4" class="text-center text-slate-400 py-3">لا توجد بيانات مسجلة</td></tr>';
+                } else {
+                    for(let tName in typeBreakdown) {
+                        let tData = typeBreakdown[tName];
+                        let sharePerc = totalOps > 0 ? Math.round((tData.count / totalOps) * 100) : 0;
+                        typeTbody.innerHTML += `
+                            <tr>
+                                <td class="font-bold text-right text-primary dark:text-indigo-400">${tName}</td>
+                                <td><span class="pill blue">${tData.count} عملية</span></td>
+                                <td>
+                                    <div class="flex items-center gap-2 justify-center">
+                                        <div class="w-16 bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden"><div class="bg-indigo-600 h-1.5 rounded-full" style="width: ${sharePerc}%"></div></div>
+                                        <span class="text-[10px] font-bold">${sharePerc}%</span>
+                                    </div>
+                                </td>
+                                <td class="font-black text-emerald-600 dark:text-emerald-400">${fmt.format(tData.totalVal)} ج.م</td>
+                            </tr>
+                        `;
+                    }
+                }
+            }
+
+            const sb = document.getElementById('dash-status-bars'); 
+            if(sb) {
+                sb.innerHTML = '';
+                for (let status in stats) {
+                    let perc = Math.round((stats[status] / (DB.operations.length || 1)) * 100);
+                    sb.innerHTML += `
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                <span>${status}</span>
+                                <span>${perc}% (${stats[status]})</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                                <div class="progress-fill bg-gradient-to-r from-primary to-cyan-500 h-2 rounded-full" style="width: 0%" data-target-width="${perc}%"></div>
+                            </div>
+                        </div>`;
+                }
             }
 
             setTimeout(() => {
@@ -1922,10 +2026,13 @@
                 });
             }, 150);
 
-            const rl = document.getElementById('dash-recent-list'); rl.innerHTML = '';
-            DB.operations.filter(o => o.status !== 'مكتمل').slice(0, 5).forEach(op => {
-                rl.innerHTML += `<div class="border-b border-slate-100 dark:border-slate-700 py-2.5 flex justify-between items-center last:border-0"><div><p class="font-bold text-xs text-slate-800 dark:text-slate-200">${op.name}</p><p class="text-[10px] text-slate-400">رقم: ${op.id}</p></div><span class="pill blue">${op.status}</span></div>`;
-            });
+            const rl = document.getElementById('dash-recent-list'); 
+            if(rl) {
+                rl.innerHTML = '';
+                DB.operations.filter(o => o.status !== 'مكتمل').slice(0, 5).forEach(op => {
+                    rl.innerHTML += `<div class="border-b border-slate-100 dark:border-slate-700 py-2.5 flex justify-between items-center last:border-0"><div><p class="font-bold text-xs text-slate-800 dark:text-slate-200">${op.name}</p><p class="text-[10px] text-slate-400">رقم: ${op.id} - النوع: ${op.type || '-'}</p></div><span class="pill blue">${op.status}</span></div>`;
+                });
+            }
         }
 
         function setOpSubTab(subTab) {
@@ -2073,7 +2180,6 @@
             }
         }
 
-        // تفليتر وترسية الترسيات بناءً على الـ 3 تبويبات المطابقة لسجل الطرح
         function renderAwards() {
             if(!DB.awards) DB.awards = [];
             const trHead = document.getElementById('awards-thead-tr');
@@ -2139,7 +2245,7 @@
                         <td class="text-[11px]">${aw.gIssuance || '-'}</td>
                         <td>
                             <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
                                     <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
                                 </div>
