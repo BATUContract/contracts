@@ -807,7 +807,7 @@
                             <span class="text-xs font-bold">طريقة عمل قارئ الـ AI:</span>
                         </div>
                         <select id="ai-parse-mode" class="border dark:border-slate-600 rounded-xl px-3 py-1 bg-white dark:bg-slate-800 text-xs font-bold text-primary dark:text-indigo-400">
-                            <option value="operation">تحليل عملية ومستندات طرح (مناقصة / ممارسة / أمر مباشر)</option>
+                            <option value="operation">تحليل عملية ومستندات طرح ومحاضر (مناقصة / ممارسة / أمر مباشر)</option>
                             <option value="supplier">تحليل بيانات شركة أو مورد فقط (سجل، ضريبية، بنك)</option>
                         </select>
                     </div>
@@ -828,7 +828,7 @@
 
                     <div id="ai-staging-results-container" class="space-y-4 hidden">
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-file-invoice"></i> البيانات الأساسية المستخرجة:</h4>
+                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-file-invoice"></i> البيانات الأساسية وتواريخ المحاضر المستخرجة:</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">رقم العملية:</label><input type="number" id="st-op-id" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
                                 <div class="flex flex-col sm:col-span-2"><label class="text-[10px] font-bold mb-1">اسم العملية:</label><input type="text" id="st-op-name" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
@@ -839,7 +839,7 @@
                         </div>
 
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-list-check"></i> تفاصيل الترسيات:</h4>
+                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-list-check"></i> تفاصيل الترسيات والبنود:</h4>
                             <div class="excel-table-container">
                                 <table class="excel-table w-full">
                                     <thead>
@@ -853,7 +853,7 @@
                         </div>
 
                         <button onclick="commitStagingDataToDB()" class="w-full bg-success text-white py-3 rounded-xl font-black text-xs shadow-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل البيانات أوتوماتيكياً
+                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل البيانات والمحاضر والتواريخ أوتوماتيكياً
                         </button>
                     </div>
 
@@ -1302,7 +1302,7 @@
                 return;
             }
 
-            alert(`جاري قراءة وتحليل عدد (${validFiles.length}) مستندات بواسطة Gemini AI... يرجى الانتظار.`);
+            alert(`جاري قراءة وتحليل عدد (${validFiles.length}) مستندات ومحاضر بواسطة Gemini AI... يرجى الانتظار.`);
 
             try {
                 let promptText = "";
@@ -1320,7 +1320,14 @@
                       "bankBranch": "الفرع"
                     }`;
                 } else {
-                    promptText = `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات واستخرج كافة التفاصيل التالية بصيغة JSON فقط وبدون أي نصوص إضافية:
+                    promptText = `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات ومحاضر الفتح والبت (فتح مظاريف فنية، محضر بت 1، محضر تظلمات أو بت 3 إن وجد، محضر فتح مظاريف مالية، ومحضر البت المالي النهائي) بدقة بالغة. استخرج التواريخ حسب القواعد التالية:
+                    - date2: تاريخ محضر فتح المظاريف الفنية (YYYY-MM-DD).
+                    - date3: تاريخ التقرير الفني. ولو لم تجد تاريخ تقرير منفصل، خذ تاريخ محضر البت الأول (محضر بت 1) نفسه (YYYY-MM-DD).
+                    - date4: تاريخ تقرير اللجنة بعد التظلمات أو محضر البت الثالث إن وجد (YYYY-MM-DD)، واتركه فارغاً لو لم تكن هناك تظلمات.
+                    - date5: تاريخ محضر فتح المظاريف المالية (YYYY-MM-DD).
+                    - date6: تاريخ محضر البت المالي النهائي (YYYY-MM-DD).
+                    
+                    أخرج النتائج بصيغة JSON فقط وبدون أي نصوص إضافية بالهيكل التالي:
                     {
                       "opId": رقم العملية كعدد صحيح,
                       "opName": "اسم المناقصة أو العملية كاملاً",
@@ -1332,11 +1339,11 @@
                       "approvalDate": "تاريخ الموافقة YYYY-MM-DD",
                       "portal": "نعم",
                       "date1": "تاريخ الطرح YYYY-MM-DD",
-                      "date2": "تاريخ فتح المظاريف YYYY-MM-DD",
-                      "date3": "تاريخ استلام التقرير الفني YYYY-MM-DD",
-                      "date4": "تاريخ التقرير الفني بعد التظلمات YYYY-MM-DD",
-                      "date5": "تاريخ الفتح المالي YYYY-MM-DD",
-                      "date6": "تاريخ البت المالي النهائي YYYY-MM-DD",
+                      "date2": "تاريخ محضر فتح المظاريف الفنية YYYY-MM-DD",
+                      "date3": "تاريخ التقرير الفني أو محضر البت الأول YYYY-MM-DD",
+                      "date4": "تاريخ التقرير بعد التظلمات أو محضر البت 3 YYYY-MM-DD",
+                      "date5": "تاريخ محضر فتح المظاريف المالية YYYY-MM-DD",
+                      "date6": "تاريخ محضر البت المالي النهائي YYYY-MM-DD",
                       "status": "الموقف الحالي",
                       "awards": [
                         {
@@ -1441,7 +1448,7 @@
                     document.getElementById('ai-staging-results-container').classList.remove('hidden');
                 }
 
-                alert("تم استخراج البيانات بواسطة Gemini بنجاح تام!");
+                alert("تم استخراج البيانات والمحاضر والتواريخ بواسطة Gemini بنجاح تام!");
 
             } catch(err) {
                 console.error(err);
@@ -1499,6 +1506,11 @@
                         portal: 'نعم',
                         approvalDate: new Date().toISOString().slice(0,10),
                         date1: new Date().toISOString().slice(0,10),
+                        date2: '',
+                        date3: '',
+                        date4: '',
+                        date5: '',
+                        date6: '',
                         awards: []
                     };
                 }
@@ -1624,7 +1636,7 @@
 
                 saveDB();
                 closeModal('modal-smart-staging');
-                alert('تم ترحيل كافة البيانات والمحاضر والترسيات أوتوماتيكياً بنجاح تام!');
+                alert('تم ترحيل كافة البيانات والمحاضر وتواريخ الفتح والبت أوتوماتيكياً بنجاح تام!');
             } catch(err) {
                 console.error(err);
                 alert('خطأ أثناء الترحيل: ' + err.message);
@@ -1964,17 +1976,6 @@
             return 25;
         }
 
-        function getInitialDepositStatus(date1Str) {
-            if (!date1Str) return { text: "غير محدد", class: "blue", code: 0 };
-            const start = new Date(date1Str);
-            const expiry = new Date(start);
-            expiry.setMonth(expiry.getMonth() + 4);
-            const diff = Math.ceil((expiry - new Date()) / 86400000);
-            if (diff < 0) return { text: "منتهي!", class: "red", code: 2 };
-            if (diff <= 15) return { text: `ينتهي (${diff}ي)`, class: "yellow", code: 1 };
-            return { text: `ساري (${diff}ي)`, class: "green", code: 0 };
-        }
-
         function getGuaranteeStatus(type, issuanceDateStr) {
             if (type === 'نقدي') return { text: "نقدي", class: "green", code: 0 };
             if (!issuanceDateStr) return { text: "لا يوجد", class: "red", code: 2 };
@@ -2151,6 +2152,24 @@
             renderAwards();
         }
 
+        // دالة احتساب حالة التأمين الابتدائي في سجل الطرح أوتوماتيكياً
+        function getOperationInitialDepositStatus(opId) {
+            const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(opId));
+            if (relatedAwards.length === 0) {
+                return { text: "لم ترد", class: "blue" };
+            }
+            const total = relatedAwards.length;
+            const refunded = relatedAwards.filter(a => a.ret === 'نعم').length;
+
+            if (refunded === 0) {
+                return { text: `باقي ${total}`, class: "blue" };
+            } else if (refunded === total) {
+                return { text: "تم رد التأمين", class: "green" };
+            } else {
+                return { text: `تم رد ${refunded} وباقي ${total - refunded}`, class: "yellow" };
+            }
+        }
+
         function renderOperations() {
             if(!DB.operations) DB.operations = [];
             DB.operations.sort((a, b) => a.id - b.id);
@@ -2170,7 +2189,7 @@
                 `;
                 filteredOps.forEach(op => {
                     let portalBadge = op.portal === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill red">تعذر</span>';
-                    let initDep = getInitialDepositStatus(op.date1);
+                    let initDep = getOperationInitialDepositStatus(op.id);
                     let dividedBadge = `<span class="pill blue">${op.isDivided || 'لا - ترسية كلية'}</span>`;
                     tb.innerHTML += `<tr>
                         <td class="font-bold">${op.id}</td>
@@ -2264,22 +2283,20 @@
             }
         }
 
-        // دالة حساب رد التأمين الابتدائي الأوتوماتيكي الذكي للشركات
+        // دالة حساب رد التأمين الابتدائي المحدثة
         function getComputedRefundStatus(currentAw) {
             if (!currentAw || !currentAw.opId) return { text: "لا", class: "blue" };
-            if (currentAw.ret === 'نعم') {
-                // إيجاد كل الترسيات المرتبطة بنفس رقم العملية (opId)
-                const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(currentAw.opId));
-                const totalCompanies = relatedAwards.length;
-                const refundedCount = relatedAwards.filter(a => a.ret === 'نعم').length;
+            const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(currentAw.opId));
+            const totalCompanies = relatedAwards.length;
+            const refundedCount = relatedAwards.filter(a => a.ret === 'نعم').length;
 
-                if (refundedCount >= totalCompanies) {
-                    return { text: "تم رد التأمين", class: "green" };
-                } else {
-                    return { text: `تم رد ${refundedCount} وباقي ${totalCompanies - refundedCount}`, class: "yellow" };
-                }
+            if (refundedCount === 0) {
+                return { text: "لا", class: "blue" };
+            } else if (refundedCount >= totalCompanies) {
+                return { text: "تم رد التأمين", class: "green" };
+            } else {
+                return { text: `تم رد ${refundedCount} وباقي ${totalCompanies - refundedCount}`, class: "yellow" };
             }
-            return { text: "لا", class: "blue" };
         }
 
         function renderAwards() {
@@ -2646,6 +2663,11 @@
                 document.getElementById('f-op-portal').value = op.portal || 'نعم';
                 document.getElementById('f-op-approval').value = op.approvalDate || '';
                 document.getElementById('f-op-date1').value = op.date1 || '';
+                document.getElementById('f-op-date2').value = op.date2 || '';
+                document.getElementById('f-op-date3').value = op.date3 || '';
+                document.getElementById('f-op-date4').value = op.date4 || '';
+                document.getElementById('f-op-date5').value = op.date5 || '';
+                document.getElementById('f-op-date6').value = op.date6 || '';
                 
                 openOpModal();
                 document.getElementById('f-op-id').value = op.id;
