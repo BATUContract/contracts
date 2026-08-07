@@ -992,6 +992,12 @@
 
     </main>
 
+    <!-- Undo Toast Notification Bar -->
+    <div id="undo-toast" class="fixed bottom-5 right-5 z-[150] hidden bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl items-center gap-3 border border-slate-700 animate-bounce">
+        <span id="undo-toast-text" class="text-xs font-bold">تم الحذف بنجاح.</span>
+        <button id="undo-btn" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1 rounded-lg text-xs font-black transition cursor-pointer"><i class="fa-solid fa-rotate-left"></i> تراجع (Undo)</button>
+    </div>
+
     <script>
         if (!localStorage.getItem('mgmt_drive_folder_url')) {
             localStorage.setItem('mgmt_drive_folder_url', 'https://drive.google.com/drive/folders/1PFsjPP9C4oFVFOVYkxIFKvaUefkUX_0O?usp=sharing');
@@ -1272,7 +1278,7 @@
                       "opId": رقم العملية كعدد صحيح,
                       "opName": "اسم المناقصة أو العملية كاملاً",
                       "opEntity": "الجهة الطالبة",
-                      "opType": "نوع العملية (مناقصة عامة، مناقصة محدودة، ممارسة عامة، أمر مباشر)",
+                      "opType": "نوع العملية (مناقصة عامة، مناقصة محدودة، ممارسة عامة، أمر مباشر، تجديد تعاقد)",
                       "opEst": "المبلغ التقديري",
                       "budget": "نعم",
                       "isDivided": "لا - ترسية كلية أو نعم - قابلة للتجزئة",
@@ -1373,8 +1379,10 @@
                     document.getElementById('st-op-entity').value = parsed.opEntity || 'جامعة برج العرب التكنولوجية';
                     
                     let typeSelect = document.getElementById('st-op-type');
-                    if (parsed.opType && parsed.opType.includes('أمر مباشر')) {
+                    if (parsed.opType && (parsed.opType.includes('أمر مباشر') || parsed.opType.includes('مباشر'))) {
                         typeSelect.value = 'أمر مباشر';
+                    } else if (parsed.opType && (parsed.opType.includes('تجديد') || parsed.opType.includes('تمديد'))) {
+                        typeSelect.value = 'تجديد تعاقد';
                     } else {
                         typeSelect.value = 'مناقصة عامة';
                     }
@@ -1438,6 +1446,7 @@
             }
         }
 
+        // ترحيل العمليات أوتوماتيكياً وتصنيفها في تبويبها الصحيح (مناقصة، أمر مباشر، أو تجديد/تمديد)
         function commitStagingDataToDB() {
             try {
                 if(!DB.operations) DB.operations = [];
@@ -1465,7 +1474,9 @@
                 let opName = document.getElementById('st-op-name').value || globalParsedData.opName || 'عملية توريد';
                 let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || 'جامعة برج العرب التكنولوجية';
                 let opType = document.getElementById('st-op-type').value || globalParsedData.opType || 'مناقصة عامة';
+                let opEst = document.getElementById('st-op-est').value || globalParsedData.opEst || 'مظروف مغلق';
                 
+                // تصنيف أوتوماتيكي دقيق لقسم العمليات والترسيات
                 let category = 'tender';
                 if (opType && (opType.includes('أمر مباشر') || opType.includes('مباشر'))) {
                     category = 'direct';
@@ -1544,7 +1555,7 @@
                     }
                 });
 
-                if (!DB.operations.some(o => o.id === opId)) {
+                if (!DB.operations.some(o => o.id == opId)) {
                     DB.operations.unshift({
                         id: opId,
                         category: category,
@@ -1553,7 +1564,7 @@
                         type: opType,
                         budget: globalParsedData.budget || 'نعم',
                         isDivided: globalParsedData.isDivided || 'نعم - قابلة للتجزئة',
-                        est: document.getElementById('st-op-est').value || globalParsedData.opEst || 'مظروف مغلق',
+                        est: opEst,
                         guideline: category === 'direct' ? totalVal : 0,
                         status: globalParsedData.status || 'مكتمل',
                         portal: globalParsedData.portal || 'نعم',
@@ -1567,7 +1578,7 @@
                         total: totalVal
                     });
                 } else {
-                    let op = DB.operations.find(o => o.id === opId);
+                    let op = DB.operations.find(o => o.id == opId);
                     op.total = totalVal;
                     op.category = category;
                     if (globalParsedData) {
@@ -1638,6 +1649,93 @@
             }).catch(() => {
                 alert("خطأ في الاتصال بالسيرفر.");
             });
+        }
+
+        // --- نظام التراجع (Undo) عند الحذف بالخطأ ---
+        let deletedOpBackup = null;
+        let deletedAwardsBackup = [];
+        let deletedArchivesBackup = {};
+        let undoTimeout = null;
+
+        function showUndoToast(message) {
+            const toast = document.getElementById('undo-toast');
+            const text = document.getElementById('undo-toast-text');
+            const btn = document.getElementById('undo-btn');
+            if(!toast) return;
+
+            text.innerText = message;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+
+            if(undoTimeout) clearTimeout(undoTimeout);
+
+            btn.onclick = () => {
+                executeUndo();
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            };
+
+            undoTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+                deletedOpBackup = null;
+                deletedAwardsBackup = [];
+                deletedArchivesBackup = {};
+            }, 8000);
+        }
+
+        function executeUndo() {
+            if (deletedOpBackup) {
+                if(!DB.operations) DB.operations = [];
+                if(!DB.awards) DB.awards = [];
+                if(!DB.archives) DB.archives = {};
+
+                DB.operations.push(deletedOpBackup);
+                deletedAwardsBackup.forEach(aw => DB.awards.push(aw));
+                Object.keys(deletedArchivesBackup).forEach(k => {
+                    DB.archives[k] = deletedArchivesBackup[k];
+                });
+
+                saveDB();
+                alert('تم التراجع عن الحذف واستعادة العملية وكافة بياناتها ومرفقاتها بنجاح!');
+                deletedOpBackup = null;
+                deletedAwardsBackup = [];
+                deletedArchivesBackup = {};
+            }
+        }
+
+        // حذف العملية وكل ما يتعلق بها تماماً من السيرفر مع حفظ نسخة للاستعادة
+        function deleteOp(id) { 
+            if(!DB.operations) DB.operations = [];
+            if(!DB.awards) DB.awards = [];
+            
+            if(confirm('هل أنت متأكد من حذف هذه العملية نهائياً مع كافة بنودها وترسياتها ومرفقاتها من السيرفر؟')) { 
+                const opIndex = DB.operations.findIndex(o => o.id == id);
+                if(opIndex === -1) {
+                    alert('العملية غير موجودة!');
+                    return;
+                }
+
+                deletedOpBackup = DB.operations[opIndex];
+                deletedAwardsBackup = DB.awards.filter(a => a.opId == id);
+                deletedArchivesBackup = {};
+
+                if (DB.archives) {
+                    Object.keys(DB.archives).forEach(k => {
+                        const parts = k.split('_');
+                        if (parts.includes(String(id))) {
+                            deletedArchivesBackup[k] = DB.archives[k];
+                            delete DB.archives[k];
+                        }
+                    });
+                }
+
+                DB.operations = DB.operations.filter(o => o.id != id); 
+                DB.awards = DB.awards.filter(a => a.opId != id);
+
+                saveDB(); 
+                showUndoToast('تم حذف العملية. انقر للتراجع.');
+            } 
         }
 
         function compressAndConvertFile(file, maxWidth = 800, quality = 0.5) {
@@ -2587,21 +2685,6 @@
             if (idx >= 0) { newOp.total = DB.operations[idx].total; DB.operations[idx] = newOp; } else DB.operations.unshift(newOp);
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             closeModal('modal-op'); saveDB();
-        }
-
-        function deleteOp(id) { 
-            if(!DB.operations) DB.operations = [];
-            if(!DB.awards) DB.awards = [];
-            if(confirm('حذف العملية نهائياً مع كافة بياناتها ومرفقاتها من السيرفر؟')) { 
-                DB.operations = DB.operations.filter(o => o.id !== id); 
-                DB.awards = DB.awards.filter(a => a.opId !== id);
-                if (DB.archives) {
-                    Object.keys(DB.archives).forEach(k => {
-                        if (k.includes('_' + id)) delete DB.archives[k];
-                    });
-                }
-                saveDB(); 
-            } 
         }
 
         function fetchOpDetails() {
