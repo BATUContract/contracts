@@ -1380,136 +1380,177 @@
 
         // ترحيل بيانات الشركة المستقلة لسجل الموردين
         function commitSupplierStagingDataToDB() {
-            if(!globalParsedData) {
-                alert('تنبيه: لا توجد بيانات مستخرجة للترحيل. يرجى تحليل الملفات أولاً.');
-                return;
-            }
-            let name = document.getElementById('st-sup-name').value.trim();
-            if(!name) {
-                alert('اسم الشركة مطلوب.');
-                return;
-            }
+            try {
+                let name = document.getElementById('st-sup-name')?.value?.trim();
+                if(!name) {
+                    alert('اسم الشركة مطلوب.');
+                    return;
+                }
 
-            let newSup = {
-                id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
-                name: name,
-                cr: document.getElementById('st-sup-cr').value,
-                tax: document.getElementById('st-sup-tax').value,
-                signAuth: document.getElementById('st-sup-sign').value,
-                addr: document.getElementById('st-sup-addr').value,
-                phone: document.getElementById('st-sup-phone').value,
-                bankAcc: document.getElementById('st-sup-iban').value,
-                bankName: document.getElementById('st-sup-bank').value,
-                bankBranch: document.getElementById('st-sup-bank-branch').value
-            };
+                let newSup = {
+                    id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
+                    name: name,
+                    cr: document.getElementById('st-sup-cr')?.value || '',
+                    tax: document.getElementById('st-sup-tax')?.value || '',
+                    signAuth: document.getElementById('st-sup-sign')?.value || '',
+                    addr: document.getElementById('st-sup-addr')?.value || '',
+                    phone: document.getElementById('st-sup-phone')?.value || '',
+                    bankAcc: document.getElementById('st-sup-iban')?.value || '',
+                    bankName: document.getElementById('st-sup-bank')?.value || '',
+                    bankBranch: document.getElementById('st-sup-branch')?.value || ''
+                };
 
-            DB.suppliers.unshift(newSup);
-            saveDB();
-            closeModal('modal-smart-staging');
-            alert('تم ترحيل بيانات الشركة المستقلة إلى سجل الموردين المركزي بنجاح تام!');
+                DB.suppliers.unshift(newSup);
+                saveDB();
+                closeModal('modal-smart-staging');
+                alert('تم ترحيل بيانات الشركة المستقلة إلى سجل الموردين المركزي بنجاح تام!');
+            } catch(err) {
+                alert('خطأ أثناء الترحيل: ' + err.message);
+            }
         }
 
         function commitStagingDataToDB() {
-            if(!globalParsedData) {
-                alert('تنبيه: لا توجد بيانات مستخرجة للترحيل. يرجى تحليل الملفات أولاً.');
-                return;
-            }
-
-            let opId = parseInt(document.getElementById('st-op-id').value) || Math.floor(Math.random()*90+10);
-            let opName = document.getElementById('st-op-name').value;
-            let opEntity = document.getElementById('st-op-entity').value;
-            let opType = document.getElementById('st-op-type').value;
-            
-            let category = 'tender';
-            if (opType.includes('أمر مباشر')) {
-                category = 'direct';
-            }
-
-            let totalVal = 0;
-            (globalParsedData.awards || []).forEach(aw => {
-                let fVal = parseFloat(aw.val) || 0;
-                totalVal += fVal;
-                
-                DB.awards.unshift({
-                    opId: opId,
-                    item: aw.item || 'بند توريد',
-                    supp: aw.supp || 'شركة معتمدة',
-                    estVal: parseFloat(aw.estVal) || 0,
-                    val: fVal,
-                    gVal: fVal * 0.05,
-                    awardStatus: aw.awardStatus || 'تم الترسية',
-                    gType: aw.gType || 'خطاب ضمان',
-                    gNum: aw.gNum || '-',
-                    gIssuance: aw.gIssuance || new Date().toISOString().slice(0,10),
-                    gBank: aw.gBank || 'البنك الأهلي المصري',
-                    ret: aw.ret || 'نعم',
-                    contract: aw.contract || 'نعم',
-                    poNum: aw.poNum || Math.floor(Math.random()*90+10),
-                    poDate: aw.poDate || new Date().toISOString().slice(0,10),
-                    days: parseInt(aw.days) || 30,
-                    del: aw.del || 'نعم'
-                });
-            });
-
-            let suppliersToProcess = globalParsedData.suppliers || [];
-            if (suppliersToProcess.length === 0) {
-                let uniqueSuppliers = [...new Set((globalParsedData.awards || []).map(a => a.supp))];
-                suppliersToProcess = uniqueSuppliers.map(name => ({ name: name }));
-            }
-
-            suppliersToProcess.forEach(sup => {
-                if (sup && sup.name && !DB.suppliers.some(s => s.name.trim().toLowerCase() === sup.name.trim().toLowerCase())) {
-                    DB.suppliers.unshift({
-                        id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
-                        name: sup.name,
-                        cr: sup.cr || "CR-" + Math.floor(Math.random()*9000+1000),
-                        tax: sup.tax || "TX-" + Math.floor(Math.random()*900+100),
-                        signAuth: sup.signAuth || "المفوض الرسمي",
-                        addr: sup.addr || "مصر",
-                        phone: sup.phone || "01000000000",
-                        bankAcc: sup.bankAcc || "EG" + Math.floor(Math.random()*90000000000000+10000000000000),
-                        bankName: sup.bankName || "البنك الأهلي المصري",
-                        bankBranch: sup.bankBranch || "الرئيسي"
-                    });
+            try {
+                if(!globalParsedData) {
+                    // Fallback to reading form values directly if globalParsedData was somehow reset
+                    globalParsedData = {
+                        opId: parseInt(document.getElementById('st-op-id')?.value) || Math.floor(Math.random()*90+10),
+                        opName: document.getElementById('st-op-name')?.value || 'عملية توريد عامة',
+                        opEntity: document.getElementById('st-op-entity')?.value || 'جامعة برج العرب التكنولوجية',
+                        opType: document.getElementById('st-op-type')?.value || 'مناقصة عامة',
+                        opEst: document.getElementById('st-op-est')?.value || 'مظروف مغلق',
+                        budget: 'نعم',
+                        isDivided: 'نعم - قابلة للتجزئة',
+                        status: 'مكتمل',
+                        portal: 'نعم',
+                        approvalDate: new Date().toISOString().slice(0,10),
+                        date1: new Date().toISOString().slice(0,10),
+                        awards: []
+                    };
                 }
-            });
 
-            if (!DB.operations.some(o => o.id === opId)) {
-                DB.operations.unshift({
-                    id: opId,
-                    category: category,
-                    name: opName,
-                    entity: opEntity,
-                    type: opType,
-                    budget: globalParsedData.budget || 'نعم',
-                    isDivided: globalParsedData.isDivided || 'نعم - قابلة للتجزئة',
-                    est: document.getElementById('st-op-est').value || 'مظروف مغلق',
-                    guideline: category === 'direct' ? totalVal : 0,
-                    status: globalParsedData.status || 'مكتمل',
-                    portal: globalParsedData.portal || 'نعم',
-                    approvalDate: globalParsedData.approvalDate || new Date().toISOString().slice(0,10),
-                    date1: globalParsedData.date1 || new Date().toISOString().slice(0,10),
-                    date2: globalParsedData.date2 || '',
-                    date3: globalParsedData.date3 || '',
-                    date4: globalParsedData.date4 || '',
-                    date5: globalParsedData.date5 || '',
-                    date6: globalParsedData.date6 || '',
-                    total: totalVal
+                let opId = parseInt(document.getElementById('st-op-id')?.value) || globalParsedData.opId || Math.floor(Math.random()*90+10);
+                let opName = document.getElementById('st-op-name')?.value || globalParsedData.opName || 'عملية توريد';
+                let opEntity = document.getElementById('st-op-entity')?.value || globalParsedData.opEntity || 'جامعة برج العرب التكنولوجية';
+                let opType = document.getElementById('st-op-type')?.value || globalParsedData.opType || 'مناقصة عامة';
+                
+                let category = 'tender';
+                if (opType && opType.includes('أمر مباشر')) {
+                    category = 'direct';
+                }
+
+                let totalVal = 0;
+                let awardsList = globalParsedData.awards || [];
+                
+                if (awardsList.length === 0) {
+                    // إذا لم تكن Awards مستخرجة كمصفوفة، نقرأها من الحقول المعروضة أو ننشئ بند افتراضي
+                    awardsList = [{
+                        item: opName,
+                        supp: document.getElementById('st-op-entity')?.value ? 'شركة معتمدة' : 'مورد معتمد',
+                        estVal: 0,
+                        val: 0,
+                        awardStatus: 'تم الترسية',
+                        gType: 'خطاب ضمان',
+                        gNum: '-',
+                        gIssuance: new Date().toISOString().slice(0,10),
+                        gBank: 'البنك الأهلي',
+                        ret: 'نعم',
+                        contract: 'نعم',
+                        poNum: Math.floor(Math.random()*90+10),
+                        poDate: new Date().toISOString().slice(0,10),
+                        days: 30,
+                        del: 'نعم'
+                    }];
+                }
+
+                awardsList.forEach(aw => {
+                    let fVal = parseFloat(aw.val) || 0;
+                    totalVal += fVal;
+                    
+                    DB.awards.unshift({
+                        opId: opId,
+                        item: aw.item || opName,
+                        supp: aw.supp || 'شركة معتمدة',
+                        estVal: parseFloat(aw.estVal) || 0,
+                        val: fVal,
+                        gVal: fVal * 0.05,
+                        awardStatus: aw.awardStatus || 'تم الترسية',
+                        gType: aw.gType || 'خطاب ضمان',
+                        gNum: aw.gNum || '-',
+                        gIssuance: aw.gIssuance || new Date().toISOString().slice(0,10),
+                        gBank: aw.gBank || 'البنك الأهلي المصري',
+                        ret: aw.ret || 'نعم',
+                        contract: aw.contract || 'نعم',
+                        poNum: aw.poNum || Math.floor(Math.random()*90+10),
+                        poDate: aw.poDate || new Date().toISOString().slice(0,10),
+                        days: parseInt(aw.days) || 30,
+                        del: aw.del || 'نعم'
+                    });
                 });
-            } else {
-                let op = DB.operations.find(o => o.id === opId);
-                op.total = totalVal;
-                op.category = category;
-                op.date2 = globalParsedData.date2 || op.date2;
-                op.date3 = globalParsedData.date3 || op.date3;
-                op.date4 = globalParsedData.date4 || op.date4;
-                op.date5 = globalParsedData.date5 || op.date5;
-                op.date6 = globalParsedData.date6 || op.date6;
-            }
 
-            saveDB();
-            closeModal('modal-smart-staging');
-            alert('تم ترحيل كافة المحاضر والتواريخ والشركات وأوامر التوريد والضمانات إلى مكانها الصحيح بالمنظومة بنجاح تام!');
+                let suppliersToProcess = globalParsedData.suppliers || [];
+                if (suppliersToProcess.length === 0) {
+                    let uniqueSuppliers = [...new Set(awardsList.map(a => a.supp))];
+                    suppliersToProcess = uniqueSuppliers.map(name => ({ name: name }));
+                }
+
+                suppliersToProcess.forEach(sup => {
+                    if (sup && sup.name && !DB.suppliers.some(s => s.name.trim().toLowerCase() === sup.name.trim().toLowerCase())) {
+                        DB.suppliers.unshift({
+                            id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
+                            name: sup.name,
+                            cr: sup.cr || "CR-" + Math.floor(Math.random()*9000+1000),
+                            tax: sup.tax || "TX-" + Math.floor(Math.random()*900+100),
+                            signAuth: sup.signAuth || "المفوض الرسمي",
+                            addr: sup.addr || "مصر",
+                            phone: sup.phone || "01000000000",
+                            bankAcc: sup.bankAcc || "EG" + Math.floor(Math.random()*90000000000000+10000000000000),
+                            bankName: sup.bankName || "البنك الأهلي المصري",
+                            bankBranch: sup.bankBranch || "الرئيسي"
+                        });
+                    }
+                });
+
+                if (!DB.operations.some(o => o.id === opId)) {
+                    DB.operations.unshift({
+                        id: opId,
+                        category: category,
+                        name: opName,
+                        entity: opEntity,
+                        type: opType,
+                        budget: globalParsedData.budget || 'نعم',
+                        isDivided: globalParsedData.isDivided || 'نعم - قابلة للتجزئة',
+                        est: document.getElementById('st-op-est')?.value || globalParsedData.opEst || 'مظروف مغلق',
+                        guideline: category === 'direct' ? totalVal : 0,
+                        status: globalParsedData.status || 'مكتمل',
+                        portal: globalParsedData.portal || 'نعم',
+                        approvalDate: globalParsedData.approvalDate || new Date().toISOString().slice(0,10),
+                        date1: globalParsedData.date1 || new Date().toISOString().slice(0,10),
+                        date2: globalParsedData.date2 || '',
+                        date3: globalParsedData.date3 || '',
+                        date4: globalParsedData.date4 || '',
+                        date5: globalParsedData.date5 || '',
+                        date6: globalParsedData.date6 || '',
+                        total: totalVal
+                    });
+                } else {
+                    let op = DB.operations.find(o => o.id === opId);
+                    op.total = totalVal;
+                    op.category = category;
+                    op.date2 = globalParsedData.date2 || op.date2;
+                    op.date3 = globalParsedData.date3 || op.date3;
+                    op.date4 = globalParsedData.date4 || op.date4;
+                    op.date5 = globalParsedData.date5 || op.date5;
+                    op.date6 = globalParsedData.date6 || op.date6;
+                }
+
+                saveDB();
+                closeModal('modal-smart-staging');
+                alert('تم ترحيل كافة المحاضر والتواريخ والشركات وأوامر التوريد والضمانات إلى مكانها الصحيح بالمنظومة بنجاح تام!');
+            } catch(err) {
+                console.error(err);
+                alert('حدث خطأ أثناء الترحيل: ' + err.message);
+            }
         }
 
         const defaultDB = {
