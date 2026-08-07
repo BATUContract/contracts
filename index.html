@@ -196,8 +196,6 @@
         body:not(.light) .excel-table-container { background: rgba(15, 23, 42, 0.9); border-color: #334155; }
 
         .excel-table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: max-content; }
-        
-        /* تعديل وضوح النصوص في الجداول للوضع العادي والليلي */
         .excel-table th, .excel-table td { 
             border-bottom: 1px solid #cbd5e1; 
             border-left: 1px solid #cbd5e1; 
@@ -899,7 +897,7 @@
                             <span class="text-xs font-bold">مفتاح Gemini API:</span>
                         </div>
                         <div class="flex gap-2 flex-1 max-w-md">
-                            <input type="text" id="ai-api-key-input" placeholder="أدخل مفتاح الـ API (AQ... أو AIzaSy...)" class="border dark:border-slate-600 rounded-xl px-3 py-1 bg-white dark:bg-slate-800 text-xs font-mono flex-1">
+                            <input type="text" id="ai-api-key-input" placeholder="أدخل مفتاح الـ API (AIzaSy...)" class="border dark:border-slate-600 rounded-xl px-3 py-1 bg-white dark:bg-slate-800 text-xs font-mono flex-1">
                             <button onclick="saveAiApiKey()" class="bg-amber-600 text-white px-3 py-1 rounded-xl text-xs font-bold hover:bg-amber-700 transition">حفظ</button>
                         </div>
                     </div>
@@ -1558,7 +1556,7 @@
         }
 
         // ==========================================
-        // قارئ AI الشامل (مع دعم تامة لمفاتيح AQ وتوكنات OAuth)
+        // قارئ AI الشامل (معدل ليتعامل مع التوكنات الجديدة بالـ Bearer Header)
         // ==========================================
         function openSmartStagingModal() {
             playSound('click');
@@ -1620,11 +1618,11 @@
                     }
                 }
 
-                // التعديل الهام هنا للتعامل مع توكنات AQ (OAuth) أو المفاتيح التقليدية AIzaSy
+                // التعديل هنا: إذا بدأ بـ AQ. يتم إرساله كـ Authorization Bearer Token، وإذا كان تقليدي (AIzaSy) يرسل في الـ URL
                 let headers = { 'Content-Type': 'application/json' };
                 let endpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
                 
-                if (apiKey.startsWith('AQ.') || apiKey.length > 40) {
+                if (apiKey.startsWith('AQ.')) {
                     headers['Authorization'] = `Bearer ${apiKey}`;
                 } else {
                     endpointUrl += `?key=${apiKey}`;
@@ -1662,7 +1660,7 @@
                     document.getElementById('st-op-est').value = parsed.opEst || '';
                     let tbody = document.getElementById('st-awards-tbody'); tbody.innerHTML = '';
                     (parsed.awards || []).forEach(aw => {
-                        tbody.innerHTML += `<tr><td class="text-right font-bold">${aw.item}</td><td class="text-indigo-400 font-bold">${aw.supp}</td><td>${fmt.format(aw.estVal||0)}</td><td class="text-emerald-400 font-bold">${fmt.format(aw.val||0)}</td><td>${aw.gNum||'-'}</td></tr>`;
+                        tbody.innerHTML += `<tr><td class="text-right font-bold">${aw.item}</td><td class="text-indigo-600 dark:text-indigo-400 font-bold">${aw.supp}</td><td>${fmt.format(aw.estVal||0)}</td><td class="text-emerald-600 dark:text-emerald-400 font-bold">${fmt.format(aw.val||0)}</td><td>${aw.gNum||'-'}</td></tr>`;
                     });
                     document.getElementById('ai-supplier-results-container').classList.add('hidden');
                     document.getElementById('ai-staging-results-container').classList.remove('hidden');
