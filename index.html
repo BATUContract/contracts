@@ -2081,7 +2081,7 @@
                     <td class="text-xs wrap-text">${s.bankName||'-'} - ${s.bankBranch||'-'}</td>
                     <td>
                         <div class="attachment-dropdown-wrap">
-                            <button onclick="playSound('click')" class="bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm">
+                            <button onclick="playSound('click')" class="bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm">
                                 <i class="fa-solid fa-folder-tree"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i>
                             </button>
                             <div class="attachment-menu">
@@ -2471,7 +2471,8 @@
                 cr: document.getElementById('f-sup-cr').value, tax: document.getElementById('f-sup-tax').value, 
                 signAuth: document.getElementById('f-sup-sign').value, addr: document.getElementById('f-sup-addr').value, 
                 phone: document.getElementById('f-sup-phone').value, 
-                bankAcc: document.getElementById('f-sup-bank-acc').value, bankName: document.getElementById('f-sup-bank-name').value, 
+                bankAcc: document.getElementById('f-sup-bank-acc').value, 
+                bankName: document.getElementById('f-sup-bank-name').value, 
                 bankBranch: document.getElementById('f-sup-bank-branch').value 
             };
             if(id) { const idx = DB.suppliers.findIndex(x=>x.id===id); if(idx>=0) DB.suppliers[idx]=s; } else DB.suppliers.unshift(s);
