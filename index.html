@@ -500,7 +500,7 @@
             </div>
         </div>
 
-        <!-- AWARDS -->
+        <!-- AWARDS (الترسيات مقسمة لـ 3 تبويبات لتفصل العمليات المختلفة تماماً مثل سجل الطرح) -->
         <div id="view-awards" class="view-section p-3 md:p-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 no-print gap-2">
                 <h2 class="font-black text-slate-900 dark:text-white text-lg">الترسيات، الضمانات وأوامر التوريد</h2>
@@ -509,29 +509,23 @@
                     <button onclick="playSound('click'); openAwardModal()" class="bg-primary text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-primaryHover transition transform hover:scale-105 flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-plus"></i> إضافة لوط</button>
                 </div>
             </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 no-print">
+                <button onclick="playSound('click'); setAwardSubTab('tender')" id="aw-subtab-tender" class="p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-primary text-white">
+                    <i class="fa-solid fa-gavel anim-gavel text-base"></i> مناقصات وممارسات (ترسيات)
+                </button>
+                <button onclick="playSound('click'); setAwardSubTab('direct')" id="aw-subtab-direct" class="p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                    <i class="fa-solid fa-bolt anim-lightning text-base text-amber-500"></i> أوامر مباشرة وسريعة
+                </button>
+                <button onclick="playSound('click'); setAwardSubTab('renewal')" id="aw-subtab-renewal" class="p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                    <i class="fa-solid fa-clock-rotate-left anim-sync text-base text-cyan-400"></i> تجديد وتمديد التعاقدات
+                </button>
+            </div>
+
             <div class="excel-table-container">
                 <table class="excel-table" id="tbl-awards">
                     <thead>
-                        <tr>
-                            <th>العملية</th>
-                            <th>نوع العملية</th>
-                            <th>وصف البند / اللوط</th>
-                            <th>الشركة الفائزة</th>
-                            <th>القيمة التقديرية للبند</th>
-                            <th>قيمة الترسية</th>
-                            <th>حالة الترسية</th>
-                            <th>التأمين النهائي</th>
-                            <th>موقف الضمان</th>
-                            <th>رقم الضمان</th>
-                            <th>البنك المصدر</th>
-                            <th>أمر التوريد</th>
-                            <th>المهلة</th>
-                            <th>التوريد</th>
-                            <th>مرفقات الترسية</th>
-                            <th>رد التأمين</th>
-                            <th>العقد</th>
-                            <th class="no-print">إجراءات</th>
-                        </tr>
+                        <tr id="awards-thead-tr"></tr>
                     </thead>
                     <tbody id="awards-tbody"></tbody>
                 </table>
@@ -1408,33 +1402,18 @@
             }
         }
 
+        // دالة الترحيل الذكية والشاملة لجميع العمليات والترسيات والشركات وأوامر التوريد والضمانات
         function commitStagingDataToDB() {
             try {
                 if(!DB.operations) DB.operations = [];
                 if(!DB.awards) DB.awards = [];
                 if(!DB.suppliers) DB.suppliers = [];
 
-                if (!globalParsedData) {
-                    globalParsedData = {
-                        opId: parseInt(document.getElementById('st-op-id').value) || Math.floor(Math.random()*90+10),
-                        opName: document.getElementById('st-op-name').value || 'عملية توريد عامة',
-                        opEntity: document.getElementById('st-op-entity').value || 'جامعة برج العرب التكنولوجية',
-                        opType: document.getElementById('st-op-type').value || 'مناقصة عامة',
-                        opEst: document.getElementById('st-op-est').value || 'مظروف مغلق',
-                        budget: 'نعم',
-                        isDivided: 'نعم - قابلة للتجزئة',
-                        status: 'مكتمل',
-                        portal: 'نعم',
-                        approvalDate: new Date().toISOString().slice(0,10),
-                        date1: new Date().toISOString().slice(0,10),
-                        awards: []
-                    };
-                }
-
-                let opId = parseInt(document.getElementById('st-op-id').value) || globalParsedData.opId || Math.floor(Math.random()*90+10);
-                let opName = document.getElementById('st-op-name').value || globalParsedData.opName || 'عملية توريد';
-                let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || 'جامعة برج العرب التكنولوجية';
-                let opType = document.getElementById('st-op-type').value || globalParsedData.opType || 'مناقصة عامة';
+                let opId = parseInt(document.getElementById('st-op-id').value) || (globalParsedData ? globalParsedData.opId : null) || Math.floor(Math.random()*90+10);
+                let opName = document.getElementById('st-op-name').value || (globalParsedData ? globalParsedData.opName : null) || 'عملية توريد عامة';
+                let opEntity = document.getElementById('st-op-entity').value || (globalParsedData ? globalParsedData.opEntity : null) || 'جامعة برج العرب التكنولوجية';
+                let opType = document.getElementById('st-op-type').value || (globalParsedData ? globalParsedData.opType : null) || 'مناقصة عامة';
+                let opEst = document.getElementById('st-op-est').value || (globalParsedData ? globalParsedData.opEst : null) || 'مظروف مغلق';
                 
                 let category = 'tender';
                 if (opType && opType.includes('أمر مباشر')) {
@@ -1442,7 +1421,7 @@
                 }
 
                 let totalVal = 0;
-                let awardsList = globalParsedData.awards || [];
+                let awardsList = (globalParsedData && globalParsedData.awards) ? globalParsedData.awards : [];
                 
                 if (awardsList.length === 0) {
                     awardsList = [{
@@ -1489,7 +1468,7 @@
                     });
                 });
 
-                let suppliersToProcess = globalParsedData.suppliers || [];
+                let suppliersToProcess = (globalParsedData && globalParsedData.suppliers) ? globalParsedData.suppliers : [];
                 if (suppliersToProcess.length === 0) {
                     let uniqueSuppliers = [...new Set(awardsList.map(a => a.supp))];
                     suppliersToProcess = uniqueSuppliers.map(name => ({ name: name }));
@@ -1519,25 +1498,32 @@
                         name: opName,
                         entity: opEntity,
                         type: opType,
-                        budget: globalParsedData.budget || 'نعم',
-                        isDivided: globalParsedData.isDivided || 'نعم - قابلة للتجزئة',
-                        est: document.getElementById('st-op-est').value || globalParsedData.opEst || 'مظروف مغلق',
+                        budget: (globalParsedData && globalParsedData.budget) || 'نعم',
+                        isDivided: (globalParsedData && globalParsedData.isDivided) || 'نعم - قابلة للتجزئة',
+                        est: opEst,
                         guideline: category === 'direct' ? totalVal : 0,
-                        status: globalParsedData.status || 'مكتمل',
-                        portal: globalParsedData.portal || 'نعم',
-                        approvalDate: globalParsedData.approvalDate || new Date().toISOString().slice(0,10),
-                        date1: globalParsedData.date1 || new Date().toISOString().slice(0,10),
-                        date2: globalParsedData.date2 || '',
-                        date3: globalParsedData.date3 || '',
-                        date4: globalParsedData.date4 || '',
-                        date5: globalParsedData.date5 || '',
-                        date6: globalParsedData.date6 || '',
+                        status: (globalParsedData && globalParsedData.status) || 'مكتمل',
+                        portal: (globalParsedData && globalParsedData.portal) || 'نعم',
+                        approvalDate: (globalParsedData && globalParsedData.approvalDate) || new Date().toISOString().slice(0,10),
+                        date1: (globalParsedData && globalParsedData.date1) || new Date().toISOString().slice(0,10),
+                        date2: (globalParsedData && globalParsedData.date2) || '',
+                        date3: (globalParsedData && globalParsedData.date3) || '',
+                        date4: (globalParsedData && globalParsedData.date4) || '',
+                        date5: (globalParsedData && globalParsedData.date5) || '',
+                        date6: (globalParsedData && globalParsedData.date6) || '',
                         total: totalVal
                     });
                 } else {
                     let op = DB.operations.find(o => o.id === opId);
                     op.total = totalVal;
                     op.category = category;
+                    if (globalParsedData) {
+                        op.date2 = globalParsedData.date2 || op.date2;
+                        op.date3 = globalParsedData.date3 || op.date3;
+                        op.date4 = globalParsedData.date4 || op.date4;
+                        op.date5 = globalParsedData.date5 || op.date5;
+                        op.date6 = globalParsedData.date6 || op.date6;
+                    }
                 }
 
                 saveDB();
@@ -1568,6 +1554,7 @@
 
         let DB = { operations: [], awards: [], suppliers: [], archives: {} };
         let currentOpSubTab = 'tender';
+        let currentAwardSubTab = 'tender';
 
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
@@ -1946,13 +1933,31 @@
             currentOpSubTab = subTab;
             ['tender', 'direct', 'renewal'].forEach(t => {
                 const btn = document.getElementById(`subtab-${t}`);
-                if(t === subTab) {
-                    btn.className = "p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-primary text-white";
-                } else {
-                    btn.className = "p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300";
+                if(btn) {
+                    if(t === subTab) {
+                        btn.className = "p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-primary text-white";
+                    } else {
+                        btn.className = "p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300";
+                    }
                 }
             });
             renderOperations();
+        }
+
+        function setAwardSubTab(subTab) {
+            playSound('click');
+            currentAwardSubTab = subTab;
+            ['tender', 'direct', 'renewal'].forEach(t => {
+                const btn = document.getElementById(`aw-subtab-${t}`);
+                if(btn) {
+                    if(t === subTab) {
+                        btn.className = "p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-primary text-white";
+                    } else {
+                        btn.className = "p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300";
+                    }
+                }
+            });
+            renderAwards();
         }
 
         function renderOperations() {
@@ -2068,50 +2073,127 @@
             }
         }
 
+        // تفليتر وترسية الترسيات بناءً على الـ 3 تبويبات المطابقة لسجل الطرح
         function renderAwards() {
             if(!DB.awards) DB.awards = [];
-            const tb = document.getElementById('awards-tbody'); tb.innerHTML = '';
-            DB.awards.forEach((aw, i) => {
-                const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
-                const opType = op.type || 'غير مسجل';
-                const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
-                const retPill = aw.ret === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill blue">لا</span>';
-                const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
-                const statusPill = aw.awardStatus && aw.awardStatus !== 'تم الترسية' ? '<span class="pill yellow">' + aw.awardStatus + '</span>' : '<span class="pill green">تم الترسية</span>';
-                const finalGVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
-                tb.innerHTML += `<tr>
-                    <td class="font-bold">${aw.opId}</td>
-                    <td><span class="pill blue">${opType}</span></td>
-                    <td class="text-right font-bold wrap-text">${aw.item}</td>
-                    <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer hover:text-primaryHover wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
-                    <td class="font-bold text-slate-500 dark:text-slate-400 text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
-                    <td class="font-black text-slate-700 dark:text-slate-300">${fmt.format(aw.val)}</td>
-                    <td>${statusPill}</td>
-                    <td class="font-bold text-slate-500 dark:text-slate-400 text-xs">${fmt.format(finalGVal)}</td>
-                    <td><span class="pill ${gSt.class}" title="إصدار: ${aw.gIssuance || '-'}">${gSt.text}</span></td>
-                    <td class="text-xs font-mono font-bold">${aw.gNum || '-'}</td>
-                    <td class="text-xs">${aw.gBank || '-'}</td>
-                    <td class="font-bold">${aw.poNum || '-'}</td>
-                    <td>${aw.days}</td>
-                    <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
-                    <td>
-                        <div class="attachment-dropdown-wrap">
-                            <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm">
-                                <i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i>
-                            </button>
-                            <div class="attachment-menu">
-                                <button onclick="openDirectArchive('aw_guarantee', '${aw.opId}_${i}', 'الضمان: ${aw.item}')" class="w-full text-right p-1.5 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 rounded text-[11px] font-bold"><i class="fa-solid fa-shield w-4"></i> الضمان</button>
-                                <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-700 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${retPill}</td>
-                    <td>${contractPill}</td>
-                    <td class="no-print">
-                        <button onclick="playSound('click'); editAward(${i})" class="text-slate-400 hover:text-primary dark:hover:text-indigo-400 mx-1"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="playSound('delete'); deleteAward(${i})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
-                    </td></tr>`;
+            const trHead = document.getElementById('awards-thead-tr');
+            const tb = document.getElementById('awards-tbody');
+            if(!trHead || !tb) return;
+            tb.innerHTML = '';
+
+            const filteredAwards = DB.awards.filter(aw => {
+                const op = (DB.operations || []).find(o => o.id == aw.opId) || { category: 'tender' };
+                let cat = op.category || 'tender';
+                return cat === currentAwardSubTab;
             });
+
+            if (currentAwardSubTab === 'direct') {
+                trHead.innerHTML = `
+                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مرفقات</th><th>العقد</th><th class="no-print">إجراءات</th>
+                `;
+                filteredAwards.forEach((aw, i) => {
+                    const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
+                    const dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                    const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
+                    const statusPill = aw.awardStatus && aw.awardStatus !== 'تم الترسية' ? '<span class="pill yellow">' + aw.awardStatus + '</span>' : '<span class="pill green">تم الترسية</span>';
+                    
+                    tb.innerHTML += `<tr>
+                        <td class="font-bold">${aw.opId}</td>
+                        <td><span class="pill blue">${op.type || 'أمر مباشر'}</span></td>
+                        <td class="text-right font-bold wrap-text">${aw.item}</td>
+                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
+                        <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
+                        <td class="font-black">${fmt.format(aw.val)}</td>
+                        <td>${statusPill}</td>
+                        <td class="font-bold">${aw.poNum || '-'}</td>
+                        <td>${aw.days}</td>
+                        <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
+                        <td>
+                            <div class="attachment-dropdown-wrap">
+                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <div class="attachment-menu">
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-blue-600 dark:text-blue-300 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${contractPill}</td>
+                        <td class="no-print">
+                            <button onclick="playSound('click'); editAward(${i})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteAward(${i})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`;
+                });
+            } else if (currentAwardSubTab === 'renewal') {
+                trHead.innerHTML = `
+                    <th>العملية</th><th>نوع التجديد</th><th>وصف البند / العقد</th><th>الشركة</th><th>القيمة</th><th>حالة العقد</th><th>تاريخ البدء</th><th>تاريخ الانتهاء</th><th>مرفقات</th><th class="no-print">إجراءات</th>
+                `;
+                filteredAwards.forEach((aw, i) => {
+                    const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
+                    tb.innerHTML += `<tr>
+                        <td class="font-bold">${aw.opId}</td>
+                        <td><span class="pill blue">${op.type || 'تجديد'}</span></td>
+                        <td class="text-right font-bold wrap-text">${aw.item}</td>
+                        <td class="text-right text-primary dark:text-indigo-400 font-bold wrap-text">${aw.supp}</td>
+                        <td class="font-black">${fmt.format(aw.val)}</td>
+                        <td><span class="pill green">ساري</span></td>
+                        <td class="text-[11px]">${aw.poDate || '-'}</td>
+                        <td class="text-[11px]">${aw.gIssuance || '-'}</td>
+                        <td>
+                            <div class="attachment-dropdown-wrap">
+                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <div class="attachment-menu">
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="no-print">
+                            <button onclick="playSound('click'); editAward(${i})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteAward(${i})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`;
+                });
+            } else {
+                trHead.innerHTML = `
+                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>التأمين النهائي</th><th>موقف الضمان</th><th>رقم الضمان</th><th>البنك المصدر</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مرفقات</th><th>رد التأمين</th><th>العقد</th><th class="no-print">إجراءات</th>
+                `;
+                filteredAwards.forEach((aw, i) => {
+                    const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
+                    const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                    const retPill = aw.ret === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill blue">لا</span>';
+                    const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
+                    const statusPill = aw.awardStatus && aw.awardStatus !== 'تم الترسية' ? '<span class="pill yellow">' + aw.awardStatus + '</span>' : '<span class="pill green">تم الترسية</span>';
+                    const finalGVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
+
+                    tb.innerHTML += `<tr>
+                        <td class="font-bold">${aw.opId}</td>
+                        <td><span class="pill blue">${op.type || 'مناقصة'}</span></td>
+                        <td class="text-right font-bold wrap-text">${aw.item}</td>
+                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
+                        <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
+                        <td class="font-black">${fmt.format(aw.val)}</td>
+                        <td>${statusPill}</td>
+                        <td class="font-bold text-xs">${fmt.format(finalGVal)}</td>
+                        <td><span class="pill ${gSt.class}" title="إصدار: ${aw.gIssuance || '-'}">${gSt.text}</span></td>
+                        <td class="text-xs font-mono font-bold">${aw.gNum || '-'}</td>
+                        <td class="text-xs">${aw.gBank || '-'}</td>
+                        <td class="font-bold">${aw.poNum || '-'}</td>
+                        <td>${aw.days}</td>
+                        <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
+                        <td>
+                            <div class="attachment-dropdown-wrap">
+                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <div class="attachment-menu">
+                                    <button onclick="openDirectArchive('aw_guarantee', '${aw.opId}_${i}', 'الضمان: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-purple-600 rounded text-[11px] font-bold"><i class="fa-solid fa-shield w-4"></i> الضمان</button>
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${retPill}</td>
+                        <td>${contractPill}</td>
+                        <td class="no-print">
+                            <button onclick="playSound('click'); editAward(${i})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteAward(${i})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`;
+                });
+            }
         }
 
         function renderSuppliers() {
@@ -2581,6 +2663,7 @@
             if(id === 'dashboard') renderDashboard();
             if(id === 'suppliers') renderSuppliers();
             if(id === 'operations') setOpSubTab(currentOpSubTab);
+            if(id === 'awards') setAwardSubTab(currentAwardSubTab);
             if(id === 'query') runQuery();
         }
 
