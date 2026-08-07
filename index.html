@@ -1063,7 +1063,8 @@
             firebase.initializeApp(firebaseConfig);
         }
         const database = firebase.database();
-        const dbRef = database.ref('smartSystem_V26_Mobile_Pulse');
+        // تم تغيير مسار السيرفر إلى مسار نظيف تماماً وخالي من العمليات الافتراضية القديمة
+        const dbRef = database.ref('smartSystem_V29_Clean_Database');
 
         const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         
