@@ -1336,7 +1336,6 @@
                     document.getElementById('st-sup-bank').value = parsed.bankName || '';
                     document.getElementById('st-sup-branch').value = parsed.bankBranch || '';
 
-                    document.getElementById('ai-staging-results-container').classList.add('hidden');
                     document.getElementById('ai-supplier-results-container').classList.remove('hidden');
                 } else {
                     document.getElementById('st-op-id').value = parsed.opId || Math.floor(Math.random()*90+10);
@@ -1366,7 +1365,6 @@
                         `;
                     });
 
-                    document.getElementById('ai-supplier-results-container').classList.add('hidden');
                     document.getElementById('ai-staging-results-container').classList.remove('hidden');
                 }
 
@@ -1381,7 +1379,7 @@
         // ترحيل بيانات الشركة المستقلة لسجل الموردين
         function commitSupplierStagingDataToDB() {
             try {
-                let name = document.getElementById('st-sup-name')?.value?.trim();
+                let name = document.getElementById('st-sup-name').value.trim();
                 if(!name) {
                     alert('اسم الشركة مطلوب.');
                     return;
@@ -1390,14 +1388,14 @@
                 let newSup = {
                     id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
                     name: name,
-                    cr: document.getElementById('st-sup-cr')?.value || '',
-                    tax: document.getElementById('st-sup-tax')?.value || '',
-                    signAuth: document.getElementById('st-sup-sign')?.value || '',
-                    addr: document.getElementById('st-sup-addr')?.value || '',
-                    phone: document.getElementById('st-sup-phone')?.value || '',
-                    bankAcc: document.getElementById('st-sup-iban')?.value || '',
-                    bankName: document.getElementById('st-sup-bank')?.value || '',
-                    bankBranch: document.getElementById('st-sup-branch')?.value || ''
+                    cr: document.getElementById('st-sup-cr').value,
+                    tax: document.getElementById('st-sup-tax').value,
+                    signAuth: document.getElementById('st-sup-sign').value,
+                    addr: document.getElementById('st-sup-addr').value,
+                    phone: document.getElementById('st-sup-phone').value,
+                    bankAcc: document.getElementById('st-sup-iban').value,
+                    bankName: document.getElementById('st-sup-bank').value,
+                    bankBranch: document.getElementById('st-sup-branch').value
                 };
 
                 DB.suppliers.unshift(newSup);
@@ -1405,20 +1403,19 @@
                 closeModal('modal-smart-staging');
                 alert('تم ترحيل بيانات الشركة المستقلة إلى سجل الموردين المركزي بنجاح تام!');
             } catch(err) {
-                alert('خطأ أثناء الترحيل: ' + err.message);
+                alert('حدث خطأ: ' + err.message);
             }
         }
 
         function commitStagingDataToDB() {
             try {
-                if(!globalParsedData) {
-                    // Fallback to reading form values directly if globalParsedData was somehow reset
+                if (!globalParsedData) {
                     globalParsedData = {
-                        opId: parseInt(document.getElementById('st-op-id')?.value) || Math.floor(Math.random()*90+10),
-                        opName: document.getElementById('st-op-name')?.value || 'عملية توريد عامة',
-                        opEntity: document.getElementById('st-op-entity')?.value || 'جامعة برج العرب التكنولوجية',
-                        opType: document.getElementById('st-op-type')?.value || 'مناقصة عامة',
-                        opEst: document.getElementById('st-op-est')?.value || 'مظروف مغلق',
+                        opId: parseInt(document.getElementById('st-op-id').value) || Math.floor(Math.random()*90+10),
+                        opName: document.getElementById('st-op-name').value || 'عملية توريد عامة',
+                        opEntity: document.getElementById('st-op-entity').value || 'جامعة برج العرب التكنولوجية',
+                        opType: document.getElementById('st-op-type').value || 'مناقصة عامة',
+                        opEst: document.getElementById('st-op-est').value || 'مظروف مغلق',
                         budget: 'نعم',
                         isDivided: 'نعم - قابلة للتجزئة',
                         status: 'مكتمل',
@@ -1429,10 +1426,10 @@
                     };
                 }
 
-                let opId = parseInt(document.getElementById('st-op-id')?.value) || globalParsedData.opId || Math.floor(Math.random()*90+10);
-                let opName = document.getElementById('st-op-name')?.value || globalParsedData.opName || 'عملية توريد';
-                let opEntity = document.getElementById('st-op-entity')?.value || globalParsedData.opEntity || 'جامعة برج العرب التكنولوجية';
-                let opType = document.getElementById('st-op-type')?.value || globalParsedData.opType || 'مناقصة عامة';
+                let opId = parseInt(document.getElementById('st-op-id').value) || globalParsedData.opId || Math.floor(Math.random()*90+10);
+                let opName = document.getElementById('st-op-name').value || globalParsedData.opName || 'عملية توريد';
+                let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || 'جامعة برج العرب التكنولوجية';
+                let opType = document.getElementById('st-op-type').value || globalParsedData.opType || 'مناقصة عامة';
                 
                 let category = 'tender';
                 if (opType && opType.includes('أمر مباشر')) {
@@ -1443,17 +1440,16 @@
                 let awardsList = globalParsedData.awards || [];
                 
                 if (awardsList.length === 0) {
-                    // إذا لم تكن Awards مستخرجة كمصفوفة، نقرأها من الحقول المعروضة أو ننشئ بند افتراضي
                     awardsList = [{
                         item: opName,
-                        supp: document.getElementById('st-op-entity')?.value ? 'شركة معتمدة' : 'مورد معتمد',
+                        supp: 'شركة معتمدة',
                         estVal: 0,
                         val: 0,
                         awardStatus: 'تم الترسية',
                         gType: 'خطاب ضمان',
                         gNum: '-',
                         gIssuance: new Date().toISOString().slice(0,10),
-                        gBank: 'البنك الأهلي',
+                        gBank: 'البنك الأهلي المصري',
                         ret: 'نعم',
                         contract: 'نعم',
                         poNum: Math.floor(Math.random()*90+10),
@@ -1520,7 +1516,7 @@
                         type: opType,
                         budget: globalParsedData.budget || 'نعم',
                         isDivided: globalParsedData.isDivided || 'نعم - قابلة للتجزئة',
-                        est: document.getElementById('st-op-est')?.value || globalParsedData.opEst || 'مظروف مغلق',
+                        est: document.getElementById('st-op-est').value || globalParsedData.opEst || 'مظروف مغلق',
                         guideline: category === 'direct' ? totalVal : 0,
                         status: globalParsedData.status || 'مكتمل',
                         portal: globalParsedData.portal || 'نعم',
@@ -1537,11 +1533,6 @@
                     let op = DB.operations.find(o => o.id === opId);
                     op.total = totalVal;
                     op.category = category;
-                    op.date2 = globalParsedData.date2 || op.date2;
-                    op.date3 = globalParsedData.date3 || op.date3;
-                    op.date4 = globalParsedData.date4 || op.date4;
-                    op.date5 = globalParsedData.date5 || op.date5;
-                    op.date6 = globalParsedData.date6 || op.date6;
                 }
 
                 saveDB();
@@ -1549,7 +1540,7 @@
                 alert('تم ترحيل كافة المحاضر والتواريخ والشركات وأوامر التوريد والضمانات إلى مكانها الصحيح بالمنظومة بنجاح تام!');
             } catch(err) {
                 console.error(err);
-                alert('حدث خطأ أثناء الترحيل: ' + err.message);
+                alert('خطأ أثناء الترحيل: ' + err.message);
             }
         }
 
@@ -2518,8 +2509,7 @@
                 cr: document.getElementById('f-sup-cr').value, tax: document.getElementById('f-sup-tax').value, 
                 signAuth: document.getElementById('f-sup-sign').value, addr: document.getElementById('f-sup-addr').value, 
                 phone: document.getElementById('f-sup-phone').value, 
-                bankAcc: document.getElementById('f-sup-bank-acc').value, 
-                bankName: document.getElementById('f-sup-bank-name').value, 
+                bankAcc: document.getElementById('f-sup-bank-acc').value, bankName: document.getElementById('f-sup-bank-name').value, 
                 bankBranch: document.getElementById('f-sup-bank-branch').value 
             };
             if(id) { const idx = DB.suppliers.findIndex(x=>x.id===id); if(idx>=0) DB.suppliers[idx]=s; } else DB.suppliers.unshift(s);
