@@ -897,7 +897,7 @@
                             <span class="text-xs font-bold">مفتاح Gemini API:</span>
                         </div>
                         <div class="flex gap-2 flex-1 max-w-md">
-                            <input type="text" id="ai-api-key-input" placeholder="أدخل مفتاح الـ API (AIzaSy...)" class="border dark:border-slate-600 rounded-xl px-3 py-1 bg-white dark:bg-slate-800 text-xs font-mono flex-1">
+                            <input type="text" id="ai-api-key-input" placeholder="أدخل مفتاح الـ API (يبدأ بـ AQ...)" class="border dark:border-slate-600 rounded-xl px-3 py-1 bg-white dark:bg-slate-800 text-xs font-mono flex-1">
                             <button onclick="saveAiApiKey()" class="bg-amber-600 text-white px-3 py-1 rounded-xl text-xs font-bold hover:bg-amber-700 transition">حفظ</button>
                         </div>
                     </div>
@@ -1556,7 +1556,7 @@
         }
 
         // ==========================================
-        // قارئ AI الشامل (معدل ليتعامل مع التوكنات الجديدة بالـ Bearer Header)
+        // قارئ AI الشامل (مع توافق كامل مع المفتاح المحفوظ والـ Bearer Token)
         // ==========================================
         function openSmartStagingModal() {
             playSound('click');
@@ -1618,7 +1618,7 @@
                     }
                 }
 
-                // التعديل هنا: إذا بدأ بـ AQ. يتم إرساله كـ Authorization Bearer Token، وإذا كان تقليدي (AIzaSy) يرسل في الـ URL
+                // إرسال التوكن الذي يبدأ بـ AQ بطريقة OAuth 2.0 Bearer Token المطلوبة رسمياً
                 let headers = { 'Content-Type': 'application/json' };
                 let endpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
                 
