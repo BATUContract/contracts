@@ -138,6 +138,45 @@
         }
         .pulse-bell { animation: intense-shake 0.55s infinite ease-in-out; color: #e11d48 !important; }
 
+        /* --- شاشة التمهيد (Intro Overlay - 3 ثواني) --- */
+        body.intro-active {
+            overflow: hidden;
+            background-color: #000;
+        }
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+        #intro-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .logo-particle-text {
+            font-size: 3.5rem;
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #00e6e6, 0 0 40px #00e6e6, 0 0 50px #00e6e6;
+            animation: particleAssembly 3s ease-out forwards;
+        }
+        @keyframes particleAssembly {
+            0% { opacity: 0; transform: scale(0.4) rotateY(180deg); text-shadow: none; }
+            50% { opacity: 0.5; text-shadow: 0 0 10px #fff, 0 0 20px #00e6e6; }
+            100% { opacity: 1; transform: scale(1) rotateY(0deg); text-shadow: 0 0 15px #fff, 0 0 30px #00e6e6, 0 0 50px #00e6e6, 0 0 70px #00e6e6; }
+        }
+
         .attachment-dropdown-wrap {
             position: relative;
             display: inline-block;
@@ -243,7 +282,12 @@
         .print-footer { display: none; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen intro-active">
+
+    <!-- شاشة الأنترو (3 ثواني) -->
+    <div id="intro-overlay">
+        <div class="logo-particle-text">منظومة التعاقدات</div>
+    </div>
 
     <!-- Top Navigation -->
     <nav id="top-nav-bar" class="hidden bg-darkBg text-slate-300 px-4 py-2 z-40 shrink-0 justify-between items-center shadow-lg border-b border-slate-800">
@@ -428,11 +472,10 @@
             </div>
         </div>
 
-        <!-- DASHBOARD (محدث بالكامل مع تفاصيل أعداد وترسيات كل نوع وأيقونات متحركة) -->
+        <!-- DASHBOARD -->
         <div id="view-dashboard" class="view-section p-3 md:p-6">
             <div class="flex justify-between items-center mb-4 no-print"><h2 class="text-xl font-black text-slate-900 dark:text-white"><i class="fa-solid fa-chart-pie text-primary ml-2"></i> لوحة القيادة ومؤشرات الأداء (KPIs)</h2></div>
             
-            <!-- الصف الأول: المؤشرات العامة -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border-b-4 border-blue-600 shadow-sm flex items-center justify-between app-card">
                     <div>
@@ -469,7 +512,6 @@
                 </div>
             </div>
 
-            <!-- الصف الثاني: تفصيلي أنواع العمليات وإجمالي الترسيات لكل نوع -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4 lg:col-span-2 flex flex-col">
                     <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-layer-group text-indigo-500"></i> تفصيلي أعداد وترسيات كل نوع عملية</h3>
@@ -494,7 +536,6 @@
                 </div>
             </div>
 
-            <!-- الصف الثالث: أحدث العمليات الجارية -->
             <div class="grid grid-cols-1 gap-4">
                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4">
                     <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-500"></i> أحدث العمليات الجارية بالمنظومة</h3>
@@ -536,7 +577,7 @@
             </div>
         </div>
 
-        <!-- AWARDS (الترسيات مقسمة لـ 3 تبويبات لتفصل العمليات المختلفة تماماً مثل سجل الطرح) -->
+        <!-- AWARDS -->
         <div id="view-awards" class="view-section p-3 md:p-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 no-print gap-2">
                 <h2 class="font-black text-slate-900 dark:text-white text-lg">الترسيات، الضمانات وأوامر التوريد</h2>
@@ -741,7 +782,7 @@
             </div>
         </div>
 
-        <!-- AI SMART STAGING MODAL (قارئ AI متطور لعدة ملفات أو فولدر كامل مع قراءة المحاضر والتواريخ والشركات الشاملة) -->
+        <!-- AI SMART STAGING MODAL -->
         <div id="modal-smart-staging" class="fixed inset-0 bg-slate-900/85 z-[100] hidden items-center justify-center p-3 backdrop-blur-md">
             <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl shadow-2xl w-full max-w-4xl flex flex-col max-h-[95vh] overflow-hidden border border-slate-200 dark:border-slate-700">
                 <div class="p-4 bg-indigo-600 text-white flex justify-between items-center">
@@ -755,12 +796,11 @@
                             <span class="text-xs font-bold">مفتاح Gemini API:</span>
                         </div>
                         <div class="flex gap-2 flex-1 max-w-md">
-                            <input type="text" id="ai-api-key-input" placeholder="أدخل مفتاح الـ API (AQ... أو AIzaSy...)" class="border dark:border-slate-600 rounded-xl px-3 py-1 bg-white dark:bg-slate-800 text-xs font-mono flex-1">
+                            <input type="text" id="ai-api-key-input" placeholder="أدخل مفتاح الـ API..." class="border dark:border-slate-600 rounded-xl px-3 py-1 bg-white dark:bg-slate-800 text-xs font-mono flex-1">
                             <button onclick="saveAiApiKey()" class="bg-amber-600 text-white px-3 py-1 rounded-xl text-xs font-bold hover:bg-amber-700 transition">حفظ</button>
                         </div>
                     </div>
 
-                    <!-- اختيار وضع التحليل الذكي -->
                     <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center flex-wrap gap-2">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-layer-group text-primary"></i>
@@ -780,16 +820,15 @@
                         </div>
                         
                         <div class="bg-amber-50 dark:bg-amber-950/50 p-4 rounded-xl border border-amber-200 dark:border-amber-900 flex flex-col justify-between">
-                            <label class="block text-xs font-bold text-amber-900 dark:text-amber-300 mb-2"><i class="fa-solid fa-folder-tree"></i> 2. اختيار فولدر كامل (بكل الفولدرات الفرعية):</label>
+                            <label class="block text-xs font-bold text-amber-900 dark:text-amber-300 mb-2"><i class="fa-solid fa-folder-tree"></i> 2. اختيار فولدر كامل:</label>
                             <input type="file" id="ai-staging-folder-input" webkitdirectory directory multiple class="text-xs text-slate-500 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-amber-600 file:text-white cursor-pointer mb-2">
                             <button onclick="processFilesSource('folder')" class="bg-amber-600 text-white py-2 rounded-xl font-bold text-xs hover:bg-amber-700 transition shadow-sm"><i class="fa-solid fa-folder-open"></i> تحليل الفولدر بالكامل</button>
                         </div>
                     </div>
 
-                    <!-- نتائج تحليل العمليات -->
                     <div id="ai-staging-results-container" class="space-y-4 hidden">
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-file-invoice"></i> البيانات الأساسية المستخرجة (بما فيها تواريخ المحاضر والتقارير والبت):</h4>
+                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-file-invoice"></i> البيانات الأساسية المستخرجة:</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">رقم العملية:</label><input type="number" id="st-op-id" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
                                 <div class="flex flex-col sm:col-span-2"><label class="text-[10px] font-bold mb-1">اسم العملية:</label><input type="text" id="st-op-name" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
@@ -800,7 +839,7 @@
                         </div>
 
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-list-check"></i> تفاصيل الترسيات (البنود، الشركات، الضمانات، أوامر التوريد وتواريخها):</h4>
+                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-list-check"></i> تفاصيل الترسيات:</h4>
                             <div class="excel-table-container">
                                 <table class="excel-table w-full">
                                     <thead>
@@ -814,14 +853,13 @@
                         </div>
 
                         <button onclick="commitStagingDataToDB()" class="w-full bg-success text-white py-3 rounded-xl font-black text-xs shadow-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل كافة المحاضر والتواريخ والشركات والترسيات أوتوماتيكياً
+                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل البيانات أوتوماتيكياً
                         </button>
                     </div>
 
-                    <!-- نتائج تحليل الشركات والموردين المستقلة -->
                     <div id="ai-supplier-results-container" class="space-y-4 hidden">
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-building"></i> بيانات الشركة المستخرجة (مستقلة عن العمليات):</h4>
+                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-building"></i> بيانات الشركة المستخرجة:</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div class="flex flex-col sm:col-span-2"><label class="text-[10px] font-bold mb-1">اسم الشركة الكامل:</label><input type="text" id="st-sup-name" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">السجل التجاري:</label><input type="text" id="st-sup-cr" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800"></div>
@@ -836,7 +874,7 @@
                         </div>
 
                         <button onclick="commitSupplierStagingDataToDB()" class="w-full bg-success text-white py-3 rounded-xl font-black text-xs shadow-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل بيانات الشركة إلى سجل الموردين المركزي مباشرة
+                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل بيانات الشركة إلى سجل الموردين
                         </button>
                     </div>
 
@@ -999,6 +1037,18 @@
     </div>
 
     <script>
+        // إعدادات الـ Intro للثواني الثلاثة الأولى
+        window.addEventListener('load', function() {
+            const introOverlay = document.getElementById('intro-overlay');
+            setTimeout(function() {
+                introOverlay.classList.add('fade-out');
+                setTimeout(function() {
+                    introOverlay.style.display = 'none';
+                    document.body.classList.remove('intro-active');
+                }, 1000);
+            }, 3000);
+        });
+
         if (!localStorage.getItem('mgmt_drive_folder_url')) {
             localStorage.setItem('mgmt_drive_folder_url', 'https://drive.google.com/drive/folders/1PFsjPP9C4oFVFOVYkxIFKvaUefkUX_0O?usp=sharing');
         }
@@ -1063,7 +1113,6 @@
             firebase.initializeApp(firebaseConfig);
         }
         const database = firebase.database();
-        // تم تغيير مسار السيرفر إلى مسار نظيف تماماً وخالي من العمليات الافتراضية القديمة
         const dbRef = database.ref('smartSystem_V29_Clean_Database');
 
         const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1202,9 +1251,6 @@
             window.open(link, '_blank');
         }
 
-        // ==========================================
-        // قارئ AI الشامل (عمليات أو شركات مستقلة)
-        // ==========================================
         function openSmartStagingModal() {
             playSound('click');
             document.getElementById('ai-staging-file-input').value = '';
@@ -1261,7 +1307,7 @@
             try {
                 let promptText = "";
                 if (parseMode === 'supplier') {
-                    promptText = `أنت خبير توثيق الشركات وقواعد البيانات وقانون التعاقدات. اقرأ المستندات المرفقة (سجل تجاري، بطاقة ضريبية، شهادة قيمة مضافة، أو خطابات بنكية) واستخرج بيانات الشركة بدقة تامة بصيغة JSON فقط وبدون أي نصوص إضافية بالصيغة التالية:
+                    promptText = `أنت خبير توثيق الشركات وقواعد البيانات وقانون التعاقدات. اقرأ المستندات المرفقة واستخرج بيانات الشركة بدقة تامة بصيغة JSON فقط وبدون أي نصوص إضافية بالصيغة التالية:
                     {
                       "name": "اسم الشركة الكامل",
                       "cr": "رقم السجل التجاري",
@@ -1274,56 +1320,44 @@
                       "bankBranch": "الفرع"
                     }`;
                 } else {
-                    promptText = `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات ومحاضر الفتح والتقارير المرفقة بدقة بالغة، واستخرج كافة التفاصيل التالية بصيغة JSON فقط وبدون أي نصوص إضافية:
+                    promptText = `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات واستخرج كافة التفاصيل التالية بصيغة JSON فقط وبدون أي نصوص إضافية:
                     {
                       "opId": رقم العملية كعدد صحيح,
                       "opName": "اسم المناقصة أو العملية كاملاً",
                       "opEntity": "الجهة الطالبة",
-                      "opType": "نوع العملية (مناقصة عامة، مناقصة محدودة، ممارسة عامة، أمر مباشر، تجديد تعاقد)",
+                      "opType": "نوع العملية",
                       "opEst": "المبلغ التقديري",
                       "budget": "نعم",
-                      "isDivided": "لا - ترسية كلية أو نعم - قابلة للتجزئة",
+                      "isDivided": "نعم - قابلة للتجزئة",
                       "approvalDate": "تاريخ الموافقة YYYY-MM-DD",
                       "portal": "نعم",
-                      "date1": "تاريخ الطرح أو الإعلان YYYY-MM-DD",
+                      "date1": "تاريخ الطرح YYYY-MM-DD",
                       "date2": "تاريخ فتح المظاريف YYYY-MM-DD",
                       "date3": "تاريخ استلام التقرير الفني YYYY-MM-DD",
                       "date4": "تاريخ التقرير الفني بعد التظلمات YYYY-MM-DD",
                       "date5": "تاريخ الفتح المالي YYYY-MM-DD",
                       "date6": "تاريخ البت المالي النهائي YYYY-MM-DD",
-                      "status": "الموقف الحالي (تحت الطرح، جاري الدراسة الفنية، جاري البت المالي، مكتمل)",
+                      "status": "الموقف الحالي",
                       "awards": [
                         {
                           "item": "وصف البند أو اللوط",
                           "supp": "اسم الشركة الفائزة الكامل",
-                          "estVal": القيمة التقديرية للبند برقم,
+                          "estVal": القيمة التقديرية برقم,
                           "val": قيمة الترسية النهائية برقم,
                           "awardStatus": "تم الترسية",
                           "gType": "خطاب ضمان أو نقدي",
                           "gNum": "رقم خطاب الضمان",
                           "gIssuance": "تاريخ إصدار الضمان YYYY-MM-DD",
                           "gBank": "اسم البنك المصدر",
-                          "ret": "رد الابتدائي نعم أو لا",
-                          "contract": "توقيع العقد نعم أو لا",
+                          "ret": "نعم أو لا",
+                          "contract": "نعم أو لا",
                           "poNum": رقم أمر التوريد برقم,
                           "poDate": "تاريخ أمر التوريد YYYY-MM-DD",
                           "days": مهلة التنفيذ بالأيام كعدد,
-                          "del": "حالة التوريد نعم أو لا"
+                          "del": "نعم أو لا"
                         }
                       ],
-                      "suppliers": [
-                        {
-                          "name": "اسم الشركة الكامل",
-                          "cr": "السجل التجاري",
-                          "tax": "البطاقة الضريبية",
-                          "signAuth": "من له حق التوقيع",
-                          "addr": "العنوان",
-                          "phone": "التليفون",
-                          "bankAcc": "رقم الحساب أو IBAN",
-                          "bankName": "اسم البنك",
-                          "bankBranch": "الفرع"
-                        }
-                      ]
+                      "suppliers": []
                     }`;
                 }
 
@@ -1411,11 +1445,10 @@
 
             } catch(err) {
                 console.error(err);
-                alert("حدث خطأ أثناء معالجة المستندات. تأكد من صحة المفتاح وجودة الملفات.");
+                alert("حدث خطأ أثناء معالجة المستندات.");
             }
         }
 
-        // ترحيل بيانات الشركة المستقلة لسجل الموردين
         function commitSupplierStagingDataToDB() {
             try {
                 if(!DB.suppliers) DB.suppliers = [];
@@ -1522,7 +1555,7 @@
                         gNum: aw.gNum || '-',
                         gIssuance: aw.gIssuance || new Date().toISOString().slice(0,10),
                         gBank: aw.gBank || 'البنك الأهلي المصري',
-                        ret: aw.ret || 'نعم',
+                        ret: aw.ret || 'لا',
                         contract: aw.contract || 'نعم',
                         poNum: aw.poNum || Math.floor(Math.random()*90+10),
                         poDate: aw.poDate || new Date().toISOString().slice(0,10),
@@ -1591,20 +1624,14 @@
 
                 saveDB();
                 closeModal('modal-smart-staging');
-                alert('تم ترحيل كافة المحاضر والتواريخ والشركات وأوامر التوريد والضمانات إلى مكانها الصحيح بالمنظومة بنجاح تام!');
+                alert('تم ترحيل كافة البيانات والمحاضر والترسيات أوتوماتيكياً بنجاح تام!');
             } catch(err) {
                 console.error(err);
                 alert('خطأ أثناء الترحيل: ' + err.message);
             }
         }
 
-        const defaultDB = {
-            operations: [],
-            awards: [],
-            suppliers: [],
-            archives: {}
-        };
-
+        const defaultDB = { operations: [], awards: [], suppliers: [], archives: {} };
         let DB = { operations: [], awards: [], suppliers: [], archives: {} };
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
@@ -1640,7 +1667,6 @@
             });
         }
 
-        // --- نظام التراجع (Undo) عند الحذف بالخطأ ---
         let deletedOpBackup = null;
         let deletedAwardsBackup = [];
         let deletedArchivesBackup = {};
@@ -1686,24 +1712,20 @@
                 });
 
                 saveDB();
-                alert('تم التراجع عن الحذف واستعادة العملية وكافة بياناتها ومرفقاتها بنجاح!');
+                alert('تم التراجع عن الحذف واستعادة العملية بنجاح!');
                 deletedOpBackup = null;
                 deletedAwardsBackup = [];
                 deletedArchivesBackup = {};
             }
         }
 
-        // حذف العملية وكل ما يتعلق بها تماماً من السيرفر مع حفظ نسخة للاستعادة
         function deleteOp(id) { 
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
             
-            if(confirm('هل أنت متأكد من حذف هذه العملية نهائياً مع كافة بنودها وترسياتها ومرفقاتها من السيرفر؟')) { 
+            if(confirm('هل أنت متأكد من حذف هذه العملية نهائياً؟')) { 
                 const opIndex = DB.operations.findIndex(o => o.id == id);
-                if(opIndex === -1) {
-                    alert('العملية غير موجودة!');
-                    return;
-                }
+                if(opIndex === -1) return;
 
                 deletedOpBackup = DB.operations[opIndex];
                 deletedAwardsBackup = DB.awards.filter(a => a.opId == id);
@@ -1770,7 +1792,7 @@
             } else if (type.includes('pdf')) {
                 container.innerHTML = `<iframe src="${data}" class="w-full h-full rounded-lg border-0"></iframe>`;
             } else {
-                container.innerHTML = `<div class="text-center p-8"><p class="text-slate-600 dark:text-slate-300 mb-4">هذا النوع من الملفات لا يدعم المعاينة المباشرة.</p><a href="${data}" download="${name}" class="bg-primary text-white px-4 py-2 rounded-xl font-bold text-xs">تحميل الملف</a></div>`;
+                container.innerHTML = `<div class="text-center p-8"><p class="text-slate-600 dark:text-slate-300 mb-4">هذا النوع من الملفات لا يدعم المعاينة.</p><a href="${data}" download="${name}" class="bg-primary text-white px-4 py-2 rounded-xl font-bold text-xs">تحميل الملف</a></div>`;
             }
             openModal('modal-preview');
         }
@@ -1830,39 +1852,17 @@
                 "الجهة الطالبة آلياً": ((DB.operations || []).find(o=>o.id==a.opId)||{}).entity || '',
                 "وصف البند / اللوط التفصيلي": a.item,
                 "الشركة الفائزة بالبند": a.supp,
-                "القيمة التقديرية للبند": a.estVal || 0,
-                "قيمة الترسية النهائية بالبند": a.val,
+                "قيمة الترسية النهائية": a.val,
                 "حالة الترسية": a.awardStatus || 'تم الترسية',
-                "قيمة التأمين النهائي": a.gVal !== undefined ? a.gVal : (a.val * 0.05),
-                "نوع التأمين النهائي المسدد": a.gType,
-                "رقم خطاب الضمان النهائي": a.gNum || '-',
-                "تاريخ إصدار خطاب الضمان": a.gIssuance || '-',
-                "البنك المصدر للخطاب": a.gBank || '-',
-                "تاريخ انتهاء خطاب الضمان": getGuaranteeExpiry(a.gIssuance) || '-',
                 "رد الابتدائي": a.ret || 'لا',
                 "تم توقيع العقد": a.contract || 'لا',
                 "رقم أمر التوريد": a.poNum || '-',
                 "تاريخ أمر التوريد": a.poDate || '-',
-                "المهلة المحددة للتنفيذ (أيام)": a.days,
-                "مؤشر وتفاصيل حالة التوريد": a.del
+                "المهلة (أيام)": a.days,
+                "حالة التوريد": a.del
             }));
             let wsAwards = XLSX.utils.json_to_sheet(awardsData);
             XLSX.utils.book_append_sheet(wb, wsAwards, "2- تفاصيل الترسية والضمانات");
-
-            let supData = (DB.suppliers || []).map(s => ({
-                "كود الشركة المرجعي": s.id,
-                "اسم الشركة الكامل": s.name,
-                "السجل التجاري": s.cr || '-',
-                "البطاقة الضريبية": s.tax || '-',
-                "عنوان مقر الشركة الرئيسي": s.addr || '-',
-                "رقم التليفون": s.phone || '-',
-                "من له حق التوقيع": s.signAuth || '-',
-                "رقم الحساب الدولي (IBAN)": s.bankAcc || '-',
-                "اسم البنك": s.bankName || '-',
-                "الفرع": s.bankBranch || '-'
-            }));
-            let wsSup = XLSX.utils.json_to_sheet(supData);
-            XLSX.utils.book_append_sheet(wb, wsSup, "3- بيانات الشركات الموردة");
 
             let dateStr = new Date().toISOString().slice(0,10);
             XLSX.writeFile(wb, `منظومة تعاقدات جامعة برج العرب التكنولوجية_${dateStr}.xlsx`);
@@ -1885,7 +1885,7 @@
                 if (!DB.archives) DB.archives = {};
                 let files = DB.archives[key] || [];
                 if(files.length === 0) {
-                    listContainer.innerHTML = '<div class="text-center py-4 text-slate-400 text-xs bg-slate-50 dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">لا توجد مستندات مرفقة لهذا البند حتى الآن</div>';
+                    listContainer.innerHTML = '<div class="text-center py-4 text-slate-400 text-xs bg-slate-50 dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">لا توجد مستندات مرفقة حتى الآن</div>';
                     return;
                 }
                 
@@ -1903,9 +1903,9 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0">
-                                <button onclick="previewFile('${f.data}', '${f.type}', '${f.name}')" class="bg-white dark:bg-slate-800 text-primary hover:bg-indigo-50 border border-slate-200 dark:border-slate-700 p-1.5 rounded-lg text-xs font-bold shadow-sm" title="معاينة وطباعة"><i class="fa-solid fa-eye"></i></button>
-                                <a href="${f.data}" download="${f.name}" onclick="playSound('click')" class="bg-white dark:bg-slate-800 text-emerald-600 hover:bg-emerald-50 border border-slate-200 dark:border-slate-700 p-1.5 rounded-lg text-xs font-bold shadow-sm" title="تحميل"><i class="fa-solid fa-download"></i></a>
-                                <button onclick="playSound('delete'); deleteArchiveFile('${key}', ${idx})" class="bg-white dark:bg-slate-800 text-red-500 hover:bg-red-50 border border-slate-200 dark:border-slate-700 p-1.5 rounded-lg text-xs font-bold shadow-sm" title="حذف نهائي"><i class="fa-solid fa-trash"></i></button>
+                                <button onclick="previewFile('${f.data}', '${f.type}', '${f.name}')" class="bg-white dark:bg-slate-800 text-primary p-1.5 rounded-lg text-xs font-bold shadow-sm" title="معاينة"><i class="fa-solid fa-eye"></i></button>
+                                <a href="${f.data}" download="${f.name}" onclick="playSound('click')" class="bg-white dark:bg-slate-800 text-emerald-600 p-1.5 rounded-lg text-xs font-bold shadow-sm" title="تحميل"><i class="fa-solid fa-download"></i></a>
+                                <button onclick="playSound('delete'); deleteArchiveFile('${key}', ${idx})" class="bg-white dark:bg-slate-800 text-red-500 p-1.5 rounded-lg text-xs font-bold shadow-sm" title="حذف"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
                     `;
@@ -1923,7 +1923,7 @@
             let key = document.getElementById('archive-key').value;
             const btn = event.target;
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الضغط والحفظ...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
             btn.disabled = true;
             
             try {
@@ -1936,7 +1936,6 @@
                 saveDB();
                 await loadArchiveFiles(key);
             } catch(err) {
-                console.error(err);
                 alert('فشل رفع الملف.');
             } finally {
                 btn.innerHTML = originalText;
@@ -1945,7 +1944,7 @@
         }
 
         async function deleteArchiveFile(key, idx) {
-            if(confirm('حذف المستند نهائياً من قاعدة البيانات؟')) {
+            if(confirm('حذف المستند نهائياً؟')) {
                 try {
                     if (DB.archives && DB.archives[key]) {
                         DB.archives[key].splice(idx, 1);
@@ -2024,7 +2023,6 @@
             window.requestAnimationFrame(step);
         }
 
-        // دالة عرض لوحة القيادة مع تفصيلي الأنواع والترسيات
         function renderDashboard() {
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
@@ -2042,7 +2040,6 @@
             animateCounter('kpi-comp-ops', comp, false);
             animateCounter('kpi-active-ops', act, false);
 
-            // تجميع وتفصيل العمليات والترسيات لكل نوع
             const typeBreakdown = {};
             DB.operations.forEach(op => {
                 let typeName = op.type || 'أخرى';
@@ -2267,6 +2264,24 @@
             }
         }
 
+        // دالة حساب رد التأمين الابتدائي الأوتوماتيكي الذكي للشركات
+        function getComputedRefundStatus(currentAw) {
+            if (!currentAw || !currentAw.opId) return { text: "لا", class: "blue" };
+            if (currentAw.ret === 'نعم') {
+                // إيجاد كل الترسيات المرتبطة بنفس رقم العملية (opId)
+                const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(currentAw.opId));
+                const totalCompanies = relatedAwards.length;
+                const refundedCount = relatedAwards.filter(a => a.ret === 'نعم').length;
+
+                if (refundedCount >= totalCompanies) {
+                    return { text: "تم رد التأمين", class: "green" };
+                } else {
+                    return { text: `تم رد ${refundedCount} وباقي ${totalCompanies - refundedCount}`, class: "yellow" };
+                }
+            }
+            return { text: "لا", class: "blue" };
+        }
+
         function renderAwards() {
             if(!DB.awards) DB.awards = [];
             const trHead = document.getElementById('awards-thead-tr');
@@ -2305,7 +2320,7 @@
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-blue-600 dark:text-blue-300 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
                                 </div>
                             </div>
                         </td>
@@ -2334,7 +2349,7 @@
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
                                 </div>
                             </div>
                         </td>
@@ -2345,12 +2360,13 @@
                 });
             } else {
                 trHead.innerHTML = `
-                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>التأمين النهائي</th><th>موقف الضمان</th><th>رقم الضمان</th><th>البنك المصدر</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مرفقات</th><th>رد التأمين</th><th>العقد</th><th class="no-print">إجراءات</th>
+                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>التأمين النهائي</th><th>موقف الضمان</th><th>رقم الضمان</th><th>البنك المصدر</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مرفقات</th><th>رد التأمين الابتدائي</th><th>العقد</th><th class="no-print">إجراءات</th>
                 `;
                 filteredAwards.forEach((aw, i) => {
                     const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
                     const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
-                    const retPill = aw.ret === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill blue">لا</span>';
+                    const computedRefund = getComputedRefundStatus(aw);
+                    const retPill = `<span class="pill ${computedRefund.class}">${computedRefund.text}</span>`;
                     const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
                     const statusPill = aw.awardStatus && aw.awardStatus !== 'تم الترسية' ? '<span class="pill yellow">' + aw.awardStatus + '</span>' : '<span class="pill green">تم الترسية</span>';
                     const finalGVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
@@ -2364,7 +2380,7 @@
                         <td class="font-black">${fmt.format(aw.val)}</td>
                         <td>${statusPill}</td>
                         <td class="font-bold text-xs">${fmt.format(finalGVal)}</td>
-                        <td><span class="pill ${gSt.class}" title="إصدار: ${aw.gIssuance || '-'}">${gSt.text}</span></td>
+                        <td><span class="pill ${gSt.class}">${gSt.text}</span></td>
                         <td class="text-xs font-mono font-bold">${aw.gNum || '-'}</td>
                         <td class="text-xs">${aw.gBank || '-'}</td>
                         <td class="font-bold">${aw.poNum || '-'}</td>
@@ -2374,8 +2390,8 @@
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('aw_guarantee', '${aw.opId}_${i}', 'الضمان: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-purple-600 rounded text-[11px] font-bold"><i class="fa-solid fa-shield w-4"></i> الضمان</button>
-                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
+                                    <button onclick="openDirectArchive('aw_guarantee', '${aw.opId}_${i}', 'الضمان: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-purple-600 rounded text-[11px] font-bold"><i class="fa-solid fa-shield w-4"></i> الضمان</button>
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
                                 </div>
                             </div>
                         </td>
@@ -2410,20 +2426,19 @@
                     <td class="text-xs wrap-text">${s.bankName||'-'} - ${s.bankBranch||'-'}</td>
                     <td>
                         <div class="attachment-dropdown-wrap">
-                            <button onclick="playSound('click')" class="bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm">
+                            <button onclick="playSound('click')" class="bg-orange-50 dark:bg-orange-950/40 text-orange-600 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm">
                                 <i class="fa-solid fa-folder-tree"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i>
                             </button>
                             <div class="attachment-menu">
-                                <button onclick="openDirectArchive('sup_cr', '${s.id}', 'سجل: ${s.name}')" class="w-full text-right p-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded text-[11px] font-bold flex items-center gap-1.5"><i class="fa-solid fa-book w-4"></i> سجل</button>
-                                <button onclick="openDirectArchive('sup_tax', '${s.id}', 'ضريبة: ${s.name}')" class="w-full text-right p-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-green-50 hover:text-green-600 rounded text-[11px] font-bold flex items-center gap-1.5"><i class="fa-solid fa-file-invoice w-4"></i> ضريبة</button>
-                                <button onclick="openDirectArchive('sup_vat', '${s.id}', 'مضافة: ${s.name}')" class="w-full text-right p-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-purple-50 hover:text-purple-600 rounded text-[11px] font-bold flex items-center gap-1.5"><i class="fa-solid fa-percent w-4"></i> مضافة</button>
-                                <button onclick="openDirectArchive('sup_bank', '${s.id}', 'بنك: ${s.name}')" class="w-full text-right p-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-amber-50 hover:text-amber-600 rounded text-[11px] font-bold flex items-center gap-1.5"><i class="fa-solid fa-building-columns w-4"></i> بنك</button>
-                                <button onclick="openDirectArchive('sup_other', '${s.id}', 'أخرى: ${s.name}')" class="w-full text-right p-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 hover:text-slate-800 rounded text-[11px] font-bold flex items-center gap-1.5"><i class="fa-solid fa-folder w-4"></i> أخرى</button>
+                                <button onclick="openDirectArchive('sup_cr', '${s.id}', 'سجل: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-book w-4"></i> سجل</button>
+                                <button onclick="openDirectArchive('sup_tax', '${s.id}', 'ضريبة: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-file-invoice w-4"></i> ضريبة</button>
+                                <button onclick="openDirectArchive('sup_vat', '${s.id}', 'مضافة: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-percent w-4"></i> مضافة</button>
+                                <button onclick="openDirectArchive('sup_bank', '${s.id}', 'بنك: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-building-columns w-4"></i> بنك</button>
                             </div>
                         </div>
                     </td>
                     <td class="no-print">
-                        <button onclick="playSound('click'); editSup('${s.id}')" class="text-slate-400 hover:text-primary dark:hover:text-indigo-400 mx-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="playSound('click'); editSup('${s.id}')" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="playSound('delete'); deleteSup('${s.id}')" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
                     </td></tr>`;
             });
@@ -2431,13 +2446,8 @@
 
         function deleteSup(id) {
             if(!DB.suppliers) DB.suppliers = [];
-            if(confirm('حذف المورد نهائياً من قاعدة البيانات؟')) {
+            if(confirm('حذف المورد نهائياً؟')) {
                 DB.suppliers = DB.suppliers.filter(s => s.id !== id);
-                if (DB.archives) {
-                    Object.keys(DB.archives).forEach(k => {
-                        if (k.includes('_' + id)) delete DB.archives[k];
-                    });
-                }
                 saveDB();
             }
         }
@@ -2501,7 +2511,7 @@
                 const initDep = getInitialDepositStatus(op.date1);
                 if (initDep.code > 0) {
                     count++;
-                    let itemHtml = `<div onclick="switchTab('operations')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition"><p class="font-bold text-amber-600">تأمين ابتدائي ${initDep.code === 2 ? 'منتهي' : 'ينتهي'} (${op.name})</p><p class="text-[10px] text-slate-500">عملية رقم: ${op.id} (انقر للعرض)</p></div>`;
+                    let itemHtml = `<div onclick="switchTab('operations')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition"><p class="font-bold text-amber-600">تأمين ابتدائي ${initDep.code === 2 ? 'منتهي' : 'ينتهي'} (${op.name})</p><p class="text-[10px] text-slate-500">رقم: ${op.id}</p></div>`;
                     if(list) list.innerHTML += itemHtml;
                     if(homeList) homeList.innerHTML += itemHtml;
                 }
@@ -2511,13 +2521,13 @@
                 const g = getGuaranteeStatus(aw.gType, aw.gIssuance), d = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                 if(g.code > 0 && aw.gType === 'خطاب ضمان') {
                     count++;
-                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition"><p class="font-bold text-slate-800 dark:text-slate-200">ضمان ${g.code===2?'منتهي':'ينتهي'} (${aw.item})</p><p class="text-[10px] text-slate-500">${aw.supp} (انقر للعرض)</p></div>`;
+                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 transition"><p class="font-bold text-slate-800 dark:text-slate-200">ضمان ${g.code===2?'منتهي':'ينتهي'} (${aw.item})</p><p class="text-[10px] text-slate-500">${aw.supp}</p></div>`;
                     if(list) list.innerHTML += itemHtml;
                     if(homeList) homeList.innerHTML += itemHtml;
                 }
                 if(d.code === 2) {
                     count++;
-                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition"><p class="font-bold text-red-600">تأخير توريد (${aw.item})</p><p class="text-[10px] text-slate-500">${aw.supp} (انقر للعرض)</p></div>`;
+                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 transition"><p class="font-bold text-red-600">تأخير توريد (${aw.item})</p><p class="text-[10px] text-slate-500">${aw.supp}</p></div>`;
                     if(list) list.innerHTML += itemHtml;
                     if(homeList) homeList.innerHTML += itemHtml;
                 }
@@ -2680,7 +2690,7 @@
             if(!DB.operations) DB.operations = [];
             const opId = parseInt(document.getElementById('f-aw-opid').value), div = document.getElementById('aw-op-details');
             const op = DB.operations.find(o => o.id === opId);
-            div.innerHTML = op ? `<b class="text-primary dark:text-indigo-400">نوع العملية: [${op.type}] - ${op.name} (${op.entity})</b>` : 'أدخل رقم العملية... (يتم سحب النوع والداتا أوتوماتيك)';
+            div.innerHTML = op ? `<b class="text-primary dark:text-indigo-400">نوع العملية: [${op.type}] - ${op.name} (${op.entity})</b>` : 'أدخل رقم العملية...';
         }
 
         function openAwardModal() { playSound('click'); document.getElementById('form-aw').reset(); document.getElementById('f-aw-idx').value=''; document.getElementById('f-aw-gval-exempt').checked = false; fetchOpDetails(); openModal('modal-aw'); }
@@ -2769,12 +2779,7 @@
 
         function deleteAward(idx) { 
             if(!DB.awards) DB.awards = [];
-            if(confirm('حذف الترسية ومرفقاتها نهائياً؟')) { 
-                if (DB.archives) {
-                    Object.keys(DB.archives).forEach(k => {
-                        if (k.includes('_' + idx)) delete DB.archives[k];
-                    });
-                }
+            if(confirm('حذف الترسية نهائياً؟')) { 
                 DB.awards.splice(idx, 1); 
                 saveDB(); 
             } 
