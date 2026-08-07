@@ -178,7 +178,11 @@
             opacity: 0;
             transition: opacity 0.2s ease, transform 0.2s ease;
         }
-        body.dark .attachment-menu {
+        body.light .attachment-menu {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        body:not(.light) .attachment-menu {
             background: #1e293b;
             border-color: #475569;
         }
@@ -188,52 +192,64 @@
             transform: translateX(50%) translateY(0);
         }
 
-        .excel-table-container { overflow-x: auto; overflow-y: auto; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.05); max-height: 75vh; }
-        body.dark .excel-table-container { background: rgba(17, 24, 39, 0.85); border-color: #374151; }
+        .excel-table-container { overflow-x: auto; overflow-y: auto; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid #cbd5e1; border-radius: 14px; box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.05); max-height: 75vh; }
+        body:not(.light) .excel-table-container { background: rgba(15, 23, 42, 0.9); border-color: #334155; }
 
         .excel-table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: max-content; }
-        .excel-table th, .excel-table td { border-bottom: 1px solid #e2e8f0; border-left: 1px solid #e2e8f0; padding: 0.25rem 0.35rem; text-align: center; font-size: 0.7rem; vertical-align: middle; white-space: nowrap; }
-        body.dark .excel-table th, body.dark .excel-table td { border-color: #374151; color: #cbd5e1; }
         
-        .excel-table th { background-color: #f1f5f9; color: #1e293b; font-weight: 700; position: sticky; top: 0; z-index: 10; border-top: none; }
-        body.dark .excel-table th { background-color: #1f2937; color: #f1f5f9; }
+        /* تعديل وضوح النصوص في الجداول للوضع العادي والليلي */
+        .excel-table th, .excel-table td { 
+            border-bottom: 1px solid #cbd5e1; 
+            border-left: 1px solid #cbd5e1; 
+            padding: 0.4rem 0.5rem; 
+            text-align: center; 
+            font-size: 0.75rem; 
+            vertical-align: middle; 
+            white-space: nowrap; 
+        }
+        .excel-table td { color: #0f172a; font-weight: 600; background-color: #ffffff; }
+        body:not(.light) .excel-table td { color: #f8fafc; background-color: #0b0f19; border-color: #1e293b; }
+        
+        .excel-table th { background-color: #e2e8f0; color: #0f172a; font-weight: 800; position: sticky; top: 0; z-index: 10; border-top: none; }
+        body:not(.light) .excel-table th { background-color: #1e293b; color: #f8fafc; border-color: #334155; }
         
         .excel-table td:last-child, .excel-table th:last-child { border-left: none; }
-        .excel-table tbody tr:hover { background-color: rgba(79, 70, 229, 0.04); }
-        body.dark .excel-table tbody tr:hover { background-color: rgba(79, 70, 229, 0.12); }
+        .excel-table tbody tr:hover { background-color: rgba(79, 70, 229, 0.08); }
+        body:not(.light) .excel-table tbody tr:hover { background-color: rgba(79, 70, 229, 0.22); }
         
         .excel-table th:first-child, .excel-table td:first-child {
-            position: sticky; right: 0; background-color: #ffffff; z-index: 20; border-left: 2px solid #cbd5e1;
+            position: sticky; right: 0; z-index: 20; border-left: 2px solid #94a3b8;
         }
-        body.dark .excel-table td:first-child { background-color: #111827; border-color: #374151; }
-        .excel-table th:first-child { background-color: #e2e8f0; z-index: 30; }
-        body.dark .excel-table th:first-child { background-color: #1f2937; }
+        .excel-table td:first-child { background-color: #ffffff; color: #0f172a; }
+        body:not(.light) .excel-table td:first-child { background-color: #0f172a; color: #f8fafc; }
+        .excel-table th:first-child { background-color: #cbd5e1; color: #0f172a; z-index: 30; }
+        body:not(.light) .excel-table th:first-child { background-color: #334155; color: #f8fafc; }
 
-        .wrap-text { white-space: normal !important; line-height: 1.15; max-width: 110px; text-align: right; }
+        .wrap-text { white-space: normal !important; line-height: 1.25; max-width: 140px; text-align: right; }
         
-        .pill { display: inline-flex; align-items: center; justify-content: center; padding: 2px 6px; border-radius: 999px; font-weight: 700; font-size: 0.6rem; gap: 2px; }
+        .pill { display: inline-flex; align-items: center; justify-content: center; padding: 2px 8px; border-radius: 999px; font-weight: 800; font-size: 0.65rem; gap: 3px; }
         .pill.green { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        body.dark .pill.green { background-color: rgba(22, 101, 52, 0.3); color: #4ade80; border-color: rgba(74, 222, 128, 0.2); }
+        body:not(.light) .pill.green { background-color: rgba(22, 101, 52, 0.4); color: #4ade80; border-color: rgba(74, 222, 128, 0.3); }
         
         .pill.red { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        body.dark .pill.red { background-color: rgba(153, 27, 27, 0.3); color: #f87171; border-color: rgba(248, 113, 113, 0.2); }
+        body:not(.light) .pill.red { background-color: rgba(153, 27, 27, 0.4); color: #f87171; border-color: rgba(248, 113, 113, 0.3); }
         
         .pill.yellow { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        body.dark .pill.yellow { background-color: rgba(146, 64, 14, 0.3); color: #fbbf24; border-color: rgba(251, 191, 36, 0.2); }
+        body:not(.light) .pill.yellow { background-color: rgba(146, 64, 14, 0.4); color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); }
         
         .pill.blue { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
-        body.dark .pill.blue { background-color: rgba(30, 64, 175, 0.3); color: #60a5fa; border-color: rgba(96, 165, 250, 0.2); }
+        body:not(.light) .pill.blue { background-color: rgba(30, 64, 175, 0.4); color: #60a5fa; border-color: rgba(96, 165, 250, 0.3); }
         
-        .progress-wrapper { background-color: #e2e8f0; border-radius: 999px; overflow: hidden; height: 5px; width: 100%; max-width: 50px; margin: 0 auto;}
-        body.dark .progress-wrapper { background-color: #374151; }
-        .progress-fill { background: linear-gradient(90deg, #4f46e5, #818cf8); height: 100%; transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1); }
+        .progress-wrapper { background-color: #cbd5e1; border-radius: 999px; overflow: hidden; height: 6px; width: 100%; max-width: 55px; margin: 0 auto;}
+        body:not(.light) .progress-wrapper { background-color: #334155; }
+        .progress-fill { background: linear-gradient(90deg, #4f46e5, #06b6d4); height: 100%; transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1); }
 
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-        body.dark ::-webkit-scrollbar-thumb { background-color: #4b5563; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background-color: #94a3b8; border-radius: 10px; }
+        body:not(.light) ::-webkit-scrollbar-thumb { background-color: #475569; }
         
-        .notif-dropdown { display: none; position: absolute; top: 100%; left: 0; right: auto; width: 280px; background: white; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 1px solid #e2e8f0; z-index: 100; max-height: 380px; overflow-y: auto; }
-        body.dark .notif-dropdown { background: #1f2937; border-color: #374151; color: #f3f4f6; }
+        .notif-dropdown { display: none; position: absolute; top: 100%; left: 0; right: auto; width: 300px; background: white; border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 1px solid #cbd5e1; z-index: 100; max-height: 400px; overflow-y: auto; }
+        body:not(.light) .notif-dropdown { background: #1e293b; border-color: #475569; color: #f8fafc; }
         .notif-dropdown.show { display: block; animation: fadeInScale 0.2s ease-out; }
         
         .logo-nav { height: 35px; width: auto; object-fit: contain; background: transparent; }
@@ -608,7 +624,7 @@
             </div>
         </div>
 
-        <!-- AWARDS (الترسيات مفصولة لـ 3 تبويبات) -->
+        <!-- AWARDS -->
         <div id="view-awards" class="view-section p-3 md:p-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 no-print gap-2">
                 <h2 class="font-black text-slate-900 dark:text-white text-lg">الترسيات، الضمانات وأوامر التوريد</h2>
@@ -1005,7 +1021,7 @@
             </div>
         </div>
 
-        <!-- AW Modal (الترسيات - يتم إخفاء حقول الضمانات للأمر المباشر) -->
+        <!-- AW Modal -->
         <div id="modal-aw" class="fixed inset-0 bg-slate-900/70 z-50 hidden items-center justify-center p-3 backdrop-blur-sm">
             <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] border border-slate-200 dark:border-slate-700">
                 <div class="p-4 bg-slate-50 dark:bg-slate-900 flex justify-between items-center rounded-t-2xl border-b dark:border-slate-700">
@@ -1030,7 +1046,6 @@
                         
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">حالة الترسية</label><select id="f-aw-status" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option>تم الترسية</option><option>اعلي من القيمة التقديرية لم يتم الترسية</option><option>اعلي من القيمة التقديرية و تم الترسية</option></select></div>
 
-                        <!-- قسم الضمانات (يخفى تماماً عند اختيار أمر مباشر) -->
                         <div id="direct-order-guarantee-section" class="contents">
                             <div class="flex flex-col">
                                 <div class="flex justify-between items-center mb-1">
@@ -1182,7 +1197,7 @@
             }
         }
 
-        // إعدادات اتصال Supabase بالمفتاح الحقيقي المعتمد الذي أرسلته
+        // إعدادات اتصال Supabase بالمفتاح الحقيقي المعتمد
         const SUPABASE_URL = 'https://uzpeeyyjhmjjibvknqse.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_soo0ke1JaKiMIt1p9r29UA_0H5bkyH4';
 
@@ -1543,7 +1558,7 @@
         }
 
         // ==========================================
-        // قارئ AI الشامل (مع الاستخراج التلقائي للشركات وحفظها بسجل الموردين)
+        // قارئ AI الشامل (مع دعم تامة لمفاتيح AQ وتوكنات OAuth)
         // ==========================================
         function openSmartStagingModal() {
             playSound('click');
@@ -1605,11 +1620,11 @@
                     }
                 }
 
-                // دعم المفتاح الحديث AQ أو التقليدي
+                // التعديل الهام هنا للتعامل مع توكنات AQ (OAuth) أو المفاتيح التقليدية AIzaSy
                 let headers = { 'Content-Type': 'application/json' };
-                let endpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent`;
+                let endpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
                 
-                if (apiKey.startsWith('AQ.') || apiKey.length > 50) {
+                if (apiKey.startsWith('AQ.') || apiKey.length > 40) {
                     headers['Authorization'] = `Bearer ${apiKey}`;
                 } else {
                     endpointUrl += `?key=${apiKey}`;
@@ -1622,7 +1637,7 @@
                 });
 
                 let result = await response.json();
-                if(result.error) { alert('خطأ: ' + result.error.message); return; }
+                if(result.error) { alert('خطأ من سيرفر جوجل: ' + result.error.message); return; }
 
                 let rawText = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
                 let parsed = JSON.parse(rawText);
@@ -1695,7 +1710,6 @@
                 });
             });
 
-            // الحفظ التلقائي للشركات المستخرجة في سجل الموردين المركزي
             let extractedSuppliers = globalParsedData.suppliers || [];
             if (extractedSuppliers.length === 0) {
                 let uniqueSuppNames = [...new Set((globalParsedData.awards || []).map(a => a.supp))];
@@ -2138,7 +2152,7 @@
                     let dividedBadge = `<span class="pill blue">${op.isDivided || 'لا - ترسية كلية'}</span>`;
                     tb.innerHTML += `<tr>
                         <td class="font-bold">${op.id}</td>
-                        <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${op.name}</td>
+                        <td class="text-right font-bold wrap-text text-indigo-600 dark:text-indigo-400">${op.name}</td>
                         <td class="wrap-text">${op.entity}</td>
                         <td>${op.budget}</td>
                         <td>${op.type}</td>
@@ -2153,10 +2167,10 @@
                         <td class="text-[11px]">${op.date5 || '-'}</td>
                         <td class="text-[11px]">${op.date6 || '-'}</td>
                         <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
-                        <td class="font-black text-slate-800 dark:text-white">${op.total ? fmt.format(op.total) : '-'}</td>
+                        <td class="font-black">${op.total ? fmt.format(op.total) : '-'}</td>
                         <td>
                             <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-primary dark:text-indigo-300 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
                                 <div class="attachment-menu">
                                     <button onclick="openDirectArchive('op_approval', ${op.id}, 'موافقة: ${op.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-emerald-600 dark:text-emerald-400 rounded text-[11px] font-bold"><i class="fa-solid fa-check w-4"></i> موافقة</button>
                                     <button onclick="openDirectArchive('op_portal', ${op.id}, 'البوابة: ${op.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-blue-600 dark:text-blue-400 rounded text-[11px] font-bold"><i class="fa-solid fa-globe w-4"></i> البوابة</button>
@@ -2165,8 +2179,8 @@
                             </div>
                         </td>
                         <td class="no-print">
-                            <button onclick="playSound('click'); editOp(${op.id})" class="text-slate-400 hover:text-primary dark:hover:text-indigo-400 mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 mx-1"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="playSound('click'); editOp(${op.id})" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-red-500 hover:text-red-700 dark:hover:text-red-400 mx-1"><i class="fa-solid fa-trash"></i></button>
                         </td></tr>`;
                 });
             } else if (currentOpSubTab === 'direct') {
@@ -2185,7 +2199,7 @@
                         <td class="font-bold text-amber-600 dark:text-amber-400">${op.guideline ? fmt.format(op.guideline) : '-'}</td>
                         <td>${portalBadge}</td>
                         <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
-                        <td class="font-black text-slate-800 dark:text-white">${op.total ? fmt.format(op.total) : '-'}</td>
+                        <td class="font-black">${op.total ? fmt.format(op.total) : '-'}</td>
                         <td>
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
@@ -2195,8 +2209,8 @@
                             </div>
                         </td>
                         <td class="no-print">
-                            <button onclick="playSound('click'); editOp(${op.id})" class="text-slate-400 hover:text-primary dark:hover:text-indigo-400 mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 mx-1"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="playSound('click'); editOp(${op.id})" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-red-500 hover:text-red-700 dark:hover:text-red-400 mx-1"><i class="fa-solid fa-trash"></i></button>
                         </td></tr>`;
                 });
             } else {
@@ -2221,8 +2235,8 @@
                             </div>
                         </td>
                         <td class="no-print">
-                            <button onclick="playSound('click'); editOp(${op.id})" class="text-slate-400 hover:text-primary dark:hover:text-indigo-400 mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 mx-1"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="playSound('click'); editOp(${op.id})" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-red-500 hover:text-red-700 dark:hover:text-red-400 mx-1"><i class="fa-solid fa-trash"></i></button>
                         </td></tr>`;
                 });
             }
@@ -2266,16 +2280,16 @@
                         <td class="font-bold">${aw.opId}</td>
                         <td><span class="pill blue">${op.type || 'أمر مباشر'}</span></td>
                         <td class="text-right font-bold wrap-text">${aw.item}</td>
-                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
-                        <td class="font-bold text-slate-500 dark:text-slate-400 text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
-                        <td class="font-black text-slate-800 dark:text-white">${fmt.format(aw.val)}</td>
+                        <td class="text-right text-indigo-600 dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
+                        <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
+                        <td class="font-black">${fmt.format(aw.val)}</td>
                         <td>${statusPill}</td>
                         <td class="font-bold">${aw.poNum || '-'}</td>
                         <td>${aw.days}</td>
                         <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
                         <td>
                             <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-primary dark:text-indigo-300 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
                                     <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-blue-600 dark:text-blue-300 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
                                 </div>
@@ -2285,8 +2299,8 @@
                         <td class="no-print">
                             <div class="flex items-center justify-center gap-1">
                                 <button onclick="playSound('click'); openDocumentGenerator(${i})" class="bg-primary hover:bg-primaryHover text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1" title="إصدار مستند رسمي"><i class="fa-solid fa-file-lines"></i> مستند رسمي</button>
-                                <button onclick="playSound('click'); editAward(${i})" class="text-slate-400 hover:text-primary dark:hover:text-indigo-400 mx-0.5" title="تعديل"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="playSound('delete'); deleteAward(${i})" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 mx-0.5" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                                <button onclick="playSound('click'); editAward(${i})" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 mx-0.5" title="تعديل"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="playSound('delete'); deleteAward(${i})" class="text-red-500 hover:text-red-700 dark:hover:text-red-400 mx-0.5" title="حذف"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td></tr>`;
                 });
@@ -2323,11 +2337,11 @@
                         <td class="font-bold">${aw.opId}</td>
                         <td><span class="pill blue">${op.type || 'مناقصة'}</span></td>
                         <td class="text-right font-bold wrap-text">${aw.item}</td>
-                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
-                        <td class="font-bold text-slate-500 dark:text-slate-400 text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
-                        <td class="font-black text-slate-800 dark:text-white">${fmt.format(aw.val)}</td>
+                        <td class="text-right text-indigo-600 dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
+                        <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
+                        <td class="font-black">${fmt.format(aw.val)}</td>
                         <td>${statusPill}</td>
-                        <td class="font-bold text-slate-500 dark:text-slate-400 text-xs">${fmt.format(finalGVal)}</td>
+                        <td class="font-bold text-xs">${fmt.format(finalGVal)}</td>
                         <td><span class="pill ${gSt.class}" title="إصدار: ${aw.gIssuance || '-'}">${gSt.text}</span></td>
                         <td class="text-xs font-mono font-bold">${aw.gNum || '-'}</td>
                         <td class="text-xs">${aw.gBank || '-'}</td>
@@ -2336,7 +2350,7 @@
                         <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
                         <td>
                             <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-primary dark:text-indigo-300 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
                                     <button onclick="openDirectArchive('aw_guarantee', '${aw.opId}_${i}', 'الضمان: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-purple-600 dark:text-purple-300 rounded text-[11px] font-bold"><i class="fa-solid fa-shield w-4"></i> الضمان</button>
                                     <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-blue-600 dark:text-blue-300 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
@@ -2348,8 +2362,8 @@
                         <td class="no-print">
                             <div class="flex items-center justify-center gap-1">
                                 <button onclick="playSound('click'); openDocumentGenerator(${i})" class="bg-primary hover:bg-primaryHover text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1" title="إصدار مستند رسمي"><i class="fa-solid fa-file-lines"></i> مستند رسمي</button>
-                                <button onclick="playSound('click'); editAward(${i})" class="text-slate-400 hover:text-primary dark:hover:text-indigo-400 mx-0.5" title="تعديل"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="playSound('delete'); deleteAward(${i})" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 mx-0.5" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                                <button onclick="playSound('click'); editAward(${i})" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 mx-0.5" title="تعديل"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="playSound('delete'); deleteAward(${i})" class="text-red-500 hover:text-red-700 dark:hover:text-red-400 mx-0.5" title="حذف"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td></tr>`;
                 });
@@ -2365,13 +2379,13 @@
             
             filtered.forEach(s => {
                 tb.innerHTML += `<tr>
-                    <td class="font-bold text-slate-500 dark:text-slate-400">${s.id}</td>
-                    <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${s.name}</td>
+                    <td class="font-bold">${s.id}</td>
+                    <td class="text-right font-bold wrap-text text-indigo-600 dark:text-indigo-400">${s.name}</td>
                     <td>${s.cr || '-'}</td>
                     <td>${s.tax || '-'}</td>
                     <td class="text-right text-xs wrap-text">${s.addr || '-'}</td>
                     <td class="font-bold">${s.phone || '-'}</td>
-                    <td class="font-bold text-slate-700 dark:text-slate-200">${s.signAuth || '-'}</td>
+                    <td class="font-bold">${s.signAuth || '-'}</td>
                     <td class="text-xs font-bold tracking-widest">${s.bankAcc || '-'}</td>
                     <td class="text-xs wrap-text">${s.bankName||'-'} - ${s.bankBranch||'-'}</td>
                     <td>
@@ -2388,8 +2402,8 @@
                         </div>
                     </td>
                     <td class="no-print">
-                        <button onclick="playSound('click'); editSup('${s.id}')" class="text-slate-400 hover:text-primary dark:hover:text-indigo-400 mx-1"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="playSound('delete'); deleteSup('${s.id}')" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="playSound('click'); editSup('${s.id}')" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 mx-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="playSound('delete'); deleteSup('${s.id}')" class="text-red-500 hover:text-red-700 dark:hover:text-red-400 mx-1"><i class="fa-solid fa-trash"></i></button>
                     </td></tr>`;
             });
         }
@@ -2414,12 +2428,12 @@
                 const pr = getProgress(op.status), gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                 tb.innerHTML += `<tr>
                     <td class="font-bold text-sm">${aw.opId}</td>
-                    <td class="text-right wrap-text"><b class="text-slate-900 dark:text-white">${op.name || '-'}</b><br><span class="text-[10px] text-slate-500">(${op.entity || '-'})</span></td>
+                    <td class="text-right wrap-text"><b class="font-bold">${op.name || '-'}</b><br><span class="text-[10px] text-slate-500 dark:text-slate-400">(${op.entity || '-'})</span></td>
                     <td class="text-right font-bold wrap-text">${aw.item}</td>
-                    <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${aw.supp}</td>
+                    <td class="text-right font-bold wrap-text text-indigo-600 dark:text-indigo-400">${aw.supp}</td>
                     <td class="text-xs font-bold">${op.status || '-'}</td>
                     <td><div class="progress-wrapper"><div class="progress-fill" style="width: ${pr}%"></div></div><div class="text-[9px] text-slate-400 mt-0.5">${pr}%</div></td>
-                    <td class="font-black text-slate-800 dark:text-white">${fmt.format(aw.val)}</td>
+                    <td class="font-black">${fmt.format(aw.val)}</td>
                     <td class="text-[11px] text-right wrap-text">رقم: ${aw.poNum || '-'}<br>تاريخ: ${aw.poDate || '-'}</td>
                     <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
                     <td><span class="pill ${gSt.class}">${gSt.text}</span></td>
@@ -2438,7 +2452,7 @@
 
                 DB.awards.filter(a => a.opId === id).forEach(aw => {
                     const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
-                    tb.innerHTML += `<tr><td class="text-right font-bold wrap-text text-slate-900 dark:text-white">${aw.item}</td><td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${aw.supp}</td><td class="font-black text-slate-800 dark:text-white">${fmt.format(aw.val)}</td><td><span class="pill ${gSt.class}">${gSt.text}</span></td><td class="font-bold">${aw.poNum || '-'}</td><td><span class="pill ${dSt.class}">${dSt.text}</span></td></tr>`;
+                    tb.innerHTML += `<tr><td class="text-right font-bold wrap-text">${aw.item}</td><td class="text-right font-bold wrap-text text-indigo-600 dark:text-indigo-400">${aw.supp}</td><td class="font-black">${fmt.format(aw.val)}</td><td><span class="pill ${gSt.class}">${gSt.text}</span></td><td class="font-bold">${aw.poNum || '-'}</td><td><span class="pill ${dSt.class}">${dSt.text}</span></td></tr>`;
                 });
             } else {
                 ['q-name', 'q-entity', 'q-type', 'q-status', 'q-est', 'q-total'].forEach(i => document.getElementById(i).innerText = '-');
@@ -2476,7 +2490,7 @@
                 const g = getGuaranteeStatus(aw.gType, aw.gIssuance), d = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                 if(g.code > 0 && aw.gType === 'خطاب ضمان') {
                     count++;
-                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition"><p class="font-bold text-slate-800 dark:text-white">ضمان ${g.code===2?'منتهي':'ينتهي'} (${aw.item})</p><p class="text-[10px] text-slate-500">${aw.supp}</p></div>`;
+                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition"><p class="font-bold">ضمان ${g.code===2?'منتهي':'ينتهي'} (${aw.item})</p><p class="text-[10px] text-slate-500">${aw.supp}</p></div>`;
                     if(list) list.innerHTML += itemHtml;
                     if(homeList) homeList.innerHTML += itemHtml;
                 }
@@ -2673,7 +2687,7 @@
             const op = DB.operations.find(o => o.id === opId);
             const directFields = document.getElementById('direct-order-guarantee-section');
             if (op) {
-                div.innerHTML = `<b class="text-primary dark:text-indigo-400">نوع العملية: [${op.type}] - ${op.name} (${op.entity})</b>`;
+                div.innerHTML = `<b class="text-indigo-600 dark:text-indigo-400">نوع العملية: [${op.type}] - ${op.name} (${op.entity})</b>`;
                 if (op.category === 'direct' || (op.type && op.type.includes('أمر مباشر'))) {
                     if(directFields) directFields.style.display = 'none';
                 } else {
