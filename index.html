@@ -170,38 +170,26 @@
             transform: translateX(50%) translateY(0);
         }
 
-        .excel-table-container { overflow-x: auto; overflow-y: auto; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid #cbd5e1; border-radius: 14px; box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.05); max-height: 75vh; }
-        body.dark .excel-table-container { background: rgba(15, 23, 42, 0.9); border-color: #334155; }
+        .excel-table-container { overflow-x: auto; overflow-y: auto; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.05); max-height: 75vh; }
+        body.dark .excel-table-container { background: rgba(17, 24, 39, 0.85); border-color: #374151; }
 
         .excel-table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: max-content; }
+        .excel-table th, .excel-table td { border-bottom: 1px solid #e2e8f0; border-left: 1px solid #e2e8f0; padding: 0.3rem 0.4rem; text-align: center; font-size: 0.72rem; vertical-align: middle; white-space: nowrap; }
+        body.dark .excel-table th, body.dark .excel-table td { border-color: #374151; color: #cbd5e1; }
         
-        /* ضبط وضوح النصوص في الجداول تماماً للوضع العادي والليلي */
-        .excel-table th, .excel-table td { 
-            border-bottom: 1px solid #cbd5e1; 
-            border-left: 1px solid #cbd5e1; 
-            padding: 0.35rem 0.45rem; 
-            text-align: center; 
-            font-size: 0.72rem; 
-            vertical-align: middle; 
-            white-space: nowrap; 
-        }
-        .excel-table td { color: #0f172a; font-weight: 600; background-color: #ffffff; }
-        body.dark .excel-table td { color: #f8fafc; background-color: #0b0f19; border-color: #1e293b; }
-        
-        .excel-table th { background-color: #e2e8f0; color: #0f172a; font-weight: 800; position: sticky; top: 0; z-index: 10; border-top: none; }
-        body.dark .excel-table th { background-color: #1e293b; color: #f8fafc; border-color: #334155; }
+        .excel-table th { background-color: #f1f5f9; color: #1e293b; font-weight: 700; position: sticky; top: 0; z-index: 10; border-top: none; }
+        body.dark .excel-table th { background-color: #1f2937; color: #f1f5f9; }
         
         .excel-table td:last-child, .excel-table th:last-child { border-left: none; }
-        .excel-table tbody tr:hover { background-color: rgba(79, 70, 229, 0.08); }
-        body.dark .excel-table tbody tr:hover { background-color: rgba(79, 70, 229, 0.22); }
+        .excel-table tbody tr:hover { background-color: rgba(79, 70, 229, 0.04); }
+        body.dark .excel-table tbody tr:hover { background-color: rgba(79, 70, 229, 0.12); }
         
         .excel-table th:first-child, .excel-table td:first-child {
-            position: sticky; right: 0; z-index: 20; border-left: 2px solid #94a3b8;
+            position: sticky; right: 0; background-color: #ffffff; z-index: 20; border-left: 2px solid #cbd5e1;
         }
-        .excel-table td:first-child { background-color: #ffffff; color: #0f172a; }
-        body.dark .excel-table td:first-child { background-color: #0f172a; color: #f8fafc; }
-        .excel-table th:first-child { background-color: #cbd5e1; color: #0f172a; z-index: 30; }
-        body.dark .excel-table th:first-child { background-color: #334155; color: #f8fafc; }
+        body.dark .excel-table td:first-child { background-color: #111827; border-color: #374151; }
+        .excel-table th:first-child { background-color: #e2e8f0; z-index: 30; }
+        body.dark .excel-table th:first-child { background-color: #1f2937; }
 
         .wrap-text { white-space: normal !important; line-height: 1.2; max-width: 130px; text-align: right; }
         
@@ -219,7 +207,7 @@
         body.dark .pill.blue { background-color: rgba(30, 64, 175, 0.3); color: #60a5fa; border-color: rgba(96, 165, 250, 0.2); }
         
         .progress-wrapper { background-color: #e2e8f0; border-radius: 999px; overflow: hidden; height: 5px; width: 100%; max-width: 60px; margin: 0 auto;}
-        body.dark .progress-wrapper { background-color: #334155; }
+        body.dark .progress-wrapper { background-color: #374151; }
         .progress-fill { background: linear-gradient(90deg, #4f46e5, #818cf8); height: 100%; transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1); }
 
         ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -1161,7 +1149,7 @@
 
         function saveDriveLink() {
             playSound('save');
-            let link = document.getElementById('drive-url-input'].value.trim();
+            let link = document.getElementById('drive-url-input').value.trim();
             if(!link) {
                 alert('الرجاء إدخال رابط صحيح لفولدر الدرايف.');
                 return;
@@ -1178,7 +1166,7 @@
         }
 
         // ==========================================
-        // قارئ AI الشامل (عمليات أو شركات مستقلة)
+        // قارئ AI الشامل (نسختك القديمة الأصلية 100% بدون أي تعديل)
         // ==========================================
         function openSmartStagingModal() {
             playSound('click');
@@ -1320,6 +1308,7 @@
                     }
                 }
 
+                // رابط الاتصال التقليدي الأصلي الخاص بك الذي يعمل بكفاءة تامة مع مفتاحك
                 let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -2093,7 +2082,7 @@
                     <td class="text-xs wrap-text">${s.bankName||'-'} - ${s.bankBranch||'-'}</td>
                     <td>
                         <div class="attachment-dropdown-wrap">
-                            <button onclick="playSound('click')" class="bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm">
+                            <button onclick="playSound('click')" class="bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm">
                                 <i class="fa-solid fa-folder-tree"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i>
                             </button>
                             <div class="attachment-menu">
@@ -2484,7 +2473,7 @@
                 signAuth: document.getElementById('f-sup-sign').value, addr: document.getElementById('f-sup-addr').value, 
                 phone: document.getElementById('f-sup-phone').value, 
                 bankAcc: document.getElementById('f-sup-bank-acc').value, bankName: document.getElementById('f-sup-bank-name').value, 
-                bankBranch: document.getElementById('f-sup-bank-branch').value 
+                * bankBranch: document.getElementById('f-sup-bank-branch').value 
             };
             if(id) { const idx = DB.suppliers.findIndex(x=>x.id===id); if(idx>=0) DB.suppliers[idx]=s; } else DB.suppliers.unshift(s);
             closeModal('modal-sup'); saveDB();
