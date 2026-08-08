@@ -946,15 +946,11 @@
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
                                 <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400">التأمين النهائي (5%)</label>
-                                <label class="text-[10px] font-bold text-primary dark:text-indigo-400 flex items-center gap-1 cursor-pointer">
-                                    <input type="checkbox" id="f-aw-gval-exempt" onchange="calcGuarantee()" class="rounded text-primary focus:ring-primary">
-                                    إعفاء (توريد فوري)
-                                </label>
                             </div>
                             <input type="number" step="0.01" id="f-aw-gval" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-amber-50 dark:bg-slate-900 text-amber-700 dark:text-amber-400 font-black text-center text-xs outline-none focus:ring-2 focus:ring-amber-500 transition">
                         </div>
                         
-                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">نوع التأمين النهائي</label><select id="f-aw-gtype" class="border dark:border-slate-600 rounded-xl px-1.5 py-1 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"><option>خطاب ضمان</option><option>نقدي</option></select></div>
+                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">نوع التأمين النهائي</label><select id="f-aw-gtype" onchange="calcGuarantee()" class="border dark:border-slate-600 rounded-xl px-1.5 py-1 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"><option>خطاب ضمان</option><option>نقدي</option><option>إعفاء (توريد خلال 10 أيام)</option></select></div>
 
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">رقم خطاب الضمان النهائي</label><input type="text" id="f-aw-gnumber" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold" placeholder="أدخل رقم الخطاب..."></div>
 
@@ -1133,7 +1129,7 @@
                     alert('لا توجد بيانات جديدة على السيرفر.');
                 }
             }).catch(() => {
-                alert('فشل الاتصال بالسيرفر للمزامنة.');
+                alert('فشل الاتصال بالسيرفر للمزامنة (تم العمل بالنسخة المحلية بنجاح).');
             });
         }
 
@@ -1352,7 +1348,7 @@
                           "estVal": القيمة التقديرية برقم,
                           "val": قيمة الترسية النهائية برقم,
                           "awardStatus": "تم الترسية",
-                          "gType": "خطاب ضمان أو نقدي",
+                          "gType": "خطاب ضمان أو نقدي أو إعفاء (توريد خلال 10 أيام)",
                           "gNum": "رقم خطاب الضمان",
                           "gIssuance": "تاريخ إصدار الضمان YYYY-MM-DD",
                           "gBank": "اسم البنك المصدر",
@@ -1561,7 +1557,7 @@
                         supp: aw.supp || 'شركة معتمدة',
                         estVal: parseFloat(aw.estVal) || 0,
                         val: fVal,
-                        gVal: fVal * 0.05,
+                        gVal: aw.gType === 'إعفاء (توريد خلال 10 أيام)' ? 0 : (fVal * 0.05),
                         awardStatus: aw.awardStatus || 'تم الترسية',
                         gType: aw.gType || 'خطاب ضمان',
                         gNum: aw.gNum || '-',
@@ -1648,6 +1644,15 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
+        // محاولة تحميل البيانات محلياً أولاً لضمان عدم توقف العمل نهائياً عند مشاكل الاتصال
+        try {
+            const localData = localStorage.getItem('smartSystem_local_backup');
+            if (localData) {
+                DB = JSON.parse(localData);
+                renderAll();
+            }
+        } catch(e) {}
+
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data && data.operations) {
@@ -1657,13 +1662,15 @@
                 if (!DB.operations) DB.operations = [];
                 if (!DB.awards) DB.awards = [];
                 DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
-            } else {
+            } else if (!DB.operations || DB.operations.length === 0) {
                 DB = defaultDB;
-                dbRef.set(defaultDB);
             }
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
+            localStorage.setItem('smartSystem_local_backup', JSON.stringify(DB));
             updateNotifications();
             renderAll();
+        }, (error) => {
+            console.warn("Database sync warning:", error);
         });
 
         function saveDB() {
@@ -1671,11 +1678,17 @@
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
+            
+            // تخزين محلي فوري لمنع أي انقطاع
+            localStorage.setItem('smartSystem_local_backup', JSON.stringify(DB));
+            updateNotifications();
+            renderAll();
+
             dbRef.set(DB).then(() => {
-                updateNotifications();
-                renderAll();
-            }).catch(() => {
-                alert("خطأ في الاتصال بالسيرفر.");
+                // تم الحفظ بنجاح على السيرفر
+            }).catch((err) => {
+                console.warn("Firebase save warning (using local backup):", err);
+                // تم إخفاء التنبيه المزعج للسيرفر واكتفينا بالحفظ المحلي الفوري
             });
         }
 
@@ -1823,7 +1836,8 @@
             win.document.close();
         }
 
-        function getGuaranteeExpiry(issuanceDate) {
+        function getGuaranteeExpiry(issuanceDate, gType) {
+            if (gType === 'إعفاء (توريد خلال 10 أيام)') return 'معفى قانوناً (توريد 10 أيام)';
             if (!issuanceDate) return '';
             const d = new Date(issuanceDate);
             d.setFullYear(d.getFullYear() + 1);
@@ -1865,6 +1879,7 @@
                 "وصف البند / اللوط التفصيلي": a.item,
                 "الشركة الفائزة بالبند": a.supp,
                 "قيمة الترسية النهائية": a.val,
+                "نوع التأمين النهائي": a.gType || 'خطاب ضمان',
                 "حالة الترسية": a.awardStatus || 'تم الترسية',
                 "رد الابتدائي": a.ret || 'لا',
                 "تم توقيع العقد": a.contract || 'لا',
@@ -1977,6 +1992,7 @@
         }
 
         function getGuaranteeStatus(type, issuanceDateStr) {
+            if (type === 'إعفاء (توريد خلال 10 أيام)') return { text: "معفى (توريد 10 أيام)", class: "green", code: 0 };
             if (type === 'نقدي') return { text: "نقدي", class: "green", code: 0 };
             if (!issuanceDateStr) return { text: "لا يوجد", class: "red", code: 2 };
             
@@ -2152,7 +2168,6 @@
             renderAwards();
         }
 
-        // دالة احتساب حالة التأمين الابتدائي في سجل الطرح أوتوماتيكياً
         function getOperationInitialDepositStatus(opId) {
             const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(opId));
             if (relatedAwards.length === 0) {
@@ -2283,19 +2298,21 @@
             }
         }
 
-        // دالة حساب رد التأمين الابتدائي المحدثة
+        // دالة حساب رد التأمين الابتدائي المحدثة (تعرض نعم/لا مع تفصيل تم رد كام وباقي كام)
         function getComputedRefundStatus(currentAw) {
             if (!currentAw || !currentAw.opId) return { text: "لا", class: "blue" };
             const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(currentAw.opId));
             const totalCompanies = relatedAwards.length;
             const refundedCount = relatedAwards.filter(a => a.ret === 'نعم').length;
 
-            if (refundedCount === 0) {
-                return { text: "لا", class: "blue" };
-            } else if (refundedCount >= totalCompanies) {
-                return { text: "تم رد التأمين", class: "green" };
+            if (currentAw.ret === 'نعم') {
+                if (refundedCount >= totalCompanies) {
+                    return { text: `نعم (تم رد التأمين بالكامل)`, class: "green" };
+                } else {
+                    return { text: `نعم (تم رد ${refundedCount} وباقي ${totalCompanies - refundedCount})`, class: "yellow" };
+                }
             } else {
-                return { text: `تم رد ${refundedCount} وباقي ${totalCompanies - refundedCount}`, class: "yellow" };
+                return { text: `لا (باقي ${totalCompanies - refundedCount})`, class: "blue" };
             }
         }
 
@@ -2396,7 +2413,7 @@
                         <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
                         <td class="font-black">${fmt.format(aw.val)}</td>
                         <td>${statusPill}</td>
-                        <td class="font-bold text-xs">${fmt.format(finalGVal)}</td>
+                        <td class="font-bold text-xs">${fmt.format(finalGVal)} (${aw.gType || 'خطاب ضمان'})</td>
                         <td><span class="pill ${gSt.class}">${gSt.text}</span></td>
                         <td class="text-xs font-mono font-bold">${aw.gNum || '-'}</td>
                         <td class="text-xs">${aw.gBank || '-'}</td>
@@ -2715,7 +2732,7 @@
             div.innerHTML = op ? `<b class="text-primary dark:text-indigo-400">نوع العملية: [${op.type}] - ${op.name} (${op.entity})</b>` : 'أدخل رقم العملية...';
         }
 
-        function openAwardModal() { playSound('click'); document.getElementById('form-aw').reset(); document.getElementById('f-aw-idx').value=''; document.getElementById('f-aw-gval-exempt').checked = false; fetchOpDetails(); openModal('modal-aw'); }
+        function openAwardModal() { playSound('click'); document.getElementById('form-aw').reset(); document.getElementById('f-aw-idx').value=''; calcGuarantee(); fetchOpDetails(); openModal('modal-aw'); }
         
         function editAward(idx) {
             playSound('click');
@@ -2727,12 +2744,11 @@
                 document.getElementById('f-aw-estval').value = aw.estVal || '';
                 document.getElementById('f-aw-val').value = aw.val; 
                 
+                document.getElementById('f-aw-gtype').value = aw.gType || 'خطاب ضمان';
                 let savedGVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
                 document.getElementById('f-aw-gval').value = savedGVal;
-                document.getElementById('f-aw-gval-exempt').checked = (savedGVal === 0);
 
                 document.getElementById('f-aw-status').value = aw.awardStatus || 'تم الترسية';
-                document.getElementById('f-aw-gtype').value = aw.gType;
                 document.getElementById('f-aw-gnumber').value = aw.gNum || '';
                 document.getElementById('f-aw-gissuance').value = aw.gIssuance || ''; 
                 document.getElementById('f-aw-bank').value = aw.gBank || '';
@@ -2745,11 +2761,11 @@
         }
 
         function calcGuarantee() { 
-            const isExempt = document.getElementById('f-aw-gval-exempt').checked;
+            const gType = document.getElementById('f-aw-gtype').value;
             const val = parseFloat(document.getElementById('f-aw-val').value) || 0;
             const gvalInput = document.getElementById('f-aw-gval');
             
-            if (isExempt) {
+            if (gType === 'إعفاء (توريد خلال 10 أيام)') {
                 gvalInput.value = 0;
             } else {
                 gvalInput.value = (val * 0.05).toFixed(2);
@@ -2771,15 +2787,19 @@
                 });
             }
 
+            const gTypeVal = document.getElementById('f-aw-gtype').value;
+            const fVal = parseFloat(document.getElementById('f-aw-val').value)||0;
+            const calculatedGVal = gTypeVal === 'إعفاء (توريد خلال 10 أيام)' ? 0 : (parseFloat(document.getElementById('f-aw-gval').value)|| (fVal * 0.05));
+
             const aw = { 
                 opId, 
                 item: document.getElementById('f-aw-item').value, 
                 supp, 
                 estVal: parseFloat(document.getElementById('f-aw-estval').value)||0,
-                val: parseFloat(document.getElementById('f-aw-val').value)||0, 
-                gVal: parseFloat(document.getElementById('f-aw-gval').value)||0,
+                val: fVal, 
+                gVal: calculatedGVal,
                 awardStatus: document.getElementById('f-aw-status').value,
-                gType: document.getElementById('f-aw-gtype').value, 
+                gType: gTypeVal, 
                 gNum: document.getElementById('f-aw-gnumber').value.trim(),
                 gIssuance: document.getElementById('f-aw-gissuance').value, 
                 gBank: document.getElementById('f-aw-bank').value.trim(),
