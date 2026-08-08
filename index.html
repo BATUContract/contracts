@@ -2309,21 +2309,22 @@
             }
         }
 
-        // دالة حساب رد التأمين الابتدائي (نعم / لا مع تفصيل تم رد كام وباقي كام)
+        // دالة حساب رد التأمين الابتدائي (نعم / لا مع تفصيل تم رد كام وباقي كام بناءً على طلبك)
         function getComputedRefundStatus(currentAw) {
             if (!currentAw || !currentAw.opId) return { text: "لا", class: "blue" };
             const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(currentAw.opId));
             const totalCompanies = relatedAwards.length;
             const refundedCount = relatedAwards.filter(a => a.ret === 'نعم').length;
+            const notRefundedCount = totalCompanies - refundedCount;
 
             if (currentAw.ret === 'نعم') {
                 if (refundedCount >= totalCompanies) {
                     return { text: `نعم (تم رد التأمين بالكامل)`, class: "green" };
                 } else {
-                    return { text: `نعم (تم رد ${refundedCount} وباقي ${totalCompanies - refundedCount})`, class: "yellow" };
+                    return { text: `نعم (تم رد ${refundedCount} وباقي ${notRefundedCount})`, class: "yellow" };
                 }
             } else {
-                return { text: `لا (باقي ${totalCompanies - refundedCount})`, class: "blue" };
+                return { text: `لا (باقي ${notRefundedCount})`, class: "blue" };
             }
         }
 
