@@ -138,10 +138,10 @@
         }
         .pulse-bell { animation: intense-shake 0.55s infinite ease-in-out; color: #e11d48 !important; }
 
-        /* --- شاشة التمهيد (Intro Overlay - 3 ثواني) --- */
+        /* --- شاشة التمهيد الجديدة (لوجو الجامعة مع بار التحميل المتحرك) --- */
         body.intro-active {
             overflow: hidden;
-            background-color: #000;
+            background-color: #0b0f19;
         }
         #intro-overlay {
             position: fixed;
@@ -149,32 +149,45 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000;
+            background: linear-gradient(135deg, #0b0f19 0%, #111827 100%);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 99999;
             opacity: 1;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 0.8s ease-in-out;
         }
         #intro-overlay.fade-out {
             opacity: 0;
             pointer-events: none;
         }
-        .logo-particle-text {
-            font-size: 3.5rem;
-            color: #fff;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 700;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #00e6e6, 0 0 40px #00e6e6, 0 0 50px #00e6e6;
-            animation: particleAssembly 3s ease-out forwards;
+        .intro-logo {
+            height: 100px;
+            width: auto;
+            object-fit: contain;
+            animation: logoPulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(79, 70, 229, 0.6));
         }
-        @keyframes particleAssembly {
-            0% { opacity: 0; transform: scale(0.4) rotateY(180deg); text-shadow: none; }
-            50% { opacity: 0.5; text-shadow: 0 0 10px #fff, 0 0 20px #00e6e6; }
-            100% { opacity: 1; transform: scale(1) rotateY(0deg); text-shadow: 0 0 15px #fff, 0 0 30px #00e6e6, 0 0 50px #00e6e6, 0 0 70px #00e6e6; }
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(79, 70, 229, 0.4)); }
+            50% { transform: scale(1.06); filter: drop-shadow(0 0 25px rgba(79, 70, 229, 0.8)); }
+        }
+        .loading-bar-container {
+            width: 220px;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .loading-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981);
+            border-radius: 999px;
+            transition: width 2.6s cubic-bezier(0.1, 1, 0.1, 1);
         }
 
         .attachment-dropdown-wrap {
@@ -284,9 +297,13 @@
 </head>
 <body class="flex flex-col min-h-screen intro-active">
 
-    <!-- شاشة الأنترو (3 ثواني) -->
+    <!-- شاشة الأنترو الجديدة (لوجو الجامعة + بار التحميل المتحرك) -->
     <div id="intro-overlay">
-        <div class="logo-particle-text">منظومة التعاقدات</div>
+        <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="intro-logo">
+        <div class="loading-bar-container">
+            <div id="intro-loading-bar" class="loading-bar-fill"></div>
+        </div>
+        <p class="text-xs text-slate-400 font-bold mt-3 tracking-widest">جاري تحميل المنظومة الذكية...</p>
     </div>
 
     <!-- Top Navigation -->
@@ -1033,16 +1050,21 @@
     </div>
 
     <script>
-        // إعدادات الـ Intro للثواني الثلاثة الأولى
+        // إعدادات الـ Intro الجديد (لوجو + بار تحميل متحرك)
         window.addEventListener('load', function() {
+            setTimeout(() => {
+                const bar = document.getElementById('intro-loading-bar');
+                if(bar) bar.style.width = '100%';
+            }, 100);
+
             const introOverlay = document.getElementById('intro-overlay');
             setTimeout(function() {
                 introOverlay.classList.add('fade-out');
                 setTimeout(function() {
                     introOverlay.style.display = 'none';
                     document.body.classList.remove('intro-active');
-                }, 1000);
-            }, 3000);
+                }, 800);
+            }, 2700);
         });
 
         if (!localStorage.getItem('mgmt_drive_folder_url')) {
@@ -1382,7 +1404,8 @@
                     }
                 }
 
-                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                // تم إرجاع الموديل المستقر الصحيح gemini-flash-latest
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: parts }] })
