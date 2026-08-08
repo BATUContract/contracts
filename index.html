@@ -1382,7 +1382,7 @@
                     }
                 }
 
-                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: parts }] })
@@ -1390,7 +1390,11 @@
 
                 let result = await response.json();
                 if(result.error) {
-                    alert('خطأ من جيميناي: ' + result.error.message);
+                    if(result.error.message.includes('Quota exceeded') || result.error.code === 429) {
+                        alert('⚠️ تنبيه من جيميناي: تم استهلاك الحد المؤقت للطلبات في الباقة المجانية. يرجى الانتظار 15 ثانية ثم إعادة المحاولة.');
+                    } else {
+                        alert('خطأ من جيميناي: ' + result.error.message);
+                    }
                     return;
                 }
 
@@ -1644,7 +1648,6 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
-        // محاولة تحميل البيانات محلياً أولاً لضمان عدم توقف العمل نهائياً عند مشاكل الاتصال
         try {
             const localData = localStorage.getItem('smartSystem_local_backup');
             if (localData) {
@@ -1679,13 +1682,11 @@
             if(!DB.awards) DB.awards = [];
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             
-            // تخزين محلي فوري لمنع أي انقطاع
             localStorage.setItem('smartSystem_local_backup', JSON.stringify(DB));
             updateNotifications();
             renderAll();
 
             dbRef.set(DB).then(() => {
-                // تم الحفظ بنجاح على السيرفر
             }).catch((err) => {
                 console.warn("Firebase save warning (using local backup):", err);
             });
@@ -1843,7 +1844,6 @@
             return d.toISOString().slice(0, 10);
         }
 
-        // تعريفي دالة getInitialDepositStatus المطلوبة للإشعارات
         function getInitialDepositStatus(date1Str) {
             if (!date1Str) return { text: "غير محدد", class: "blue", code: 0 };
             const start = new Date(date1Str);
@@ -2309,7 +2309,6 @@
             }
         }
 
-        // دالة حساب رد التأمين الابتدائي (نعم / لا مع تفصيل تم رد كام وباقي كام بناءً على طلبك)
         function getComputedRefundStatus(currentAw) {
             if (!currentAw || !currentAw.opId) return { text: "لا", class: "blue" };
             const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(currentAw.opId));
@@ -2884,7 +2883,7 @@
             }
         }
 
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
+        function openModal(id) { document.getElementById(id).classList.add('flex'); document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
 
         function switchTab(id) {
