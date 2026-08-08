@@ -138,7 +138,7 @@
         }
         .pulse-bell { animation: intense-shake 0.55s infinite ease-in-out; color: #e11d48 !important; }
 
-        /* --- شاشة التمهيد الجديدة (لوجو الجامعة مع بار التحميل المتحرك) --- */
+        /* --- شاشة التمهيد (Intro Overlay - 3 ثواني) --- */
         body.intro-active {
             overflow: hidden;
             background-color: #0b0f19;
@@ -1404,7 +1404,7 @@
                     }
                 }
 
-                // تم إرجاع الموديل المستقر الصحيح gemini-flash-latest
+                // استخدام الموديل المستقر الصحيح gemini-flash-latest
                 let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -2576,6 +2576,14 @@
                 if (op.category === 'direct' || (op.type && op.type.includes('أمر مباشر'))) {
                     return;
                 }
+                
+                // تعديل: تخطي العملية في التنبيهات إذا تم رد التأمين الابتدائي لكل الشركات المرتبطة بها
+                const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(op.id));
+                const allRefunded = relatedAwards.length > 0 && relatedAwards.every(a => a.ret === 'نعم');
+                if (allRefunded) {
+                    return; // التأمين اتارد بالكامل، لا داعي لإظهار تنبيه منتهي
+                }
+
                 const initDep = getInitialDepositStatus(op.date1);
                 if (initDep.code > 0) {
                     count++;
