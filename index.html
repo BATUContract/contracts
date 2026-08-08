@@ -1688,7 +1688,6 @@
                 // تم الحفظ بنجاح على السيرفر
             }).catch((err) => {
                 console.warn("Firebase save warning (using local backup):", err);
-                // تم إخفاء التنبيه المزعج للسيرفر واكتفينا بالحفظ المحلي الفوري
             });
         }
 
@@ -1842,6 +1841,18 @@
             const d = new Date(issuanceDate);
             d.setFullYear(d.getFullYear() + 1);
             return d.toISOString().slice(0, 10);
+        }
+
+        // تعريفي دالة getInitialDepositStatus المطلوبة للإشعارات
+        function getInitialDepositStatus(date1Str) {
+            if (!date1Str) return { text: "غير محدد", class: "blue", code: 0 };
+            const start = new Date(date1Str);
+            const expiry = new Date(start);
+            expiry.setMonth(expiry.getMonth() + 4);
+            const diff = Math.ceil((expiry - new Date()) / 86400000);
+            if (diff < 0) return { text: "منتهي!", class: "red", code: 2 };
+            if (diff <= 15) return { text: `ينتهي (${diff}ي)`, class: "yellow", code: 1 };
+            return { text: `ساري (${diff}ي)`, class: "green", code: 0 };
         }
 
         function exportAllDatabaseToExcel() {
@@ -2298,7 +2309,7 @@
             }
         }
 
-        // دالة حساب رد التأمين الابتدائي المحدثة (تعرض نعم/لا مع تفصيل تم رد كام وباقي كام)
+        // دالة حساب رد التأمين الابتدائي (نعم / لا مع تفصيل تم رد كام وباقي كام)
         function getComputedRefundStatus(currentAw) {
             if (!currentAw || !currentAw.opId) return { text: "لا", class: "blue" };
             const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(currentAw.opId));
