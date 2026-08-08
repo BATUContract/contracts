@@ -297,7 +297,7 @@
 </head>
 <body class="flex flex-col min-h-screen intro-active">
 
-    <!-- شاشة الأنترو الجديدة (لوجو الجامعة + بار التحميل المتحرك) -->
+    <!-- شاشة الأنترو (لوجو الجامعة + بار التحميل المتحرك) -->
     <div id="intro-overlay">
         <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="intro-logo">
         <div class="loading-bar-container">
@@ -1151,7 +1151,7 @@
                     alert('لا توجد بيانات جديدة على السيرفر.');
                 }
             }).catch(() => {
-                alert('فشل الاتصال بالسيرفر للمزامنة (تم العمل بالنسخة المحلية بنجاح).');
+                alert('فشل الاتصال بالسيرفر للمزامنة.');
             });
         }
 
@@ -1404,7 +1404,6 @@
                     }
                 }
 
-                // استخدام الموديل المستقر الصحيح gemini-flash-latest
                 let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1671,14 +1670,7 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
-        try {
-            const localData = localStorage.getItem('smartSystem_local_backup');
-            if (localData) {
-                DB = JSON.parse(localData);
-                renderAll();
-            }
-        } catch(e) {}
-
+        // الاستماع المباشر للتحديثات من السحابي (Firebase Realtime Database) لضمان المزامنة الفورية
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data && data.operations) {
@@ -1692,7 +1684,6 @@
                 DB = defaultDB;
             }
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
-            localStorage.setItem('smartSystem_local_backup', JSON.stringify(DB));
             updateNotifications();
             renderAll();
         }, (error) => {
@@ -1705,13 +1696,13 @@
             if(!DB.awards) DB.awards = [];
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             
-            localStorage.setItem('smartSystem_local_backup', JSON.stringify(DB));
-            updateNotifications();
-            renderAll();
-
+            // رفع البيانات فوراً للسيرفر السحابي لتسمع لدى جميع الأجهزة المتصلة
             dbRef.set(DB).then(() => {
+                updateNotifications();
+                renderAll();
             }).catch((err) => {
-                console.warn("Firebase save warning (using local backup):", err);
+                console.warn("Firebase save error:", err);
+                alert("حدث خطأ في مزامنة البيانات مع السيرفر، تحقق من اتصال الإنترنت.");
             });
         }
 
@@ -2367,7 +2358,9 @@
                 trHead.innerHTML = `
                     <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مرفقات</th><th>العقد</th><th class="no-print">إجراءات</th>
                 `;
-                filteredAwards.forEach((aw, i) => {
+                filteredAwards.forEach((aw) => {
+                    // إيجاد الفهرس الحقيقي للبند داخل قاعدة البيانات العامة DB.awards لتجنب أخطاء الفلترة
+                    const realIdx = DB.awards.findIndex(a => a.opId === aw.opId && a.item === aw.item && a.supp === aw.supp);
                     const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
                     const dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                     const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
@@ -2388,21 +2381,22 @@
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
                                 </div>
                             </div>
                         </td>
                         <td>${contractPill}</td>
                         <td class="no-print">
-                            <button onclick="playSound('click'); editAward(${i})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteAward(${i})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
                         </td></tr>`;
                 });
             } else if (currentAwardSubTab === 'renewal') {
                 trHead.innerHTML = `
                     <th>العملية</th><th>نوع التجديد</th><th>وصف البند / العقد</th><th>الشركة</th><th>القيمة</th><th>حالة العقد</th><th>تاريخ البدء</th><th>تاريخ الانتهاء</th><th>مرفقات</th><th class="no-print">إجراءات</th>
                 `;
-                filteredAwards.forEach((aw, i) => {
+                filteredAwards.forEach((aw) => {
+                    const realIdx = DB.awards.findIndex(a => a.opId === aw.opId && a.item === aw.item && a.supp === aw.supp);
                     const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
                     tb.innerHTML += `<tr>
                         <td class="font-bold">${aw.opId}</td>
@@ -2417,20 +2411,21 @@
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
                                 </div>
                             </div>
                         </td>
                         <td class="no-print">
-                            <button onclick="playSound('click'); editAward(${i})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteAward(${i})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
                         </td></tr>`;
                 });
             } else {
                 trHead.innerHTML = `
                     <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>التأمين النهائي</th><th>موقف الضمان</th><th>رقم الضمان</th><th>البنك المصدر</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مرفقات</th><th>رد التأمين الابتدائي</th><th>العقد</th><th class="no-print">إجراءات</th>
                 `;
-                filteredAwards.forEach((aw, i) => {
+                filteredAwards.forEach((aw) => {
+                    const realIdx = DB.awards.findIndex(a => a.opId === aw.opId && a.item === aw.item && a.supp === aw.supp);
                     const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
                     const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                     const computedRefund = getComputedRefundStatus(aw);
@@ -2458,16 +2453,16 @@
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('aw_guarantee', '${aw.opId}_${i}', 'الضمان: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-purple-600 rounded text-[11px] font-bold"><i class="fa-solid fa-shield w-4"></i> الضمان</button>
-                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${i}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
+                                    <button onclick="openDirectArchive('aw_guarantee', '${aw.opId}_${realIdx}', 'الضمان: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-purple-600 rounded text-[11px] font-bold"><i class="fa-solid fa-shield w-4"></i> الضمان</button>
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
                                 </div>
                             </div>
                         </td>
                         <td>${retPill}</td>
                         <td>${contractPill}</td>
                         <td class="no-print">
-                            <button onclick="playSound('click'); editAward(${i})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteAward(${i})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
                         </td></tr>`;
                 });
             }
@@ -2577,11 +2572,10 @@
                     return;
                 }
                 
-                // تعديل: تخطي العملية في التنبيهات إذا تم رد التأمين الابتدائي لكل الشركات المرتبطة بها
                 const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(op.id));
                 const allRefunded = relatedAwards.length > 0 && relatedAwards.every(a => a.ret === 'نعم');
                 if (allRefunded) {
-                    return; // التأمين اتارد بالكامل، لا داعي لإظهار تنبيه منتهي
+                    return; 
                 }
 
                 const initDep = getInitialDepositStatus(op.date1);
