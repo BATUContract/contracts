@@ -1664,7 +1664,7 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
-        // الاستماع المباشر للتحديثات من السحابي (Firebase Realtime Database) مع تأمين تحويل الجداول لمصفوفات حقيقية
+        // الربط المباشر بالسيرفر السحابي لضمان التزامن اللحظي بين الأجهزة
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -1697,6 +1697,29 @@
                 console.warn("Firebase save error:", err);
                 alert("حدث خطأ في مزامنة البيانات مع السيرفر، تحقق من اتصال الإنترنت.");
             });
+        }
+
+        // تم إلغاء كود الـ UNDO بالكامل لمنع أي تعارض أو توقف خفي في الحذف
+
+        function deleteOp(id) { 
+            if(!DB.operations) DB.operations = [];
+            if(!DB.awards) DB.awards = [];
+            
+            if(confirm('هل أنت متأكد من حذف هذه العملية نهائياً؟')) { 
+                DB.operations = DB.operations.filter(o => String(o.id) !== String(id)); 
+                DB.awards = DB.awards.filter(a => String(a.opId) !== String(id));
+
+                if (DB.archives) {
+                    Object.keys(DB.archives).forEach(k => {
+                        if (k.includes('_' + id)) {
+                            delete DB.archives[k];
+                        }
+                    });
+                }
+
+                saveDB(); 
+                alert('تم حذف العملية بنجاح!');
+            } 
         }
 
         function compressAndConvertFile(file, maxWidth = 800, quality = 0.5) {
