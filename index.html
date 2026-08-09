@@ -138,7 +138,7 @@
         }
         .pulse-bell { animation: intense-shake 0.55s infinite ease-in-out; color: #e11d48 !important; }
 
-        /* --- شاشة التمهيد (Intro Overlay - 3 ثواني) --- */
+        /* --- شاشة التمهيد (Intro Overlay) --- */
         body.intro-active {
             overflow: hidden;
             background-color: #0b0f19;
@@ -1043,12 +1043,6 @@
 
     </main>
 
-    <!-- Undo Toast Notification Bar -->
-    <div id="undo-toast" class="fixed bottom-5 right-5 z-[150] hidden bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl items-center gap-3 border border-slate-700 animate-bounce">
-        <span id="undo-toast-text" class="text-xs font-bold">تم الحذف بنجاح.</span>
-        <button id="undo-btn" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1 rounded-lg text-xs font-black transition cursor-pointer"><i class="fa-solid fa-rotate-left"></i> تراجع (Undo)</button>
-    </div>
-
     <script>
         // إعدادات الـ Intro (لوجو + بار تحميل متحرك)
         window.addEventListener('load', function() {
@@ -1670,12 +1664,11 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
-        // الاستماع المباشر للتحديثات من السحابي (Firebase Realtime Database) مع تأمين الـ Arrays
+        // الاستماع المباشر للتحديثات من السحابي (Firebase Realtime Database) مع تأمين تحويل الجداول لمصفوفات حقيقية
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 DB = data;
-                // التأكد من أن الجداول مصفوفات حقيقية وليست كائنات لتفادي أي أخطاء مزامنة
                 DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
                 DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
                 DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
@@ -1704,88 +1697,6 @@
                 console.warn("Firebase save error:", err);
                 alert("حدث خطأ في مزامنة البيانات مع السيرفر، تحقق من اتصال الإنترنت.");
             });
-        }
-
-        let deletedOpBackup = null;
-        let deletedAwardsBackup = [];
-        let deletedArchivesBackup = {};
-        let undoTimeout = null;
-
-        function showUndoToast(message) {
-            const toast = document.getElementById('undo-toast');
-            const text = document.getElementById('undo-toast-text');
-            const btn = document.getElementById('undo-btn');
-            if(!toast) return;
-
-            text.innerText = message;
-            toast.classList.remove('hidden');
-            toast.classList.add('flex');
-
-            if(undoTimeout) clearTimeout(undoTimeout);
-
-            btn.onclick = () => {
-                executeUndo();
-                toast.classList.add('hidden');
-                toast.classList.remove('flex');
-            };
-
-            undoTimeout = setTimeout(() => {
-                toast.classList.add('hidden');
-                toast.classList.remove('flex');
-                deletedOpBackup = null;
-                deletedAwardsBackup = [];
-                deletedArchivesBackup = {};
-            }, 8000);
-        }
-
-        function executeUndo() {
-            if (deletedOpBackup) {
-                if(!DB.operations) DB.operations = [];
-                if(!DB.awards) DB.awards = [];
-                if(!DB.archives) DB.archives = {};
-
-                DB.operations.push(deletedOpBackup);
-                deletedAwardsBackup.forEach(aw => DB.awards.push(aw));
-                Object.keys(deletedArchivesBackup).forEach(k => {
-                    DB.archives[k] = deletedArchivesBackup[k];
-                });
-
-                saveDB();
-                alert('تم التراجع عن الحذف واستعادة العملية بنجاح!');
-                deletedOpBackup = null;
-                deletedAwardsBackup = [];
-                deletedArchivesBackup = {};
-            }
-        }
-
-        function deleteOp(id) { 
-            if(!DB.operations) DB.operations = [];
-            if(!DB.awards) DB.awards = [];
-            
-            if(confirm('هل أنت متأكد من حذف هذه العملية نهائياً؟')) { 
-                const opIndex = DB.operations.findIndex(o => o.id == id);
-                if(opIndex === -1) return;
-
-                deletedOpBackup = DB.operations[opIndex];
-                deletedAwardsBackup = DB.awards.filter(a => a.opId == id);
-                deletedArchivesBackup = {};
-
-                if (DB.archives) {
-                    Object.keys(DB.archives).forEach(k => {
-                        const parts = k.split('_');
-                        if (parts.includes(String(id))) {
-                            deletedArchivesBackup[k] = DB.archives[k];
-                            delete DB.archives[k];
-                        }
-                    });
-                }
-
-                DB.operations = DB.operations.filter(o => o.id != id); 
-                DB.awards = DB.awards.filter(a => a.opId != id);
-
-                saveDB(); 
-                showUndoToast('تم حذف العملية. انقر للتراجع.');
-            } 
         }
 
         function compressAndConvertFile(file, maxWidth = 800, quality = 0.5) {
@@ -2309,7 +2220,7 @@
                         <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
                         <td>
                             <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
                                 <div class="attachment-menu">
                                     <button onclick="openDirectArchive('op_approval', ${op.id}, 'ملحق العقد: ${op.name}')" class="w-full text-right p-1.5 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> الملحق</button>
                                 </div>
