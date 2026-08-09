@@ -1670,7 +1670,7 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
-        // الاستماع المباشر للتحديثات من السحابي (Firebase Realtime Database) لضمان المزامنة الفورية
+        // الربط المباشر بالسيرفر السحابي لضمان المزامنة الفورية بين الأجهزة
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data && data.operations) {
@@ -1696,7 +1696,6 @@
             if(!DB.awards) DB.awards = [];
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             
-            // رفع البيانات فوراً للسيرفر السحابي لتسمع لدى جميع الأجهزة المتصلة
             dbRef.set(DB).then(() => {
                 updateNotifications();
                 renderAll();
@@ -2359,7 +2358,6 @@
                     <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مرفقات</th><th>العقد</th><th class="no-print">إجراءات</th>
                 `;
                 filteredAwards.forEach((aw) => {
-                    // إيجاد الفهرس الحقيقي للبند داخل قاعدة البيانات العامة DB.awards لتجنب أخطاء الفلترة
                     const realIdx = DB.awards.findIndex(a => a.opId === aw.opId && a.item === aw.item && a.supp === aw.supp);
                     const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
                     const dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
