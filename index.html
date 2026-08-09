@@ -1050,7 +1050,7 @@
     </div>
 
     <script>
-        // إعدادات الـ Intro الجديد (لوجو + بار تحميل متحرك)
+        // إعدادات الـ Intro (لوجو + بار تحميل متحرك)
         window.addEventListener('load', function() {
             setTimeout(() => {
                 const bar = document.getElementById('intro-loading-bar');
@@ -1670,17 +1670,18 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
-        // الربط المباشر بالسيرفر السحابي لضمان المزامنة الفورية بين الأجهزة
+        // الاستماع المباشر للتحديثات من السحابي (Firebase Realtime Database) مع تأمين الـ Arrays
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
-            if (data && data.operations) {
+            if (data) {
                 DB = data;
+                // التأكد من أن الجداول مصفوفات حقيقية وليست كائنات لتفادي أي أخطاء مزامنة
+                DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
+                DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
+                DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
                 if (!DB.archives) DB.archives = {};
-                if (!DB.suppliers) DB.suppliers = [];
-                if (!DB.operations) DB.operations = [];
-                if (!DB.awards) DB.awards = [];
                 DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
-            } else if (!DB.operations || DB.operations.length === 0) {
+            } else {
                 DB = defaultDB;
             }
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
