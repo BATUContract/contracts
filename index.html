@@ -279,20 +279,15 @@
         }
 
         @media print {
-            @page { size: A4 landscape; margin: 5mm; }
+            @page { size: A4 portrait; margin: 10mm; }
             html, body, main { background: white !important; height: auto !important; width: 100% !important; overflow: visible !important; color: black !important; }
             .no-print, nav, #top-nav-bar, .modal { display: none !important; }
             .view-section { display: none !important; }
             .view-section.active { display: block !important; width: 100% !important; }
-            .logo-print { display: block !important; }
-            .excel-table-container { height: auto !important; width: 100% !important; border: none !important; box-shadow: none !important; background: white !important; }
-            table.excel-table { border-collapse: collapse !important; width: 100% !important; }
-            th, td { border: 1px solid #000 !important; font-size: 6pt !important; padding: 2px !important; color: black !important; background: white !important; }
-            th { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .print-header { display: block !important; text-align: center; margin-bottom: 12px; border-bottom: 2px solid #333; padding-bottom: 5px; }
-            .print-footer { display: flex !important; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid #777; padding-top: 4px; font-size: 6.5pt; color: #222; font-weight: bold; }
+            #modal-doc-preview { position: absolute !important; inset: 0 !important; background: white !important; padding: 0 !important; z-index: 999999 !important; }
+            #modal-doc-preview > div { max-width: 100% !important; height: auto !important; box-shadow: none !important; border: none !important; }
+            .doc-print-container { padding: 0 !important; }
         }
-        .print-footer { display: none; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen intro-active">
@@ -753,6 +748,20 @@
         </div>
 
         <!-- MODALS -->
+
+        <!-- Official Document Print / Preview Modal -->
+        <div id="modal-doc-preview" class="fixed inset-0 bg-slate-900/80 z-[120] hidden items-center justify-center p-4 backdrop-blur-sm">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700">
+                <div class="p-4 bg-slate-50 dark:bg-slate-900 flex justify-between items-center border-b dark:border-slate-700 no-print">
+                    <h3 class="font-black text-sm text-slate-800 dark:text-white">معاينة المستند الرسمي (قابل للتعديل والطباعة)</h3>
+                    <div class="flex gap-2">
+                        <button onclick="playSound('click'); window.print()" class="bg-primary hover:bg-primaryHover text-white px-4 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"><i class="fa-solid fa-print"></i> طباعة المستند</button>
+                        <button onclick="playSound('click'); closeModal('modal-doc-preview')" class="text-slate-400 hover:text-red-500 text-lg"><i class="fa-solid fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="flex-1 bg-slate-100 dark:bg-slate-950 flex items-center justify-center p-4 overflow-auto doc-print-container" id="doc-preview-body"></div>
+            </div>
+        </div>
 
         <!-- Google Drive Folder Link Setup Modal -->
         <div id="modal-drive" class="fixed inset-0 bg-slate-900/70 z-[90] hidden items-center justify-center p-3 backdrop-blur-sm">
@@ -1664,7 +1673,7 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
-        // الربط المباشر بالسيرفر السحابي لضمان التزامن اللحظي بين الأجهزة
+        // الاستماع المباشر للتحديثات من السحابي (Firebase Realtime Database)
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -1699,8 +1708,6 @@
             });
         }
 
-        // تم إلغاء كود الـ UNDO بالكامل لمنع أي تعارض أو توقف خفي في الحذف
-
         function deleteOp(id) { 
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
@@ -1720,6 +1727,137 @@
                 saveDB(); 
                 alert('تم حذف العملية بنجاح!');
             } 
+        }
+
+        // --- دوال فتح وطباعة أوامر التوريد والترسية الرسمية ---
+        function openOfficialDoc(type, realIdx) {
+            playSound('click');
+            const aw = DB.awards[realIdx];
+            if(!aw) return alert('بيانات الترسية غير موجودة');
+            const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
+            const sup = (DB.suppliers || []).find(s => s.name === aw.supp) || { addr: 'مصر', phone: '-' };
+            const gVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
+
+            let html = '';
+            if (type === 'award') {
+                html = `
+                <div class="bg-white p-8 text-slate-900 max-w-3xl mx-auto font-cairo text-right" dir="rtl">
+                    <div class="flex justify-between items-center border-b-2 border-slate-800 pb-4 mb-6">
+                        <div>
+                            <h2 class="text-base font-black">جامعة برج العرب التكنولوجية</h2>
+                            <p class="text-xs font-bold text-slate-600">إدارة التعاقدات والتوريدات</p>
+                        </div>
+                        <div class="text-left">
+                            <h1 class="text-lg font-black text-primary">أمر ترسية</h1>
+                            <p class="text-[11px] font-semibold text-slate-500">التاريخ: <span contenteditable="true">${new Date().toLocaleDateString('ar-EG')}</span></p>
+                        </div>
+                    </div>
+                    <div class="mb-6 space-y-1.5 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <p><strong>السادة شركة /</strong> <span contenteditable="true" class="font-bold text-primary">${aw.supp}</span></p>
+                        <p><strong>العنوان /</strong> <span contenteditable="true">${sup.addr || 'مصر'}</span></p>
+                        <p><strong>تليفون /</strong> <span contenteditable="true">${sup.phone || '-'}</span></p>
+                        <hr class="border-slate-200 my-2">
+                        <p class="leading-relaxed">
+                            إيماءاً إلى العرض الفني والمالي المقدم من شركتكم الموقرة الخاصة بـ <span contenteditable="true">${op.type || 'المناقصة العامة'}</span> رقم (<span contenteditable="true">${aw.opId}</span>) للعام المالي <span contenteditable="true">2025/2026</span> م عملية <span contenteditable="true">${op.name || 'توريد وتركيب وتشغيل وتدريب الأجهزة'}</span>[cite: 1].
+                            تم الترسية على شركتكم الموقرة طبقاً للشروط والمواصفات الواردة بكراسة الشروط والمواصفات الفنية وبعرضكم الفني والمالي وملحقاته وذلك كالتالي[cite: 1]:
+                        </p>
+                    </div>
+                    <div class="mb-6 overflow-x-auto">
+                        <table class="w-full border-collapse border border-slate-300 text-center text-xs">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="border border-slate-300 p-2">م</th>
+                                    <th class="border border-slate-300 p-2 text-right">البند / اللوط</th>
+                                    <th class="border border-slate-300 p-2">الإجمالي شامل ضريبة القيمة المضافة (ج.م)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-slate-300 p-2">1</td>
+                                    <td class="border border-slate-300 p-2 text-right font-bold" contenteditable="true">${aw.item}[cite: 1]</td>
+                                    <td class="border border-slate-300 p-2 font-black text-emerald-600" contenteditable="true">${fmt.format(aw.val)} جنيه[cite: 1]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mb-6 text-xs bg-amber-50 p-4 rounded-xl border border-amber-200 text-amber-900 leading-relaxed font-semibold">
+                        لذا يرجى التكرم من سيادتكم بموافاتنا بقيمة التأمين النهائي بقيمة (5%) من إجمالي قيمة العملية سالفة الذكر التي تم ترسيتها على سيادتكم وقدرها (<span contenteditable="true">${fmt.format(gVal)} جنيهاً</span>) وذلك في خلال عشرة أيام من تاريخه[cite: 1].
+                    </div>
+                    <div class="flex justify-between items-center pt-8 border-t border-slate-200 text-center text-xs font-bold mt-16">
+                        <div><p>مسؤول إدارة التعاقدات</p><div class="h-10"></div></div>
+                        <div><p>مدير إدارة التعاقدات</p><div class="h-10"></div></div>
+                        <div><p>أمين عام الجامعة</p><div class="h-10"></div></div>
+                    </div>
+                </div>`;
+            } else {
+                html = `
+                <div class="bg-white p-8 text-slate-900 max-w-3xl mx-auto font-cairo text-right" dir="rtl">
+                    <div class="flex justify-between items-center border-b-2 border-slate-800 pb-4 mb-6">
+                        <div>
+                            <h2 class="text-base font-black">جامعة برج العرب التكنولوجية</h2>
+                            <p class="text-xs font-bold text-slate-600">إدارة التعاقدات والتوريدات</p>
+                        </div>
+                        <div class="text-left">
+                            <h1 class="text-lg font-black text-primary" contenteditable="true">أمر توريد رقم (${aw.poNum || '34'})</h1>
+                            <p class="text-[11px] font-semibold text-slate-500">التاريخ: <span contenteditable="true">${aw.poDate || new Date().toLocaleDateString('ar-EG')}</span></p>
+                        </div>
+                    </div>
+                    <div class="mb-6 space-y-1.5 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <p><strong>السادة شركة /</strong> <span contenteditable="true" class="font-bold text-primary">${aw.supp}</span></p>
+                        <p><strong>العنوان /</strong> <span contenteditable="true">${sup.addr || 'مصر'}</span></p>
+                        <p><strong>تليفون /</strong> <span contenteditable="true">${sup.phone || '-'}</span></p>
+                        <hr class="border-slate-200 my-2">
+                        <p class="leading-relaxed">
+                            إيماءاً إلى العرض الفني والمالي المقدم من شركتكم الموقرة الخاصة بـ <span contenteditable="true">${op.type || 'المناقصة العامة'}</span> رقم (<span contenteditable="true">${aw.opId}</span>) للعام المالي <span contenteditable="true">2025/2026</span> م، تم ترسية <span contenteditable="true" class="font-bold">${aw.item}</span> على شركتكم طبقاً للشروط والمواصفات الواردة بكراسة الشروط وبعرضكم الفني والمالي وملحقاته كما يلي[cite: 2, 4]:
+                        </p>
+                    </div>
+                    <div class="mb-6 overflow-x-auto">
+                        <table class="w-full border-collapse border border-slate-300 text-center text-xs">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="border border-slate-300 p-2">رقم البند</th>
+                                    <th class="border border-slate-300 p-2 text-right">وصف البند / الصنف</th>
+                                    <th class="border border-slate-300 p-2">الوحدة</th>
+                                    <th class="border border-slate-300 p-2">الكمية</th>
+                                    <th class="border border-slate-300 p-2">سعر الوحدة (ج.م)</th>
+                                    <th class="border border-slate-300 p-2">الإجمالي (ج.م)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-slate-300 p-2">1</td>
+                                    <td class="border border-slate-300 p-2 text-right" contenteditable="true">${aw.item}</td>
+                                    <td class="border border-slate-300 p-2" contenteditable="true">عدد</td>
+                                    <td class="border border-slate-300 p-2" contenteditable="true">1</td>
+                                    <td class="border border-slate-300 p-2" contenteditable="true">${fmt.format(aw.val)}</td>
+                                    <td class="border border-slate-300 p-2 font-bold" contenteditable="true">${fmt.format(aw.val)}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-slate-50 font-black">
+                                    <td colspan="5" class="border border-slate-300 p-2 text-left">الإجمالي العام (شامل ضريبة القيمة المضافة):</td>
+                                    <td class="border border-slate-300 p-2 text-emerald-600" contenteditable="true">${fmt.format(aw.val)} جنيه</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="mb-6 text-[11px] bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1">
+                        <h4 class="font-bold text-slate-800 mb-1">الشروط العامة للتوريد[cite: 2, 4]:</h4>
+                        <p>1. مدة التوريد خلال <span contenteditable="true">${aw.days || 30} يوم</span> من تاريخ استلام أمر التوريد[cite: 2, 4].</p>
+                        <p>2. الأسعار شاملة ضريبة القيمة المضافة[cite: 2, 4].</p>
+                        <p>3. طريقة السداد <span contenteditable="true">100% بعد الفحص والاستلام</span>[cite: 2, 4].</p>
+                        <p>4. الضمان لمدة <span contenteditable="true">عام</span> من تاريخ التوريد/التشغيل[cite: 2, 4].</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-8 border-t border-slate-200 text-center text-xs font-bold mt-16">
+                        <div><p>مسؤول إدارة التعاقدات</p><div class="h-10"></div></div>
+                        <div><p>مدير إدارة التعاقدات</p><div class="h-10"></div></div>
+                        <div><p>أمين عام الجامعة</p><div class="h-10"></div></div>
+                    </div>
+                </div>`;
+            }
+
+            document.getElementById('doc-preview-body').innerHTML = html;
+            openModal('modal-doc-preview');
         }
 
         function compressAndConvertFile(file, maxWidth = 800, quality = 0.5) {
@@ -2243,7 +2381,7 @@
                         <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
                         <td>
                             <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
                                 <div class="attachment-menu">
                                     <button onclick="openDirectArchive('op_approval', ${op.id}, 'ملحق العقد: ${op.name}')" class="w-full text-right p-1.5 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> الملحق</button>
                                 </div>
@@ -2290,7 +2428,7 @@
 
             if (currentAwardSubTab === 'direct') {
                 trHead.innerHTML = `
-                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مرفقات</th><th>العقد</th><th class="no-print">إجراءات</th>
+                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مستندات رسمية</th><th>مرفقات</th><th>العقد</th><th class="no-print">إجراءات</th>
                 `;
                 filteredAwards.forEach((aw) => {
                     const realIdx = DB.awards.findIndex(a => a.opId === aw.opId && a.item === aw.item && a.supp === aw.supp);
@@ -2311,6 +2449,12 @@
                         <td>${aw.days}</td>
                         <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
                         <td>
+                            <div class="flex gap-1 justify-center">
+                                <button onclick="openOfficialDoc('award', ${realIdx})" class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر ترسية"><i class="fa-solid fa-award"></i> ترسية</button>
+                                <button onclick="openOfficialDoc('purchase', ${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر توريد"><i class="fa-solid fa-file-invoice"></i> توريد</button>
+                            </div>
+                        </td>
+                        <td>
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
@@ -2326,7 +2470,7 @@
                 });
             } else if (currentAwardSubTab === 'renewal') {
                 trHead.innerHTML = `
-                    <th>العملية</th><th>نوع التجديد</th><th>وصف البند / العقد</th><th>الشركة</th><th>القيمة</th><th>حالة العقد</th><th>تاريخ البدء</th><th>تاريخ الانتهاء</th><th>مرفقات</th><th class="no-print">إجراءات</th>
+                    <th>العملية</th><th>نوع التجديد</th><th>وصف البند / العقد</th><th>الشركة</th><th>القيمة</th><th>حالة العقد</th><th>تاريخ البدء</th><th>تاريخ الانتهاء</th><th>مستندات رسمية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
                 `;
                 filteredAwards.forEach((aw) => {
                     const realIdx = DB.awards.findIndex(a => a.opId === aw.opId && a.item === aw.item && a.supp === aw.supp);
@@ -2340,6 +2484,11 @@
                         <td><span class="pill green">ساري</span></td>
                         <td class="text-[11px]">${aw.poDate || '-'}</td>
                         <td class="text-[11px]">${aw.gIssuance || '-'}</td>
+                        <td>
+                            <div class="flex gap-1 justify-center">
+                                <button onclick="openOfficialDoc('award', ${realIdx})" class="bg-purple-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm"><i class="fa-solid fa-award"></i> ملحق</button>
+                            </div>
+                        </td>
                         <td>
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
@@ -2355,7 +2504,7 @@
                 });
             } else {
                 trHead.innerHTML = `
-                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>التأمين النهائي</th><th>موقف الضمان</th><th>رقم الضمان</th><th>البنك المصدر</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مرفقات</th><th>رد التأمين الابتدائي</th><th>العقد</th><th class="no-print">إجراءات</th>
+                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>التأمين النهائي</th><th>موقف الضمان</th><th>رقم الضمان</th><th>البنك المصدر</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مستندات رسمية</th><th>مرفقات</th><th>رد التأمين الابتدائي</th><th>العقد</th><th class="no-print">إجراءات</th>
                 `;
                 filteredAwards.forEach((aw) => {
                     const realIdx = DB.awards.findIndex(a => a.opId === aw.opId && a.item === aw.item && a.supp === aw.supp);
@@ -2382,6 +2531,12 @@
                         <td class="font-bold">${aw.poNum || '-'}</td>
                         <td>${aw.days}</td>
                         <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
+                        <td>
+                            <div class="flex gap-1 justify-center">
+                                <button onclick="openOfficialDoc('award', ${realIdx})" class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر ترسية"><i class="fa-solid fa-award"></i> ترسية</button>
+                                <button onclick="openOfficialDoc('purchase', ${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر توريد"><i class="fa-solid fa-file-invoice"></i> توريد</button>
+                            </div>
+                        </td>
                         <td>
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
