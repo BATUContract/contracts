@@ -750,7 +750,7 @@
         <!-- MODALS -->
 
         <!-- Operation Lifecycle Story Modal -->
-        <div id="modal-op-story" class="fixed inset-0 bg-slate-900/80 z-[110] hidden items-center justify-center p-3 backdrop-blur-md">
+        <div id="modal-op-story" class="fixed inset-0 bg-slate-900/80 z-[110] hidden items-center justify-center p-4 backdrop-blur-md">
             <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl shadow-2xl w-full max-w-5xl flex flex-col max-h-[95vh] overflow-hidden border border-slate-200 dark:border-slate-700">
                 <div class="p-4 bg-indigo-600 text-white flex justify-between items-center no-print">
                     <h3 class="font-black text-sm"><i class="fa-solid fa-book-bookmark"></i> قصة العملية والموقف التنفيذي (سرد زمني وتدقيق قانون 182)</h3>
@@ -1361,12 +1361,10 @@
                       "bankBranch": "الفرع"
                     }`;
                 } else {
-                    promptText = `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات ومحاضر الفتح والبت (فتح مظاريف فنية، محضر بت 1، محضر تظلمات أو بت 3 إن وجد، محضر فتح مظاريف مالية، ومحضر البت المالي النهائي) بدقة بالغة. استخرج التواريخ حسب القواعد التالية:
-                    - date2: تاريخ محضر فتح المظاريف الفنية (YYYY-MM-DD).
-                    - date3: تاريخ التقرير الفني. ولو لم تجد تاريخ تقرير منفصل، خذ تاريخ محضر البت الأول (محضر بت 1) نفسه (YYYY-MM-DD).
-                    - date4: تاريخ تقرير اللجنة بعد التظلمات أو محضر البت الثالث إن وجد (YYYY-MM-DD)، واتركه فارغاً لو لم تكن هناك تظلمات.
-                    - date5: تاريخ محضر فتح المظاريف المالية (YYYY-MM-DD).
-                    - date6: تاريخ محضر البت المالي النهائي (YYYY-MM-DD).
+                    promptText = `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات ومحاضر الفتح والبت والمظاريف (فتح فني، بت أول، تظلمات/بت ثالث، فتح مالي، بت نهائي) بالكامل. استخرج التفاصيل بدقة تامة لإنشاء سجل زمني مفصل وقصة كاملة للعملية تتضمن:
+                    - كافة الشركات التي تقدمت (مقبولة ومرفوضة مع ذكر أسباب الرفض الحرفية).
+                    - تفاصيل التظلمات (إن وجدت) وموقف قبولها أو رفضها.
+                    - تسلسل زمني دقيق للمحطات.
                     
                     أخرج النتائج بصيغة JSON فقط وبدون أي نصوص إضافية بالهيكل التالي:
                     {
@@ -1386,6 +1384,26 @@
                       "date5": "تاريخ محضر فتح المظاريف المالية YYYY-MM-DD",
                       "date6": "تاريخ محضر البت المالي النهائي YYYY-MM-DD",
                       "status": "الموقف الحالي",
+                      "story": {
+                        "summary": "ملخص تنفيذي سردي مفصل للقصة الكاملة للعملية من الطرح للترسية والتعاقد",
+                        "milestones": [
+                          { "step": "اعتماد الموازنة والطرح", "date": "YYYY-MM-DD" },
+                          { "step": "جلسة فتح المظاريف الفنية", "date": "YYYY-MM-DD" },
+                          { "step": "استلام التقرير الفني والبت الأول", "date": "YYYY-MM-DD" },
+                          { "step": "لجنة التظلمات والبِت الثالث", "date": "YYYY-MM-DD" },
+                          { "step": "فتح المظاريف المالية والبت النهائي", "date": "YYYY-MM-DD" }
+                        ],
+                        "companiesAnalysis": [
+                          {
+                            "name": "اسم الشركة",
+                            "techStatus": "مقبول أو مرفوض",
+                            "reason": "سبب الرفض الفني بالتفصيل أو عبارة مقبول فنياً",
+                            "financialVal": القيمة المالية المقدمة كعدد,
+                            "grievance": "لا يوجد أو تفاصيل التظلم وموقفه",
+                            "finalResult": "فائز بالترسية أو مرفوض"
+                          }
+                        ]
+                      },
                       "awards": [
                         {
                           "item": "وصف البند أو اللوط",
@@ -1493,7 +1511,7 @@
                     document.getElementById('ai-staging-results-container').classList.remove('hidden');
                 }
 
-                alert("تم استخراج البيانات والمحاضر والتواريخ بواسطة Gemini بنجاح تام!");
+                alert("تم استخراج البيانات والمحاضر وتواريخ الفتح والبت والقصة الكاملة بواسطة Gemini بنجاح تام!");
 
             } catch(err) {
                 console.error(err);
@@ -1664,7 +1682,25 @@
                         date4: globalParsedData.date4 || '',
                         date5: globalParsedData.date5 || '',
                         date6: globalParsedData.date6 || '',
-                        total: totalVal
+                        total: totalVal,
+                        story: globalParsedData.story || {
+                            summary: `تم طرح المناقصة العامة رقم (${opId}) بشأن (${opName}) لصالح (${opEntity})، وقد مرت الدورة المستندية بجميع المراحل القانونية.`,
+                            milestones: [
+                                { step: 'اعتماد الموازنة والطرح', date: globalParsedData.approvalDate || '-' },
+                                { step: 'جلسة فتح المظاريف الفنية', date: globalParsedData.date2 || '-' },
+                                { step: 'استلام التقرير الفني والبت الأول', date: globalParsedData.date3 || '-' },
+                                { step: 'لجنة التظلمات والبِت الثالث', date: globalParsedData.date4 || '-' },
+                                { step: 'فتح المظاريف المالية والبت النهائي', date: globalParsedData.date6 || '-' }
+                            ],
+                            companiesAnalysis: awardsList.map(a => ({
+                                name: a.supp,
+                                techStatus: 'مقبول فنياً',
+                                reason: 'استوفى الشروط والمواصفات الفنية الواردة بكراسة الشروط',
+                                financialVal: a.val,
+                                grievance: 'لا يوجد',
+                                finalResult: 'فائز بالترسية'
+                            }))
+                        }
                     });
                 } else {
                     let op = DB.operations.find(o => o.id == opId);
@@ -1676,12 +1712,13 @@
                         op.date4 = globalParsedData.date4 || op.date4;
                         op.date5 = globalParsedData.date5 || op.date5;
                         op.date6 = globalParsedData.date6 || op.date6;
+                        if(globalParsedData.story) op.story = globalParsedData.story;
                     }
                 }
 
                 saveDB();
                 closeModal('modal-smart-staging');
-                alert('تم ترحيل كافة البيانات والمحاضر وتواريخ الفتح والبت أوتوماتيكياً بنجاح تام!');
+                alert('تم ترحيل كافة البيانات والمحاضر وتواريخ الفتح والبت والقصة الكاملة أوتوماتيكياً بنجاح تام!');
             } catch(err) {
                 console.error(err);
                 alert('خطأ أثناء الترحيل: ' + err.message);
@@ -1749,7 +1786,7 @@
             } 
         }
 
-        // --- ميزة قصة العملية والموقف التنفيذي للإدارة العليا ---
+        // --- ميزة قصة العملية والموقف التنفيذي للإدارة العليا (تفصيلي بالكامل) ---
         function openOperationStory(opId) {
             playSound('click');
             const op = (DB.operations || []).find(o => o.id == opId);
@@ -1764,43 +1801,49 @@
                         { step: 'استلام التقرير الفني', date: op.date3 || '-' },
                         { step: 'جلسة فتح المظاريف المالية', date: op.date5 || '-' },
                         { step: 'البت المالي النهائي والترسية', date: op.date6 || '-' }
-                    ]
+                    ],
+                    companiesAnalysis: (DB.awards || []).filter(a => a.opId == opId).map(a => ({
+                        name: a.supp,
+                        techStatus: 'مقبول فنياً',
+                        reason: 'استوفى الشروط والمواصفات الفنية',
+                        financialVal: a.val,
+                        grievance: 'لا يوجد',
+                        finalResult: 'فائز بالترسية'
+                    }))
                 };
             }
 
-            const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(opId));
-
             let html = `
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-6 text-right" dir="rtl">
-                    <!-- رأس التقرير للطباعة -->
+                    <!-- رأس التقرير للطباعة (بالصيغة المطلوبة بالظبط) -->
                     <div class="hidden print-header text-center mb-6">
                         <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="mx-auto" style="height: 60px;">
-                        <h2 class="font-black text-lg text-slate-900 mt-2">تقرير الموقف التنفيذي والقصة الكاملة للعملية التعاقدية</h2>
-                        <h3 class="font-bold text-slate-600 text-xs">جامعة برج العرب التكنولوجية - إدارة التعاقدات</h3>
+                        <h2 class="font-black text-lg text-slate-900 mt-2">تقرير تفصيلي للعملية رقم ${op.id} (${op.name})</h2>
+                        <h3 class="font-bold text-slate-600 text-xs">جامعة برج العرب التكنولوجية - إدارة التعاقدات والتوريدات</h3>
                     </div>
 
                     <div class="bg-indigo-50 dark:bg-indigo-950/40 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
                         <h4 class="font-black text-xs text-indigo-900 dark:text-indigo-300 mb-1">البيانات الأساسية للعملية:</h4>
-                        <p class="text-xs font-bold">رقم العملية: ${op.id} | اسم العملية: ${op.name} | الجهة: ${op.entity} | الموقف: <span class="pill blue">${op.status}</span></p>
+                        <p class="text-xs font-bold">رقم العملية: ${op.id} | اسم العملية: ${op.name} | الجهة: ${op.entity} | الموقف الحالي: <span class="pill blue">${op.status}</span></p>
                     </div>
 
                     <div>
-                        <h4 class="font-black text-xs text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-pen-nib text-primary"></i> الملخص التنفيذي للقصة (قابل للتعديل):</h4>
-                        <textarea id="story-summary-input" rows="3" class="w-full border dark:border-slate-600 rounded-xl p-3 text-xs bg-slate-50 dark:bg-slate-900 dark:text-white font-semibold leading-relaxed outline-none focus:ring-2 focus:ring-primary">${op.story.summary || ''}</textarea>
+                        <h4 class="font-black text-xs text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-pen-nib text-primary"></i> الملخص التنفيذي وقصة العملية (قابل للتعديل):</h4>
+                        <textarea id="story-summary-input" rows="4" class="w-full border dark:border-slate-600 rounded-xl p-3 text-xs bg-slate-50 dark:bg-slate-900 dark:text-white font-semibold leading-relaxed outline-none focus:ring-2 focus:ring-primary">${op.story.summary || ''}</textarea>
                     </div>
 
                     <div>
-                        <h4 class="font-black text-xs text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-clock-rotate-left text-amber-500"></i> جدول المحطات الزمنية والتواريخ:</h4>
+                        <h4 class="font-black text-xs text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-clock-rotate-left text-amber-500"></i> التسلسل الزمني والمحطات الإجرائية (قانون 182):</h4>
                         <div class="excel-table-container">
                             <table class="excel-table w-full">
                                 <thead>
                                     <tr class="bg-slate-100 dark:bg-slate-900">
-                                        <th>المحطة الإجرائية</th>
+                                        <th>المحطة أو الإجراء</th>
                                         <th>التاريخ المسجل</th>
                                     </tr>
                                 </thead>
                                 <tbody id="story-milestones-tbody">
-                                    ${op.story.milestones.map((m, idx) => `
+                                    ${(op.story.milestones || []).map((m, idx) => `
                                         <tr>
                                             <td class="font-bold text-right">${m.step}</td>
                                             <td><input type="date" value="${m.date}" class="story-ms-date border dark:border-slate-600 rounded px-2 py-1 text-xs bg-transparent dark:text-white font-mono" data-index="${idx}"></td>
@@ -1812,26 +1855,40 @@
                     </div>
 
                     <div>
-                        <h4 class="font-black text-xs text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-building-user text-emerald-500"></i> موقف الشركات المتقدمة والترسيات للعملية:</h4>
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-black text-xs text-slate-800 dark:text-white"><i class="fa-solid fa-building-user text-emerald-500"></i> جدول تحليل الشركات المتقدمة (مقبول / مرفوض / التظلمات وأسباب الرفض):</h4>
+                            <button onclick="addCompanyAnalysisRow()" class="bg-primary text-white px-2.5 py-1 rounded-lg text-[10px] font-bold no-print"><i class="fa-solid fa-plus"></i> إضافة شركة</button>
+                        </div>
                         <div class="excel-table-container">
                             <table class="excel-table w-full">
                                <thead>
                                     <tr class="bg-slate-100 dark:bg-slate-900">
-                                        <th>البند / اللوط</th>
-                                        <th>الشركة الفائزة / المتقدمة</th>
-                                        <th>قيمة الترسية (ج.م)</th>
-                                        <th>حالة البند / الترسية</th>
+                                        <th>اسم الشركة</th>
+                                        <th>الموقف الفني</th>
+                                        <th>سبب الرفض / الملاحظات الفنية</th>
+                                        <th>القيمة المالية (ج.م)</th>
+                                        <th>موقف التظلمات</th>
+                                        <th>النتيجة النهائية</th>
+                                        <th class="no-print">إجراء</th>
                                     </tr>
                                </thead>
-                               <tbody>
-                                    ${relatedAwards.length > 0 ? relatedAwards.map(a => `
-                                        <tr>
-                                            <td class="font-bold text-right">${a.item}</td>
-                                            <td class="text-primary font-bold">${a.supp}</td>
-                                            <td class="font-black text-emerald-600">${fmt.format(a.val)}</td>
-                                            <td><span class="pill green">${a.awardStatus || 'تم الترسية'}</span></td>
+                               <tbody id="story-companies-tbody">
+                                    ${(op.story.companiesAnalysis || []).map((c, cIdx) => `
+                                        <tr class="company-row">
+                                            <td><input type="text" value="${c.name || ''}" class="c-name border rounded px-2 py-1 text-xs w-full bg-transparent font-bold"></td>
+                                            <td>
+                                                <select class="c-tech border rounded px-2 py-1 text-xs bg-transparent font-bold">
+                                                    <option ${c.techStatus === 'مقبول فنياً' ? 'selected' : ''}>مقبول فنياً</option>
+                                                    <option ${c.techStatus === 'مرفوض فنياً' ? 'selected' : ''}>مرفوض فنياً</option>
+                                                </select>
+                                            </td>
+                                            <td><input type="text" value="${c.reason || ''}" class="c-reason border rounded px-2 py-1 text-xs w-full bg-transparent"></td>
+                                            <td><input type="number" step="0.01" value="${c.financialVal || 0}" class="c-val border rounded px-2 py-1 text-xs w-full bg-transparent font-mono"></td>
+                                            <td><input type="text" value="${c.grievance || 'لا يوجد'}" class="c-grievance border rounded px-2 py-1 text-xs w-full bg-transparent"></td>
+                                            <td><input type="text" value="${c.finalResult || 'معلق'}" class="c-result border rounded px-2 py-1 text-xs w-full bg-transparent font-bold text-primary"></td>
+                                            <td class="no-print"><button onclick="this.closest('tr').remove()" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button></td>
                                         </tr>
-                                    `).join('') : '<tr><td colspan="4" class="text-center text-slate-400 py-3">لا توجد ترسيات مرتبطة بهذه العملية حتى الآن</td></tr>'}
+                                    `).join('')}
                                </tbody>
                             </table>
                         </div>
@@ -1850,6 +1907,26 @@
             openModal('modal-op-story');
         }
 
+        function addCompanyAnalysisRow() {
+            const tbody = document.getElementById('story-companies-tbody');
+            tbody.innerHTML += `
+                <tr class="company-row">
+                    <td><input type="text" placeholder="اسم الشركة..." class="c-name border rounded px-2 py-1 text-xs w-full bg-transparent font-bold"></td>
+                    <td>
+                        <select class="c-tech border rounded px-2 py-1 text-xs bg-transparent font-bold">
+                            <option>مقبول فنياً</option>
+                            <option>مرفوض فنياً</option>
+                        </select>
+                    </td>
+                    <td><input type="text" placeholder="سبب الرفض..." class="c-reason border rounded px-2 py-1 text-xs w-full bg-transparent"></td>
+                    <td><input type="number" step="0.01" value="0" class="c-val border rounded px-2 py-1 text-xs w-full bg-transparent font-mono"></td>
+                    <td><input type="text" value="لا يوجد" class="c-grievance border rounded px-2 py-1 text-xs w-full bg-transparent"></td>
+                    <td><input type="text" value="قيد الدراسة" class="c-result border rounded px-2 py-1 text-xs w-full bg-transparent font-bold text-primary"></td>
+                    <td class="no-print"><button onclick="this.closest('tr').remove()" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `;
+        }
+
         function saveOperationStoryData() {
             const modal = document.getElementById('modal-op-story');
             const opId = modal.dataset.opId;
@@ -1859,8 +1936,9 @@
             const summary = document.getElementById('story-summary-input').value;
             const dateInputs = document.querySelectorAll('.story-ms-date');
             
-            if(!op.story) op.story = { milestones: [] };
+            if(!op.story) op.story = { milestones: [], companiesAnalysis: [] };
             op.story.summary = summary;
+            
             dateInputs.forEach(inp => {
                 let idx = parseInt(inp.dataset.index);
                 if(op.story.milestones[idx]) {
@@ -1868,9 +1946,23 @@
                 }
             });
 
+            const compRows = document.querySelectorAll('.company-row');
+            let newComps = [];
+            compRows.forEach(row => {
+                newComps.push({
+                    name: row.querySelector('.c-name').value,
+                    techStatus: row.querySelector('.c-tech').value,
+                    reason: row.querySelector('.c-reason').value,
+                    financialVal: parseFloat(row.querySelector('.c-val').value) || 0,
+                    grievance: row.querySelector('.c-grievance').value,
+                    finalResult: row.querySelector('.c-result').value
+                });
+            });
+            op.story.companiesAnalysis = newComps;
+
             saveDB();
             closeModal('modal-op-story');
-            alert('تم حفظ وتحديث قصة العملية والموقف التنفيذي بنجاح وتزامنها مع جميع الأجهزة!');
+            alert('تم حفظ وتحديث التقرير التفصيلي للعملية بنجاح وتزامنها مع جميع الأجهزة!');
         }
 
         function printOperationStoryA4() {
@@ -1881,7 +1973,7 @@
                 <html lang="ar" dir="rtl">
                 <head>
                     <meta charset="UTF-8">
-                    <title>تقرير الموقف التنفيذي - جامعة برج العرب التكنولوجية</title>
+                    <title>تقرير تفصيلي للعملية - جامعة برج العرب التكنولوجية</title>
                     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
                     <script src="https://cdn.tailwindcss.com"><\/script>
                     <style>
@@ -1901,7 +1993,7 @@
                     <div class="print-header">
                         <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" style="height: 65px; margin: 0 auto 5px;">
                         <h2 style="font-weight: 900; font-size: 16px;">جامعة برج العرب التكنولوجية</h2>
-                        <h3 style="font-weight: 700; font-size: 12px; color: #555;">إدارة التعاقدات والتوريدات - تقرير القصة والموقف التنفيذي</h3>
+                        <h3 style="font-weight: 700; font-size: 12px; color: #555;">إدارة التعاقدات والتوريدات</h3>
                     </div>
                     ${content}
                     <div class="print-footer">
@@ -2905,7 +2997,13 @@
                 total: 0 
             };
             const idx = DB.operations.findIndex(o => o.id === id);
-            if (idx >= 0) { newOp.total = DB.operations[idx].total; DB.operations[idx] = newOp; } else DB.operations.unshift(newOp);
+            if (idx >= 0) { 
+                newOp.total = DB.operations[idx].total; 
+                if(DB.operations[idx].story) newOp.story = DB.operations[idx].story;
+                DB.operations[idx] = newOp; 
+            } else {
+                DB.operations.unshift(newOp);
+            }
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             closeModal('modal-op'); saveDB();
         }
