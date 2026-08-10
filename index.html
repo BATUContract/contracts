@@ -1664,7 +1664,7 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
-        // الاستماع المباشر للتحديثات من السحابي (Firebase Realtime Database)
+        // الربط المباشر بالسيرفر السحابي لضمان التزامن اللحظي بين الأجهزة
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -1698,6 +1698,8 @@
                 alert("حدث خطأ في مزامنة البيانات مع السيرفر، تحقق من اتصال الإنترنت.");
             });
         }
+
+        // تم إلغاء كود الـ UNDO بالكامل لمنع أي تعارض أو توقف خفي في الحذف
 
         function deleteOp(id) { 
             if(!DB.operations) DB.operations = [];
@@ -2340,7 +2342,7 @@
                         <td class="text-[11px]">${aw.gIssuance || '-'}</td>
                         <td>
                             <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
                                     <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
                                 </div>
