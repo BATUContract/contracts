@@ -749,7 +749,7 @@
 
         <!-- MODALS -->
 
-        <!-- Operation Lifecycle Story Modal -->
+        <!-- Operation Detailed Story Modal -->
         <div id="modal-op-story" class="fixed inset-0 bg-slate-900/80 z-[110] hidden items-center justify-center p-4 backdrop-blur-md">
             <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl shadow-2xl w-full max-w-5xl flex flex-col max-h-[95vh] overflow-hidden border border-slate-200 dark:border-slate-700">
                 <div class="p-4 bg-indigo-600 text-white flex justify-between items-center no-print">
@@ -1804,7 +1804,7 @@
                         estVal: a.estVal || 0,
                         val: a.val,
                         higherThanEst: false,
-                        justification: 'السعر مطابق للقيمة التقديرية ومستوف للشروط الفنية والمالية'
+                        justification: 'السعر مطابق للقيمة التقديرية ومستوف الشروط الفنية والمالية'
                     }))
                 };
             }
@@ -2144,7 +2144,29 @@
             win.document.close();
         }
 
-        // باقي الدوال الأساسية للسيستم...
+        // دوال المودال والإدارة الأساسية
+        function openModal(id) { document.getElementById(id).classList.add('flex'); document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+
+        function switchTab(id) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${id}`).classList.add('active');
+            const nav = document.getElementById('top-nav-bar');
+            if(id === 'home') { nav.classList.add('hidden'); nav.classList.remove('flex'); } 
+            else { 
+                nav.classList.remove('hidden'); nav.classList.add('flex');
+                document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('bg-slate-800', 'text-white'));
+                document.getElementById(`nav-${id}`).classList.add('bg-slate-800', 'text-white');
+            }
+            if(id === 'dashboard') renderDashboard();
+            if(id === 'suppliers') renderSuppliers();
+            if(id === 'operations') setOpSubTab(currentOpSubTab);
+            if(id === 'awards') setAwardSubTab(currentAwardSubTab);
+            if(id === 'query') runQuery();
+        }
+
+        function renderAll() { renderDashboard(); renderOperations(); renderAwards(); renderSuppliers(); renderExecutive(); }
+        window.onload = () => { updateNotifications(); renderAll(); switchTab('home'); };
     </script>
 </body>
 </html>
