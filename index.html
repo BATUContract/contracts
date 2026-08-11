@@ -1753,8 +1753,11 @@
             if(!DB.awards) DB.awards = [];
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             
+            // تنظيف أي قيم undefined قد تسبب رفض من الفايربيس
+            const cleanDB = JSON.parse(JSON.stringify(DB, (k, v) => v === undefined ? null : v));
+
             // حفظ حصري على السيرفر فقط بدون أي تخزين محلي
-            dbRef.set(DB).then(() => {
+            dbRef.set(cleanDB).then(() => {
                 updateNotifications();
                 renderAll();
             }).catch((err) => {
