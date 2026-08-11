@@ -1866,6 +1866,128 @@
             } 
         }
 
+        // --- دوال اللوحة والتقارير الرئيسبة المفقودة سابقاً ---
+        function animateCounter(id, target, isCurrency = false) {
+            const el = document.getElementById(id);
+            if(!el) return;
+            let start = 0;
+            let duration = 1200;
+            let startTime = null;
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                let progress = Math.min((timestamp - startTime) / duration, 1);
+                let current = progress * (target - start) + start;
+                if(isCurrency) {
+                    el.innerText = fmt.format(current);
+                } else {
+                    el.innerText = Math.floor(current);
+                }
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    el.innerText = isCurrency ? fmt.format(target) : target;
+                }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        function renderDashboard() {
+            if(!DB.operations) DB.operations = [];
+            if(!DB.awards) DB.awards = [];
+            const totalOps = DB.operations.length;
+            const totalVal = DB.awards.reduce((sum, aw) => sum + parseFloat(aw.val || 0), 0);
+            let comp = 0, act = 0;
+            const stats = {};
+            DB.operations.forEach(op => {
+                if (op.status === 'مكتمل') comp++; else act++;
+                stats[op.status] = (stats[op.status] || 0) + 1;
+            });
+
+            animateCounter('kpi-total-ops', totalOps, false);
+            animateCounter('kpi-total-val', totalVal, true);
+            animateCounter('kpi-comp-ops', comp, false);
+            animateCounter('kpi-active-ops', act, false);
+
+            const typeBreakdown = {};
+            DB.operations.forEach(op => {
+                let typeName = op.type || 'أخرى';
+                if(!typeBreakdown[typeName]) {
+                    typeBreakdown[typeName] = { count: 0, totalVal: 0 };
+                }
+                typeBreakdown[typeName].count++;
+            });
+
+            DB.awards.forEach(aw => {
+                const op = DB.operations.find(o => o.id == aw.opId);
+                if(op) {
+                    let typeName = op.type || 'أخرى';
+                    if(!typeBreakdown[typeName]) {
+                        typeBreakdown[typeName] = { count: 0, totalVal: 0 };
+                    }
+                    typeBreakdown[typeName].totalVal += parseFloat(aw.val || 0);
+                }
+            });
+
+            const typeTbody = document.getElementById('dash-type-breakdown-tbody');
+            if(typeTbody) {
+                typeTbody.innerHTML = '';
+                if(Object.keys(typeBreakdown).length === 0) {
+                    typeTbody.innerHTML = '<tr><td colspan="4" class="text-center text-slate-400 py-3">لا توجد بيانات مسجلة</td></tr>';
+                } else {
+                    for(let tName in typeBreakdown) {
+                        let tData = typeBreakdown[tName];
+                        let sharePerc = totalOps > 0 ? Math.round((tData.count / totalOps) * 100) : 0;
+                        typeTbody.innerHTML += `
+                            <tr>
+                                <td class="font-bold text-right text-primary dark:text-indigo-400">${tName}</td>
+                                <td><span class="pill blue">${tData.count} عملية</span></td>
+                                <td>
+                                    <div class="flex items-center gap-2 justify-center">
+                                        <div class="w-16 bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden"><div class="bg-indigo-600 h-1.5 rounded-full" style="width: ${sharePerc}%"></div></div>
+                                        <span class="text-[10px] font-bold">${sharePerc}%</span>
+                                    </div>
+                                </td>
+                                <td class="font-black text-emerald-600 dark:text-emerald-400">${fmt.format(tData.totalVal)} ج.م</td>
+                            </tr>
+                        `;
+                    }
+                }
+            }
+
+            const sb = document.getElementById('dash-status-bars'); 
+            if(sb) {
+                sb.innerHTML = '';
+                for (let status in stats) {
+                    let perc = Math.round((stats[status] / (DB.operations.length || 1)) * 100);
+                    sb.innerHTML += `
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                <span>${status}</span>
+                                <span>${perc}% (${stats[status]})</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                                <div class="progress-fill bg-gradient-to-r from-primary to-cyan-500 h-2 rounded-full" style="width: 0%" data-target-width="${perc}%"></div>
+                            </div>
+                        </div>`;
+                }
+            }
+
+            setTimeout(() => {
+                document.querySelectorAll('.progress-fill').forEach(fill => {
+                    fill.style.width = fill.getAttribute('data-target-width');
+                });
+            }, 150);
+
+            const rl = document.getElementById('dash-recent-list'); 
+            if(rl) {
+                rl.innerHTML = '';
+                DB.operations.filter(o => o.status !== 'مكتمل').slice(0, 5).forEach(op => {
+                    rl.innerHTML += `<div class="border-b border-slate-100 dark:border-slate-700 py-2.5 flex justify-between items-center last:border-0"><div><p class="font-bold text-xs text-slate-800 dark:text-slate-200">${op.name}</p><p class="text-[10px] text-slate-400">رقم: ${op.id} - النوع: ${op.type || '-'}</p></div><span class="pill blue">${op.status}</span></div>`;
+                });
+            }
+        }
+
         // --- ميزة تفصيلي العملية (التقرير الإداري وسجل الشركات والتظلمات وحركة الترسية) ---
         function openOperationStory(opId) {
             playSound('click');
@@ -2230,7 +2352,7 @@
             win.document.close();
         }
 
-        // دوال المودال والإدارة الأساسية للسيستم بالكامل
+        // دوال الإدارة والمودالات والتبويبات الأساسية
         function openModal(id) { document.getElementById(id).classList.add('flex'); document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
 
