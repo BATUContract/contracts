@@ -1176,8 +1176,8 @@
                 } else {
                     alert('السيرفر فارغ حالياً.');
                 }
-            }).catch(() => {
-                alert('فشل الاتصال بالسيرفر، تأكد من الإنترنت.');
+            }).catch((err) => {
+                alert('فشل الاتصال بالسيرفر: ' + err.message);
             });
         }
 
@@ -1753,16 +1753,15 @@
             if(!DB.awards) DB.awards = [];
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             
-            // تنظيف أي قيم undefined قد تسبب رفض من الفايربيس
             const cleanDB = JSON.parse(JSON.stringify(DB, (k, v) => v === undefined ? null : v));
 
-            // حفظ حصري على السيرفر فقط بدون أي تخزين محلي
+            // حفظ على السيرفر وإظهار الخطأ الدقيق إن وجد
             dbRef.set(cleanDB).then(() => {
                 updateNotifications();
                 renderAll();
             }).catch((err) => {
                 console.error("Firebase save error:", err);
-                alert("تعذر الحفظ على السيرفر، تحقق من اتصال الإنترنت وقواعد الصلاحيات.");
+                alert("سبب الرفض من السيرفر: " + err.message + " (Code: " + err.code + ")");
             });
         }
 
