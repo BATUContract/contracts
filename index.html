@@ -292,7 +292,7 @@
 </head>
 <body class="flex flex-col min-h-screen intro-active">
 
-    <!-- شاشة الأنترو (لوجو الجامعة + بار التحميل المتحرك) -->
+    <!-- شاشة التمهيد (Intro Overlay) -->
     <div id="intro-overlay">
         <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="intro-logo">
         <div class="loading-bar-container">
@@ -764,7 +764,7 @@
                 </div>
                 <div class="p-4 bg-slate-50 dark:bg-slate-900 flex justify-end gap-2 border-t dark:border-slate-700 no-print">
                     <button onclick="closeModal('modal-op-story')" class="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-700 text-xs font-bold">إغلاق</button>
-                    <button onclick="saveOperationStoryData()" class="px-4 py-2 rounded-xl bg-success text-white text-xs font-bold shadow-sm">حفظ التعديلات والتزامن اللحظي</button>
+                    <button onclick="saveOperationStoryData()" class="px-4 py-2 rounded-xl bg-success text-white text-xs font-bold shadow-sm">حفظ التعديلات والتزامن اللحظي بالسيرفر</button>
                 </div>
             </div>
         </div>
@@ -899,7 +899,7 @@
                         </div>
 
                         <button onclick="commitStagingDataToDB()" class="w-full bg-success text-white py-3 rounded-xl font-black text-xs shadow-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل البيانات والمحاضر والتواريخ أوتوماتيكياً
+                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل البيانات والمحاضر والتواريخ أوتوماتيكياً بالسيرفر
                         </button>
                     </div>
 
@@ -920,7 +920,7 @@
                         </div>
 
                         <button onclick="commitSupplierStagingDataToDB()" class="w-full bg-success text-white py-3 rounded-xl font-black text-xs shadow-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل بيانات الشركة إلى سجل الموردين
+                            <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد وترحيل بيانات الشركة إلى سجل الموردين بالسيرفر
                         </button>
                     </div>
 
@@ -1154,7 +1154,7 @@
             firebase.initializeApp(firebaseConfig);
         }
         const database = firebase.database();
-        const dbRef = database.ref('smartSystem_V29_Clean_Database');
+        const dbRef = database.ref('smartSystem_V30_ServerOnly_Database');
 
         const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         
@@ -1162,19 +1162,22 @@
             playSound('click');
             dbRef.once('value').then((snapshot) => {
                 const data = snapshot.val();
-                if (data && data.operations) {
+                if (data) {
                     DB = data;
+                    DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
+                    DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
+                    DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
                     if (!DB.archives) DB.archives = {};
                     DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
                     if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
                     updateNotifications();
                     renderAll();
-                    alert('تم مزامنة البيانات وتحديثها فوراً بنجاح!');
+                    alert('تم مزامنة البيانات من السيرفر فوراً بنجاح!');
                 } else {
-                    alert('لا توجد بيانات جديدة على السيرفر.');
+                    alert('السيرفر فارغ حالياً.');
                 }
             }).catch(() => {
-                alert('فشل الاتصال بالسيرفر للمزامنة.');
+                alert('فشل الاتصال بالسيرفر، تأكد من الإنترنت.');
             });
         }
 
@@ -1543,7 +1546,7 @@
                 DB.suppliers.unshift(newSup);
                 saveDB();
                 closeModal('modal-smart-staging');
-                alert('تم ترحيل بيانات الشركة المستقلة إلى سجل الموردين المركزي بنجاح تام!');
+                alert('تم ترحيل بيانات الشركة المستقلة إلى سجل الموردين المركزي على السيرفر بنجاح تام!');
             } catch(err) {
                 alert('خطأ أثناء الترحيل: ' + err.message);
             }
@@ -1712,7 +1715,7 @@
 
                 saveDB();
                 closeModal('modal-smart-staging');
-                alert('تم ترحيل كافة البيانات والمحاضر وتواريخ الفتح والبت والتقرير التفصيلي أوتوماتيكياً بنجاح تام!');
+                alert('تم ترحيل كافة البيانات والمحاضر وتواريخ الفتح والبت والتقرير التفصيلي وحفظها على السيرفر بنجاح تام!');
             } catch(err) {
                 console.error(err);
                 alert('خطأ أثناء الترحيل: ' + err.message);
@@ -1724,7 +1727,7 @@
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
 
-        // الاستماع المباشر للتحديثات من السحابي (Firebase Realtime Database)
+        // الاستماع المباشر والتزامن الحصري من السحابي (Firebase Realtime Database)
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -1750,12 +1753,13 @@
             if(!DB.awards) DB.awards = [];
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             
+            // حفظ حصري على السيرفر فقط بدون أي تخزين محلي
             dbRef.set(DB).then(() => {
                 updateNotifications();
                 renderAll();
             }).catch((err) => {
-                console.warn("Firebase save error:", err);
-                alert("حدث خطأ في مزامنة البيانات مع السيرفر، تحقق من اتصال الإنترنت.");
+                console.error("Firebase save error:", err);
+                alert("تعذر الحفظ على السيرفر، تحقق من اتصال الإنترنت وقواعد الصلاحيات.");
             });
         }
 
@@ -1763,7 +1767,7 @@
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
             
-            if(confirm('هل أنت متأكد من حذف هذه العملية نهائياً؟')) { 
+            if(confirm('هل أنت متأكد من حذف هذه العملية نهائياً من السيرفر؟')) { 
                 DB.operations = DB.operations.filter(o => String(o.id) !== String(id)); 
                 DB.awards = DB.awards.filter(a => String(a.opId) !== String(id));
 
@@ -1776,7 +1780,7 @@
                 }
 
                 saveDB(); 
-                alert('تم حذف العملية بنجاح!');
+                alert('تم حذف العملية من السيرفر بنجاح!');
             } 
         }
 
@@ -2096,7 +2100,7 @@
 
             saveDB();
             closeModal('modal-op-story');
-            alert('تم حفظ وتحديث التقرير التفصيلي للعملية بنجاح وتزامنها مع جميع الأجهزة!');
+            alert('تم حفظ وتحديث التقرير التفصيلي للعملية على السيرفر بنجاح وتزامنها مع جميع الأجهزة!');
         }
 
         function printOperationStoryA4() {
@@ -2144,7 +2148,7 @@
             win.document.close();
         }
 
-        // دوال المودال والإدارة الأساسية
+        // دوال المودال والإدارة الأساسية للسيستم بالكامل
         function openModal(id) { document.getElementById(id).classList.add('flex'); document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
 
