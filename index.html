@@ -1747,6 +1747,82 @@
             console.warn("Database sync warning:", error);
         });
 
+        // دالة تحديث التنبيهات المفقودة التي كانت تسبب خطأ الـ ReferenceError
+        function updateNotifications() {
+            if(!DB.operations) DB.operations = [];
+            if(!DB.awards) DB.awards = [];
+            const list = document.getElementById('notif-list'); 
+            const homeList = document.getElementById('home-notif-list');
+            if(list) list.innerHTML = '';
+            if(homeList) homeList.innerHTML = '';
+            
+            let count = 0;
+            
+            DB.operations.forEach(op => {
+                if (op.category === 'direct' || (op.type && op.type.includes('أمر مباشر'))) {
+                    return;
+                }
+                
+                const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(op.id));
+                const allRefunded = relatedAwards.length > 0 && relatedAwards.every(a => a.ret === 'نعم');
+                if (allRefunded) {
+                    return; 
+                }
+
+                const initDep = getInitialDepositStatus(op.date1);
+                if (initDep.code > 0) {
+                    count++;
+                    let itemHtml = `<div onclick="switchTab('operations')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition"><p class="font-bold text-amber-600">تأمين ابتدائي ${initDep.code === 2 ? 'منتهي' : 'ينتهي'} (${op.name})</p><p class="text-[10px] text-slate-500">رقم: ${op.id}</p></div>`;
+                    if(list) list.innerHTML += itemHtml;
+                    if(homeList) homeList.innerHTML += itemHtml;
+                }
+            });
+
+            DB.awards.forEach(aw => {
+                const g = getGuaranteeStatus(aw.gType, aw.gIssuance), d = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                if(g.code > 0 && aw.gType === 'خطاب ضمان') {
+                    count++;
+                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 transition"><p class="font-bold text-slate-800 dark:text-slate-200">ضمان ${g.code===2?'منتهي':'ينتهي'} (${aw.item})</p><p class="text-[10px] text-slate-500">${aw.supp}</p></div>`;
+                    if(list) list.innerHTML += itemHtml;
+                    if(homeList) homeList.innerHTML += itemHtml;
+                }
+                if(d.code === 2) {
+                    count++;
+                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 transition"><p class="font-bold text-red-600">تأخير توريد (${aw.item})</p><p class="text-[10px] text-slate-500">${aw.supp}</p></div>`;
+                    if(list) list.innerHTML += itemHtml;
+                    if(homeList) homeList.innerHTML += itemHtml;
+                }
+            });
+
+            const badge = document.getElementById('notif-badge');
+            const homeBadge = document.getElementById('home-notif-badge');
+            const bellIcon = document.getElementById('bell-icon');
+            const homeBellIcon = document.getElementById('home-bell-icon');
+            
+            const countText = count > 0 ? `${count} تنبيهات` : `لا توجد`;
+            if(document.getElementById('notif-count-text')) document.getElementById('notif-count-text').innerText = countText;
+            if(document.getElementById('home-notif-count-text')) document.getElementById('home-notif-count-text').innerText = countText;
+            
+            if(count > 0) { 
+                 if(badge) { badge.innerText = count; badge.classList.remove('hidden'); }
+                 if(homeBadge) { homeBadge.innerText = count; homeBadge.classList.remove('hidden'); }
+                 if(bellIcon) bellIcon.classList.add('pulse-bell', 'text-accent');
+                 if(homeBellIcon) homeBellIcon.classList.add('pulse-bell', 'text-accent');
+                 document.getElementById('app-title').innerText = `🔴 (${count}) منظومة التعاقدات والتوريدات الذكية`;
+            } else { 
+                 if(badge) badge.classList.add('hidden');
+                 if(homeBadge) homeBadge.classList.add('hidden');
+                 if(bellIcon) bellIcon.classList.remove('pulse-bell', 'text-accent');
+                 if(homeBellIcon) homeBellIcon.classList.remove('pulse-bell', 'text-accent');
+                 document.getElementById('app-title').innerText = `منظومة التعاقدات والتوريدات الذكية (Smart V1.Pro)`;
+            }
+            if(count === 0) {
+                let emptyHtml = `<div class="p-3 text-center text-slate-400 text-xs">الأمور مستقرة تماماً</div>`;
+                if(list) list.innerHTML = emptyHtml;
+                if(homeList) homeList.innerHTML = emptyHtml;
+            }
+        }
+
         function saveDB() {
             if(!DB.suppliers) DB.suppliers = [];
             if(!DB.operations) DB.operations = [];
@@ -1755,13 +1831,13 @@
             
             const cleanDB = JSON.parse(JSON.stringify(DB, (k, v) => v === undefined ? null : v));
 
-            // حفظ على السيرفر وإظهار الخطأ الدقيق إن وجد
+            // حفظ حصري على السيرفر فقط بدون أي تخزين محلي
             dbRef.set(cleanDB).then(() => {
                 updateNotifications();
                 renderAll();
             }).catch((err) => {
                 console.error("Firebase save error:", err);
-                alert("سبب الرفض من السيرفر: " + err.message + " (Code: " + err.code + ")");
+                alert("تعذر الحفظ على السيرفر، تحقق من اتصال الإنترنت وقواعد الصلاحيات.");
             });
         }
 
