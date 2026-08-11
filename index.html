@@ -1747,7 +1747,43 @@
             console.warn("Database sync warning:", error);
         });
 
-        // دالة تحديث التنبيهات المفقودة التي كانت تسبب خطأ الـ ReferenceError
+        // دوال مساعدة مطلوبة للعرض والتنبيهات
+        function getGuaranteeStatus(type, issuanceDateStr) {
+            if (type === 'إعفاء (توريد خلال 10 أيام)') return { text: "معفى (توريد 10 أيام)", class: "green", code: 0 };
+            if (type === 'نقدي') return { text: "نقدي", class: "green", code: 0 };
+            if (!issuanceDateStr) return { text: "لا يوجد", class: "red", code: 2 };
+            
+            const expDate = new Date(issuanceDateStr);
+            expDate.setFullYear(expDate.getFullYear() + 1);
+            
+            const diff = Math.ceil((expDate - new Date()) / 86400000);
+            if (diff < 0) return { text: "منتهي!", class: "red", code: 2 };
+            if (diff <= 30) return { text: `ينتهي (${diff}ي)`, class: "yellow", code: 1 };
+            return { text: "ساري", class: "green", code: 0 };
+        }
+
+        function getDeliveryStatus(isDelivered, poDateStr, daysAllowed) {
+            if (isDelivered === 'نعم') return { text: "تم التوريد", class: "green", code: 0 };
+            if (!poDateStr || !daysAllowed) return { text: "جاري", class: "blue", code: 0 };
+            const expected = new Date(poDateStr); expected.setDate(expected.getDate() + parseInt(daysAllowed));
+            const diff = Math.ceil((expected - new Date()) / 86400000);
+            if (diff < 0) return { text: "متأخر!", class: "red", code: 2 };
+            if (diff <= (parseInt(daysAllowed)/4)) return { text: "إنذار", class: "yellow", code: 1 };
+            return { text: "جاري", class: "blue", code: 0 };
+        }
+
+        function getInitialDepositStatus(date1Str) {
+            if (!date1Str) return { text: "غير محدد", class: "blue", code: 0 };
+            const start = new Date(date1Str);
+            const expiry = new Date(start);
+            expiry.setMonth(expiry.getMonth() + 4);
+            const diff = Math.ceil((expiry - new Date()) / 86400000);
+            if (diff < 0) return { text: "منتهي!", class: "red", code: 2 };
+            if (diff <= 15) return { text: `ينتهي (${diff}ي)`, class: "yellow", code: 1 };
+            return { text: `ساري (${diff}ي)`, class: "green", code: 0 };
+        }
+
+        // دالة تحديث التنبيهات
         function updateNotifications() {
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
@@ -1837,7 +1873,7 @@
                 renderAll();
             }).catch((err) => {
                 console.error("Firebase save error:", err);
-                alert("تعذر الحفظ على السيرفر، تحقق من اتصال الإنترنت وقواعد الصلاحيات.");
+                alert("تعذر الحفظ على السيرفر: " + err.message);
             });
         }
 
