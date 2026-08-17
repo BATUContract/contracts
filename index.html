@@ -2085,6 +2085,13 @@
             let count = 0;
             
             (DB.operations || []).forEach(op => {
+                // استثناء عمليات الأمر المباشر، التجديدات، والعمليات المكتملة المنتهية
+                const isDirect = (op.category === 'direct') || (op.type && op.type.includes('أمر مباشر'));
+                const isRenewal = (op.category === 'renewal') || (op.type && (op.type.includes('تجديد') || op.type.includes('تمديد')));
+                const isCompleted = (op.status === 'مكتمل') || (op.status && (op.status.includes('صرف المستحقات') || op.status.includes('تم الترسية والتوريد')));
+
+                if (isDirect || isRenewal || isCompleted) return;
+
                 const initDep = getInitialDepositStatus(op.date1);
                 if (initDep.code > 0) {
                     count++;
