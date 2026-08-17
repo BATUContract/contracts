@@ -834,7 +834,17 @@
                         
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">حالة الترسية</label><select id="f-aw-status" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option>تم الترسية</option><option>اعلي من القيمة التقديرية لم يتم الترسية</option><option>اعلي من القيمة التقديرية و تم الترسية</option></select></div>
 
-                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">التأمين النهائي (5% تلقائي)</label><input type="text" id="f-aw-gval" readonly class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-amber-50 dark:bg-slate-900 text-amber-700 dark:text-amber-400 font-black text-center text-xs"></div>
+                        <!-- تعديل حقل التأمين النهائي مع خيار الإعفاء -->
+                        <div class="flex flex-col">
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400">التأمين النهائي (5%)</label>
+                                <label class="text-[10px] font-bold text-primary flex items-center gap-1 cursor-pointer">
+                                    <input type="checkbox" id="f-aw-gval-exempt" onchange="calcGuarantee()" class="rounded text-primary focus:ring-primary">
+                                    إعفاء (توريد فوري)
+                                </label>
+                            </div>
+                            <input type="number" step="0.01" id="f-aw-gval" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-amber-50 dark:bg-slate-900 text-amber-700 dark:text-amber-400 font-black text-center text-xs outline-none focus:ring-2 focus:ring-amber-500 transition">
+                        </div>
                         
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">نوع التأمين النهائي</label><select id="f-aw-gtype" class="border dark:border-slate-600 rounded-xl px-1.5 py-1 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"><option>خطاب ضمان</option><option>نقدي</option></select></div>
 
@@ -984,12 +994,15 @@
         function forceSyncDB() {
             playSound('click');
             dbRef.once('value').then((snapshot) => {
-                const data = snapshot.val();
-                if (data && data.operations) {
-                    DB = data;
-                    if (!DB.archives) DB.archives = {};
-                    if (!DB.awards) DB.awards = [];
-                    if (!DB.suppliers) DB.suppliers = [];
+                if (snapshot.exists()) {
+                    const data = snapshot.val() || {};
+                    DB = {
+                        operations: Array.isArray(data.operations) ? data.operations : (data.operations ? Object.values(data.operations) : []),
+                        awards: Array.isArray(data.awards) ? data.awards : (data.awards ? Object.values(data.awards) : []),
+                        suppliers: Array.isArray(data.suppliers) ? data.suppliers : (data.suppliers ? Object.values(data.suppliers) : []),
+                        archives: data.archives || {},
+                        initialized: true
+                    };
                     DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
                     if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
                     updateNotifications();
@@ -998,8 +1011,8 @@
                 } else {
                     alert('لا توجد بيانات جديدة على السيرفر.');
                 }
-            }).catch(() => {
-                alert('فشل الاتصال بالسيرفر للمزامنة.');
+            }).catch((err) => {
+                alert('فشل الاتصال بالسيرفر للمزامنة: ' + (err.message || ''));
             });
         }
 
@@ -1173,7 +1186,7 @@
                 validFiles = validFiles.slice(0, 10);
             }
 
-            alert(`جاري قراءة وتحليل المستندات (محاضر فتح المظاريف، التقرير الفني، والبت المالي) بواسطة Gemini AI... يرجى الانتظار.`);
+            alert(`جاري قراءة وتحليل المستندات بواسطة Gemini AI... يرجى الانتظار.`);
 
             try {
                 let parts = [{ text: `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات ومحاضر الفتح (فتح المظاريف الفنية والمالية) والتقارير الفنية ومذكرات الطرح وأوامر التوريد وخطابات الضمان المرفقة بدقة بالغة، واستخرج كافة التفاصيل التالية بصيغة JSON فقط وبدون أي نصوص إضافية:
@@ -1244,11 +1257,19 @@
                     }
                 }
 
-                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: parts }] })
                 });
+
+                if (!response.ok) {
+                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: parts }] })
+                    });
+                }
 
                 let result = await response.json();
                 if(result.error) {
@@ -1401,6 +1422,7 @@
         }
 
         const defaultDB = {
+            initialized: true,
             operations: [
                 { id: 8, category: 'tender', name: "إنشاء ورشة مركزية للتدريب والتصنيع", entity: "كلية الصناعة والطاقة", budget: "نعم", type: "مناقصة عامة", portal: "نعم", isDivided: "نعم - قابلة للتجزئة", approvalDate: "2026-03-25", guideline: 500000, date1: "2026-05-01", date2: "2026-05-15", date3: "2026-05-20", date4: "2026-05-25", date5: "2026-06-01", date6: "2026-06-05", est: "قيمة تقديرية في مظروف مغلق", status: "مكتمل", total: 4806211.50 },
                 { id: 2, category: 'tender', name: "برنامج تكنولوجيا صناعة الغزل والنسيج", entity: "الجامعة", budget: "نعم", type: "مناقصة عامة", portal: "نعم", isDivided: "لا - ترسية كلية", approvalDate: "2026-05-10", guideline: 0, date1: "2026-06-01", date2: "2026-06-20", date3: "2026-06-25", date4: "", date5: "", date6: "", est: "11,999,999.00", status: "جاري الدراسة الفنية", total: 2098000 }
@@ -1421,16 +1443,23 @@
         let currentOpSubTab = 'tender';
 
         dbRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data && data.operations) {
-                DB = data;
-                if (!DB.archives) DB.archives = {};
-                if (!DB.awards) DB.awards = [];
-                if (!DB.suppliers) DB.suppliers = [];
+            if (snapshot.exists()) {
+                const data = snapshot.val() || {};
+                DB = {
+                    operations: Array.isArray(data.operations) ? data.operations : (data.operations ? Object.values(data.operations) : []),
+                    awards: Array.isArray(data.awards) ? data.awards : (data.awards ? Object.values(data.awards) : []),
+                    suppliers: Array.isArray(data.suppliers) ? data.suppliers : (data.suppliers ? Object.values(data.suppliers) : []),
+                    archives: data.archives || {},
+                    initialized: true
+                };
                 DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
             } else {
-                DB = defaultDB;
-                dbRef.set(defaultDB);
+                if (!localStorage.getItem('db_initialized_flag')) {
+                    DB = JSON.parse(JSON.stringify(defaultDB));
+                    dbRef.set(defaultDB);
+                } else {
+                    DB = { operations: [], awards: [], suppliers: [], archives: {}, initialized: true };
+                }
             }
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             updateNotifications();
@@ -1439,11 +1468,19 @@
 
         function saveDB() {
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
-            dbRef.set(DB).then(() => {
+            localStorage.setItem('db_initialized_flag', 'true');
+            const payload = {
+                initialized: true,
+                operations: DB.operations && DB.operations.length > 0 ? DB.operations : [],
+                awards: DB.awards && DB.awards.length > 0 ? DB.awards : [],
+                suppliers: DB.suppliers && DB.suppliers.length > 0 ? DB.suppliers : [],
+                archives: DB.archives || {}
+            };
+            dbRef.set(payload).then(() => {
                 updateNotifications();
                 renderAll();
-            }).catch(() => {
-                alert("خطأ في الاتصال بالسيرفر.");
+            }).catch((err) => {
+                alert("تعذر الحفظ على السيرفر: " + (err.message || 'خطأ في الاتصال'));
             });
         }
 
@@ -1553,7 +1590,7 @@
                 "القيمة التقديرية للبند": a.estVal || 0,
                 "قيمة الترسية النهائية بالبند": a.val,
                 "حالة الترسية": a.awardStatus || 'تم الترسية',
-                "نسبة الـ 5% التأمين النهائي": a.val * 0.05,
+                "قيمة التأمين النهائي": a.gVal !== undefined ? a.gVal : (a.val * 0.05),
                 "نوع التأمين النهائي المسدد": a.gType,
                 "رقم خطاب الضمان النهائي": a.gNum || '-',
                 "تاريخ إصدار خطاب الضمان": a.gIssuance || '-',
@@ -1929,7 +1966,7 @@
                     <td class="font-bold text-slate-500 dark:text-slate-400 text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
                     <td class="font-black text-slate-700 dark:text-slate-300">${fmt.format(aw.val)}</td>
                     <td>${statusPill}</td>
-                    <td class="font-bold text-slate-500 dark:text-slate-400 text-xs">${fmt.format(aw.val * 0.05)}</td>
+                    <td class="font-bold text-slate-500 dark:text-slate-400 text-xs">${fmt.format(aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05))}</td>
                     <td><span class="pill ${gSt.class}" title="إصدار: ${aw.gIssuance || '-'}">${gSt.text}</span></td>
                     <td class="text-xs font-mono font-bold">${aw.gNum || '-'}</td>
                     <td class="text-xs">${aw.gBank || '-'}</td>
@@ -2261,16 +2298,31 @@
             div.innerHTML = op ? `<b class="text-primary dark:text-indigo-400">نوع العملية: [${op.type}] - ${op.name} (${op.entity})</b>` : 'أدخل رقم العملية... (يتم سحب النوع والداتا أوتوماتيك)';
         }
 
-        function openAwardModal() { playSound('click'); document.getElementById('form-aw').reset(); document.getElementById('f-aw-idx').value=''; fetchOpDetails(); openModal('modal-aw'); }
+        function openAwardModal() { 
+            playSound('click'); 
+            document.getElementById('form-aw').reset(); 
+            document.getElementById('f-aw-idx').value=''; 
+            document.getElementById('f-aw-gval-exempt').checked = false;
+            document.getElementById('f-aw-gval').value = '';
+            fetchOpDetails(); 
+            openModal('modal-aw'); 
+        }
         
         function editAward(idx) {
             playSound('click');
             const aw = (DB.awards || [])[idx];
             if(aw) {
-                document.getElementById('f-aw-idx').value = idx; document.getElementById('f-aw-opid').value = aw.opId;
-                document.getElementById('f-aw-item').value = aw.item; document.getElementById('f-aw-supp').value = aw.supp;
+                document.getElementById('f-aw-idx').value = idx; 
+                document.getElementById('f-aw-opid').value = aw.opId;
+                document.getElementById('f-aw-item').value = aw.item; 
+                document.getElementById('f-aw-supp').value = aw.supp;
                 document.getElementById('f-aw-estval').value = aw.estVal || '';
                 document.getElementById('f-aw-val').value = aw.val; 
+                
+                let savedGVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
+                document.getElementById('f-aw-gval').value = savedGVal;
+                document.getElementById('f-aw-gval-exempt').checked = (savedGVal === 0);
+
                 document.getElementById('f-aw-status').value = aw.awardStatus || 'تم الترسية';
                 document.getElementById('f-aw-gtype').value = aw.gType;
                 document.getElementById('f-aw-gnumber').value = aw.gNum || '';
@@ -2282,11 +2334,22 @@
                 document.getElementById('f-aw-podate').value = aw.poDate || ''; 
                 document.getElementById('f-aw-podays').value = aw.days || 30; 
                 document.getElementById('f-aw-del').value = aw.del || 'لا';
-                calcGuarantee(); fetchOpDetails(); openModal('modal-aw');
+                fetchOpDetails(); 
+                openModal('modal-aw');
             }
         }
 
-        function calcGuarantee() { document.getElementById('f-aw-gval').value = fmt.format((parseFloat(document.getElementById('f-aw-val').value)||0)*0.05); }
+        function calcGuarantee() { 
+            const isExempt = document.getElementById('f-aw-gval-exempt').checked;
+            const val = parseFloat(document.getElementById('f-aw-val').value) || 0;
+            const gvalInput = document.getElementById('f-aw-gval');
+            
+            if (isExempt) {
+                gvalInput.value = 0;
+            } else {
+                gvalInput.value = (val * 0.05).toFixed(2);
+            }
+        }
         
         function saveAward() {
             const opId = parseInt(document.getElementById('f-aw-opid').value), supp = document.getElementById('f-aw-supp').value.trim();
@@ -2308,6 +2371,7 @@
                 supp, 
                 estVal: parseFloat(document.getElementById('f-aw-estval').value)||0,
                 val: parseFloat(document.getElementById('f-aw-val').value)||0, 
+                gVal: parseFloat(document.getElementById('f-aw-gval').value)||0,
                 awardStatus: document.getElementById('f-aw-status').value, 
                 gType: document.getElementById('f-aw-gtype').value, 
                 gNum: document.getElementById('f-aw-gnumber').value.trim(),
