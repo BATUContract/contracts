@@ -1263,14 +1263,6 @@
                     body: JSON.stringify({ contents: [{ parts: parts }] })
                 });
 
-                if (!response.ok) {
-                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: parts }] })
-                    });
-                }
-
                 let result = await response.json();
                 if(result.error) {
                     alert('خطأ من جيميناي: ' + result.error.message);
@@ -1346,6 +1338,7 @@
                     supp: aw.supp || 'شركة معتمدة',
                     estVal: parseFloat(aw.estVal) || 0,
                     val: fVal,
+                    gVal: (fVal * 0.05),
                     awardStatus: aw.awardStatus || 'تم الترسية',
                     gType: aw.gType || 'خطاب ضمان',
                     gNum: aw.gNum || '-',
@@ -1428,9 +1421,9 @@
                 { id: 2, category: 'tender', name: "برنامج تكنولوجيا صناعة الغزل والنسيج", entity: "الجامعة", budget: "نعم", type: "مناقصة عامة", portal: "نعم", isDivided: "لا - ترسية كلية", approvalDate: "2026-05-10", guideline: 0, date1: "2026-06-01", date2: "2026-06-20", date3: "2026-06-25", date4: "", date5: "", date6: "", est: "11,999,999.00", status: "جاري الدراسة الفنية", total: 2098000 }
             ],
             awards: [
-                { opId: 8, item: "ورشة النجارة", supp: "شركة المتحدة للمقاولات", estVal: 5000000, val: 4081200.00, awardStatus: "تم الترسية", gType: "خطاب ضمان", gNum: "129GULP261680002", gIssuance: "2026-06-01", gBank: "بنك التعمير والإسكان", ret: "نعم", contract: "نعم", poNum: 41, poDate: "2026-06-15", days: 30, del: "نعم" },
-                { opId: 8, item: "ورشة الحدادة", supp: "شركة المتحدة للمقاولات", estVal: 1000000, val: 725011.50, awardStatus: "تم الترسية", gType: "خطاب ضمان", gNum: "129GULP261680003", gIssuance: "2025-08-15", gBank: "بنك التعمير والإسكان", ret: "لا", contract: "نعم", poNum: 41, poDate: "2026-06-15", days: 30, del: "لا" },
-                { opId: 2, item: "جهاز قياس سمك", supp: "شركة إنجاز الذكية", estVal: 400000, val: 322000.00, awardStatus: "تم الترسية", gType: "نقدي", gNum: "", gIssuance: "", gBank: "بنك مصر", ret: "لا", contract: "لا", poNum: 21, poDate: "2026-07-01", days: 60, del: "لا" }
+                { opId: 8, item: "ورشة النجارة", supp: "شركة المتحدة للمقاولات", estVal: 5000000, val: 4081200.00, gVal: 204060.00, awardStatus: "تم الترسية", gType: "خطاب ضمان", gNum: "129GULP261680002", gIssuance: "2026-06-01", gBank: "بنك التعمير والإسكان", ret: "نعم", contract: "نعم", poNum: 41, poDate: "2026-06-15", days: 30, del: "نعم" },
+                { opId: 8, item: "ورشة الحدادة", supp: "شركة المتحدة للمقاولات", estVal: 1000000, val: 725011.50, gVal: 36250.58, awardStatus: "تم الترسية", gType: "خطاب ضمان", gNum: "129GULP261680003", gIssuance: "2025-08-15", gBank: "بنك التعمير والإسكان", ret: "لا", contract: "نعم", poNum: 41, poDate: "2026-06-15", days: 30, del: "لا" },
+                { opId: 2, item: "جهاز قياس سمك", supp: "شركة إنجاز الذكية", estVal: 400000, val: 322000.00, gVal: 16100.00, awardStatus: "تم الترسية", gType: "نقدي", gNum: "", gIssuance: "", gBank: "بنك مصر", ret: "لا", contract: "لا", poNum: 21, poDate: "2026-07-01", days: 60, del: "لا" }
             ],
             suppliers: [
                 { id: "V-001", name: "شركة المتحدة للمقاولات", cr: "1592", tax: "215-66", signAuth: "أحمد محمود", addr: "القاهرة", phone: "025905082", bankAcc: "EG1200000000", bankName: "الأهلي", bankBranch: "الرئيسي" },
