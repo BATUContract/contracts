@@ -324,7 +324,7 @@
                 <i class="fa-solid fa-users-gear"></i> إدارة المستخدمين
             </button>
             <!-- AI Button -->
-            <button onclick="openSmartStagingModal()" class="px-2.5 py-1 rounded-xl bg-indigo-600 text-xs text-white hover:bg-indigo-700 transition font-bold flex items-center gap-1 animate-pulse" title="قارئ AI">
+            <button onclick="openSmartStagingModal()" id="ai-reader-btn" class="px-2.5 py-1 rounded-xl bg-indigo-600 text-xs text-white hover:bg-indigo-700 transition font-bold flex items-center gap-1 animate-pulse" title="قارئ AI">
                 <i class="fa-solid fa-brain"></i> قارئ AI
             </button>
             <!-- Sync Button -->
@@ -363,7 +363,7 @@
         <div id="view-home" class="view-section active w-full items-center justify-center p-4 min-h-full relative">
             
             <div class="absolute top-4 left-4 flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700">
-                <button onclick="openSmartStagingModal()" class="px-2.5 py-1 rounded-xl text-xs bg-indigo-600 text-white hover:bg-indigo-700 transition flex items-center gap-1 font-bold shadow-sm">
+                <button onclick="openSmartStagingModal()" id="home-ai-btn" class="px-2.5 py-1 rounded-xl text-xs bg-indigo-600 text-white hover:bg-indigo-700 transition flex items-center gap-1 font-bold shadow-sm">
                     <i class="fa-solid fa-brain"></i> قارئ AI
                 </button>
                 <button onclick="forceSyncDB()" class="px-2 py-1 rounded-xl text-xs text-amber-500 hover:text-amber-600 transition flex items-center gap-1 font-bold" title="مزامنة فورية للداتا">
@@ -388,6 +388,13 @@
                 </div>
             </div>
 
+            <!-- زر إدارة المستخدمين يظهر هنا على الرئيسية للأدمين -->
+            <div id="home-admin-controls" class="absolute top-4 right-4 hidden">
+                <button onclick="openManageUsersModal()" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-md transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-users-gear"></i> إدارة المستخدمين
+                </button>
+            </div>
+
             <div class="text-center mb-6 mt-4">
                 <div class="mb-2">
                     <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="mx-auto drop-shadow-xl transition-transform duration-500 hover:scale-110" style="height: 110px; width: auto; object-fit: contain; background: transparent;">
@@ -399,7 +406,7 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl w-full mx-auto">
                 
-                <button onclick="playSound('click'); openDriveFolderModal()" class="app-card bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-amber-300/40">
+                <button id="card-drive" onclick="playSound('click'); openDriveFolderModal()" class="app-card bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-amber-300/40">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-user-tie anim-glow"></i>
@@ -421,7 +428,7 @@
                     <div><h3 class="text-sm font-black mb-0.5">لوحة القيادة</h3><p class="text-blue-100 text-[11px] font-semibold">مؤشرات الاداء</p></div>
                 </button>
 
-                <button onclick="playSound('click'); switchTab('operations')" class="app-card bg-gradient-to-br from-pink-600 to-rose-600 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-pink-300/40">
+                <button id="card-operations" onclick="playSound('click'); switchTab('operations')" class="app-card bg-gradient-to-br from-pink-600 to-rose-600 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-pink-300/40">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-book-open floating-icon"></i>
@@ -432,7 +439,7 @@
                     <div><h3 class="text-sm font-black mb-0.5">سجل الطرح</h3><p class="text-pink-100 text-[11px] font-semibold">سجل العمليات والدورة المستندية</p></div>
                 </button>
 
-                <button onclick="playSound('click'); switchTab('awards')" class="app-card bg-gradient-to-br from-purple-600 to-fuchsia-600 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-purple-300/40">
+                <button id="card-awards" onclick="playSound('click'); switchTab('awards')" class="app-card bg-gradient-to-br from-purple-600 to-fuchsia-600 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-purple-300/40">
                     <div class="flex justify-between items-start mb-1">
                         <div class="text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-handshake anim-handshake"></i>
@@ -442,7 +449,7 @@
                     <div><h3 class="text-sm font-black mb-0.5">الترسيات والضمانات</h3><p class="text-purple-100 text-[11px] font-semibold">إتمام الاتفاق وتسليم العقود</p></div>
                 </button>
 
-                <button onclick="playSound('click'); switchTab('suppliers')" class="app-card bg-gradient-to-br from-red-600 to-rose-700 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-red-300/40">
+                <button id="card-suppliers" onclick="playSound('click'); switchTab('suppliers')" class="app-card bg-gradient-to-br from-red-600 to-rose-700 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-red-300/40">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-building floating-icon"></i>
@@ -453,7 +460,7 @@
                     <div><h3 class="text-sm font-black mb-0.5">سجل الموردين</h3><p class="text-rose-100 text-[11px] font-semibold">قاعدة بيانات الشركات والموردين</p></div>
                 </button>
 
-                <button onclick="playSound('click'); switchTab('executive')" class="app-card bg-gradient-to-br from-indigo-600 to-violet-700 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-indigo-300/40">
+                <button id="card-executive" onclick="playSound('click'); switchTab('executive')" class="app-card bg-gradient-to-br from-indigo-600 to-violet-700 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-indigo-300/40">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-file-contract floating-icon"></i>
@@ -464,7 +471,7 @@
                     <div><h3 class="text-sm font-black mb-0.5">التقرير التنفيذي</h3><p class="text-indigo-100 text-[11px] font-semibold">تقرير مجمع بالعمليات</p></div>
                 </button>
 
-                <button onclick="playSound('click'); switchTab('query')" class="app-card bg-gradient-to-br from-yellow-300 to-amber-400 text-slate-950 rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-yellow-200/60 font-black">
+                <button id="card-query" onclick="playSound('click'); switchTab('query')" class="app-card bg-gradient-to-br from-yellow-300 to-amber-400 text-slate-950 rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-yellow-200/60 font-black">
                     <div class="flex justify-between items-start mb-1">
                         <div class="text-xl bg-slate-950/10 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-magnifying-glass anim-search text-slate-950"></i>
@@ -1147,7 +1154,6 @@
                 setTimeout(function() {
                     introOverlay.style.display = 'none';
                     document.body.classList.remove('intro-active');
-                    // إظهار نافذة تسجيل الدخول بعد انتهاء الأنترو مباشرة
                     openModal('modal-login');
                 }, 800);
             }, 2700);
@@ -1262,15 +1268,36 @@
             playSound('click');
             currentUserRole = 'guest';
             closeModal('modal-login');
-            alert('تم الدخول كضيف (مشاهدة الإحصائيات فقط).');
+            alert('تم الدخول كضيف (مشاهدة لوحة القيادة فقط).');
             applyRolePermissions();
             switchTab('dashboard');
         }
 
         function applyRolePermissions() {
-            const adminBtn = document.getElementById('nav-manage-users-btn');
+            const adminBtnTop = document.getElementById('nav-manage-users-btn');
+            const adminBtnHome = document.getElementById('home-admin-controls');
+            
             if (currentUserRole === 'guest') {
-                if(adminBtn) adminBtn.style.display = 'none';
+                if(adminBtnTop) adminBtnTop.style.display = 'none';
+                if(adminBtnHome) adminBtnHome.style.display = 'none';
+
+                // إخفاء زرار درايف والإدارة وقارئ الـ AI عن الضيف
+                const driveCard = document.getElementById('card-drive');
+                const aiBtn = document.getElementById('ai-reader-btn');
+                const homeAiBtn = document.getElementById('home-ai-btn');
+                if(driveCard) driveCard.style.display = 'none';
+                if(aiBtn) aiBtn.style.display = 'none';
+                if(homeAiBtn) homeAiBtn.style.display = 'none';
+
+                // منع الضيف من النقر على كروت الرئيسية ما عدا لوحة القيادة والاستعلام
+                ['card-operations', 'card-awards', 'card-suppliers', 'card-executive'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) {
+                        el.style.opacity = '0.4';
+                        el.style.pointerEvents = 'none';
+                    }
+                });
+
                 document.querySelectorAll('button').forEach(btn => {
                     const txt = btn.innerText;
                     const onclickAttr = btn.getAttribute('onclick') || '';
@@ -1281,7 +1308,8 @@
                     }
                 });
             } else {
-                if(adminBtn) adminBtn.style.display = 'flex';
+                if(adminBtnTop) adminBtnTop.style.display = 'flex';
+                if(adminBtnHome) adminBtnHome.style.display = 'block';
             }
         }
 
@@ -1570,7 +1598,7 @@
                       "bankBranch": "الفرع"
                     }`;
                 } else {
-                    promptText = `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات ومحاضر الفتح والبت بدقة بالغة. استخرج النتائج بصيغة JSON فقط وبدون أي نصوص إضافية بالهيكل التالي:
+                    promptText = `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات ومحاضر الفتح والبت بدقة بالغة واستخرج بيانات الترسيات والبنود بدقة تامة. أخرج النتائج بصيغة JSON فقط وبدون أي نصوص إضافية بالهيكل التالي:
                     {
                       "opId": رقم العملية كعدد صحيح,
                       "opName": "اسم المناقصة أو العملية كاملاً",
@@ -1588,7 +1616,19 @@
                       "date5": "تاريخ فتح المظاريف المالية YYYY-MM-DD",
                       "date6": "تاريخ البت المالي النهائي YYYY-MM-DD",
                       "status": "الموقف الحالي",
-                      "awards": []
+                      "awards": [
+                        {
+                          "item": "وصف البند أو اللوط",
+                          "supp": "اسم الشركة الفائزة الكامل",
+                          "estVal": القيمة التقديرية برقم,
+                          "val": قيمة الترسية النهائية برقم,
+                          "awardStatus": "تم الترسية",
+                          "gType": "خطاب ضمان",
+                          "gNum": "رقم الضمان",
+                          "gIssuance": "YYYY-MM-DD"
+                        }
+                      ],
+                      "suppliers": []
                     }`;
                 }
 
@@ -1660,8 +1700,8 @@
                     (parsed.awards || []).forEach(aw => {
                         tbody.innerHTML += `
                             <tr>
-                                <td class="font-bold text-right">${aw.item}</td>
-                                <td class="font-bold text-primary">${aw.supp}</td>
+                                <td class="font-bold text-right">${aw.item || '-'}</td>
+                                <td class="font-bold text-primary">${aw.supp || '-'}</td>
                                 <td>${fmt.format(aw.estVal || 0)}</td>
                                 <td class="font-black text-emerald-600">${fmt.format(aw.val || 0)}</td>
                                 <td class="font-mono font-bold">${aw.gNum || '-'} (${aw.gIssuance || '-'})</td>
@@ -2262,6 +2302,10 @@
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
 
         function switchTab(id) {
+            if (currentUserRole === 'guest' && id !== 'dashboard' && id !== 'query' && id !== 'home') {
+                alert('عذراً، حساب الضيف مخصص لمشاهدة لوحة القيادة والإحصائيات فقط.');
+                return;
+            }
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(`view-${id}`).classList.add('active');
             const nav = document.getElementById('top-nav-bar');
