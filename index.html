@@ -1838,7 +1838,7 @@
                         del: aw.del || 'نعم'
                     });
 
-                    // التأكد من حفظ الشركات تلقائياً في قائمة الموردين المركزية
+                    // حفظ الشركات تلقائياً في قائمة الموردين المركزية
                     if (aw.supp && !DB.suppliers.some(s => s.name && s.name.trim().toLowerCase() === aw.supp.trim().toLowerCase())) {
                         DB.suppliers.unshift({
                             id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
@@ -2196,26 +2196,115 @@
 
         function renderOperations() {
             if(!DB.operations) DB.operations = [];
+            DB.operations.sort((a, b) => a.id - b.id);
             const trHead = document.getElementById('ops-thead-tr');
             const tb = document.getElementById('ops-tbody'); 
             if(!trHead || !tb) return;
             tb.innerHTML = '';
-            const filteredOps = DB.operations.filter(op => (op.category || 'tender') === currentOpSubTab);
 
-            trHead.innerHTML = `<th>رقم</th><th>اسم العملية</th><th>الجهة</th><th>النوع</th><th>الموقف</th><th>إجمالي الترسية</th><th class="no-print">إجراءات</th>`;
-            filteredOps.forEach(op => {
-                tb.innerHTML += `<tr>
-                    <td class="font-bold">${op.id}</td>
-                    <td class="text-right font-bold wrap-text text-primary">${op.name}</td>
-                    <td>${op.entity}</td>
-                    <td>${op.type}</td>
-                    <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
-                    <td class="font-black">${op.total ? fmt.format(op.total) : '-'}</td>
-                    <td class="no-print">
-                        <button onclick="editOp(${op.id})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
-                    </td></tr>`;
+            const filteredOps = DB.operations.filter(op => {
+                let cat = op.category || 'tender';
+                return cat === currentOpSubTab;
             });
+
+            if (currentOpSubTab === 'tender') {
+                trHead.innerHTML = `
+                    <th>رقم</th><th>اسم العملية / التوريد</th><th>الجهة</th><th>اعتماد</th><th>النوع</th><th>هل مجزأة؟</th><th>تاريخ الموافقة</th><th>تأمين ابتدائي</th><th>البوابة</th><th>الطرح</th><th>فتح المظاريف</th><th>تقرير فني</th><th>بعد التظلمات</th><th>الفتح المالي</th><th>البت المالي</th><th>الموقف</th><th>إجمالي الترسية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
+                `;
+                filteredOps.forEach(op => {
+                    let portalBadge = op.portal === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill red">تعذر</span>';
+                    let initDep = getOperationInitialDepositStatus(op.id);
+                    let dividedBadge = `<span class="pill blue">${op.isDivided || 'لا - ترسية كلية'}</span>`;
+                    tb.innerHTML += `<tr>
+                        <td class="font-bold">${op.id}</td>
+                        <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${op.name}</td>
+                        <td class="wrap-text">${op.entity}</td>
+                        <td>${op.budget}</td>
+                        <td>${op.type}</td>
+                        <td>${dividedBadge}</td>
+                        <td class="text-[11px]">${op.approvalDate || '-'}</td>
+                        <td><span class="pill ${initDep.class}">${initDep.text}</span></td>
+                        <td>${portalBadge}</td>
+                        <td class="text-[11px]">${op.date1 || '-'}</td>
+                        <td class="text-[11px]">${op.date2 || '-'}</td>
+                        <td class="text-[11px]">${op.date3 || '-'}</td>
+                        <td class="text-[11px]">${op.date4 || '-'}</td>
+                        <td class="text-[11px]">${op.date5 || '-'}</td>
+                        <td class="text-[11px]">${op.date6 || '-'}</td>
+                        <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
+                        <td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>
+                        <td>
+                            <div class="attachment-dropdown-wrap">
+                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+                                <div class="attachment-menu">
+                                    <button onclick="openDirectArchive('op_approval', ${op.id}, 'موافقة: ${op.name}')" class="w-full text-right p-1.5 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 rounded text-[11px] font-bold"><i class="fa-solid fa-check w-4"></i> موافقة</button>
+                                    <button onclick="openDirectArchive('op_portal', ${op.id}, 'البوابة: ${op.name}')" class="w-full text-right p-1.5 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-700 rounded text-[11px] font-bold"><i class="fa-solid fa-globe w-4"></i> البوابة</button>
+                                    <button onclick="openDirectArchive('op_other', ${op.id}, 'أخرى: ${op.name}')" class="w-full text-right p-1.5 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 rounded text-[11px] font-bold"><i class="fa-solid fa-folder-open w-4"></i> أخرى</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="no-print">
+                            <button onclick="playSound('click'); editOp(${op.id})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`;
+                });
+            } else if (currentOpSubTab === 'direct') {
+                trHead.innerHTML = `
+                    <th>رقم</th><th>اسم عملية الأمر المباشر</th><th>الجهة</th><th>اعتماد الموازنة</th><th>تاريخ الطرح</th><th>القيمة الاسترشادية</th><th>النشر على البوابة</th><th>الموقف الحالي</th><th>إجمالي الترسية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
+                `;
+                filteredOps.forEach(op => {
+                    let portalVal = op.portal || 'نعم';
+                    let portalBadge = portalVal === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill red">تعذر</span>';
+                    tb.innerHTML += `<tr>
+                        <td class="font-bold">${op.id}</td>
+                        <td class="text-right font-bold wrap-text text-amber-600 dark:text-amber-400">${op.name}</td>
+                        <td class="wrap-text">${op.entity}</td>
+                        <td>${op.budget}</td>
+                        <td class="text-[11px]">${op.date1 || '-'}</td>
+                        <td class="font-bold text-amber-600">${op.guideline ? fmt.format(op.guideline) : '-'}</td>
+                        <td>${portalBadge}</td>
+                        <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
+                        <td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>
+                        <td>
+                            <div class="attachment-dropdown-wrap">
+                                <button onclick="playSound('click')" class="bg-amber-50 dark:bg-amber-950/40 text-amber-600 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+                                <div class="attachment-menu">
+                                    <button onclick="openDirectArchive('op_approval', ${op.id}, 'مذكرة الإسناد: ${op.name}')" class="w-full text-right p-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> المذكرة</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="no-print">
+                            <button onclick="playSound('click'); editOp(${op.id})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`;
+                });
+            } else {
+                trHead.innerHTML = `
+                    <th>رقم</th><th>اسم العقد / التجديد</th><th>الجهة</th><th>نوع التعديل (تجديد/تمديد)</th><th>تاريخ البدء</th><th>تاريخ الانتهاء الجديد</th><th>الموقف</th><th>مرفقات</th><th class="no-print">إجراءات</th>
+                `;
+                filteredOps.forEach(op => {
+                    tb.innerHTML += `<tr>
+                        <td class="font-bold">${op.id}</td>
+                        <td class="text-right font-bold wrap-text text-cyan-600 dark:text-cyan-400">${op.name}</td>
+                        <td class="wrap-text">${op.entity}</td>
+                        <td><span class="pill blue">${op.type}</span></td>
+                        <td class="text-[11px]">${op.date1 || '-'}</td>
+                        <td class="text-[11px]">${op.date2 || '-'}</td>
+                        <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
+                        <td>
+                            <div class="attachment-dropdown-wrap">
+                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+                                <div class="attachment-menu">
+                                    <button onclick="openDirectArchive('op_approval', ${op.id}, 'ملحق العقد: ${op.name}')" class="w-full text-right p-1.5 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> الملحق</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="no-print">
+                            <button onclick="playSound('click'); editOp(${op.id})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`;
+                });
+            }
             applyRolePermissions();
         }
 
@@ -2225,20 +2314,140 @@
             const tb = document.getElementById('awards-tbody');
             if(!trHead || !tb) return;
             tb.innerHTML = '';
-            
-            trHead.innerHTML = `<th>العملية</th><th>البند</th><th>الشركة</th><th>القيمة</th><th class="no-print">إجراءات</th>`;
-            DB.awards.forEach((aw, realIdx) => {
-                tb.innerHTML += `<tr>
-                    <td class="font-bold">${aw.opId}</td>
-                    <td class="text-right font-bold wrap-text">${aw.item}</td>
-                    <td class="text-right text-primary font-bold">${aw.supp}</td>
-                    <td class="font-black">${fmt.format(aw.val)}</td>
-                    <td class="no-print">
-                        <button onclick="editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
-                    </td></tr>`;
+
+            const filteredAwards = DB.awards.filter(aw => {
+                const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || { category: 'tender' };
+                let cat = op.category || 'tender';
+                return cat === currentAwardSubTab;
             });
-            applyRolePermissions();
+
+            if (currentAwardSubTab === 'direct') {
+                trHead.innerHTML = `
+                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مستندات رسمية</th><th>مرفقات</th><th>العقد</th><th class="no-print">إجراءات</th>
+                `;
+                filteredAwards.forEach((aw) => {
+                    const realIdx = DB.awards.findIndex(a => String(a.opId) === String(aw.opId) && a.item === aw.item && a.supp === aw.supp);
+                    const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
+                    const dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                    const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
+                    const statusPill = aw.awardStatus && aw.awardStatus !== 'تم الترسية' ? '<span class="pill yellow">' + aw.awardStatus + '</span>' : '<span class="pill green">تم الترسية</span>';
+                    
+                    tb.innerHTML += `<tr>
+                        <td class="font-bold">${aw.opId}</td>
+                        <td><span class="pill blue">${op.type || 'أمر مباشر'}</span></td>
+                        <td class="text-right font-bold wrap-text">${aw.item}</td>
+                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
+                        <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
+                        <td class="font-black">${fmt.format(aw.val)}</td>
+                        <td>${statusPill}</td>
+                        <td class="font-bold">${aw.poNum || '-'}</td>
+                        <td>${aw.days}</td>
+                        <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
+                        <td>
+                            <div class="flex gap-1 justify-center">
+                                <button onclick="openOfficialDoc('award', ${realIdx})" class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر ترسية"><i class="fa-solid fa-award"></i> ترسية</button>
+                                <button onclick="openOfficialDoc('purchase', ${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر توريد"><i class="fa-solid fa-file-invoice"></i> توريد</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="attachment-dropdown-wrap">
+                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <div class="attachment-menu">
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${contractPill}</td>
+                        <td class="no-print">
+                            <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`;
+                });
+            } else if (currentAwardSubTab === 'renewal') {
+                trHead.innerHTML = `
+                    <th>العملية</th><th>نوع التجديد</th><th>وصف البند / العقد</th><th>الشركة</th><th>القيمة</th><th>حالة العقد</th><th>تاريخ البدء</th><th>تاريخ الانتهاء</th><th>مستندات رسمية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
+                `;
+                filteredAwards.forEach((aw) => {
+                    const realIdx = DB.awards.findIndex(a => String(a.opId) === String(aw.opId) && a.item === aw.item && a.supp === aw.supp);
+                    const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
+                    tb.innerHTML += `<tr>
+                        <td class="font-bold">${aw.opId}</td>
+                        <td><span class="pill blue">${op.type || 'تجديد'}</span></td>
+                        <td class="text-right font-bold wrap-text">${aw.item}</td>
+                        <td class="text-right text-primary dark:text-indigo-400 font-bold wrap-text">${aw.supp}</td>
+                        <td class="font-black">${fmt.format(aw.val)}</td>
+                        <td><span class="pill green">ساري</span></td>
+                        <td class="text-[11px]">${aw.poDate || '-'}</td>
+                        <td class="text-[11px]">${aw.gIssuance || '-'}</td>
+                        <td>
+                            <div class="flex gap-1 justify-center">
+                                <button onclick="openOfficialDoc('award', ${realIdx})" class="bg-purple-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm"><i class="fa-solid fa-award"></i> ملحق</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="attachment-dropdown-wrap">
+                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <div class="attachment-menu">
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="no-print">
+                            <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`;
+                });
+            } else {
+                trHead.innerHTML = `
+                    <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>التأمين النهائي</th><th>موقف الضمان</th><th>رقم الضمان</th><th>البنك المصدر</th><th>أمر التوريد</th><th>المهلة</th><th>التوريد</th><th>مستندات رسمية</th><th>مرفقات</th><th>رد التأمين الابتدائي</th><th>العقد</th><th class="no-print">إجراءات</th>
+                `;
+                filteredAwards.forEach((aw) => {
+                    const realIdx = DB.awards.findIndex(a => String(a.opId) === String(aw.opId) && a.item === aw.item && a.supp === aw.supp);
+                    const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
+                    const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                    const retPill = aw.ret === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill blue">لا</span>';
+                    const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
+                    const statusPill = aw.awardStatus && aw.awardStatus !== 'تم الترسية' ? '<span class="pill yellow">' + aw.awardStatus + '</span>' : '<span class="pill green">تم الترسية</span>';
+                    const finalGVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
+
+                    tb.innerHTML += `<tr>
+                        <td class="font-bold">${aw.opId}</td>
+                        <td><span class="pill blue">${op.type || 'مناقصة'}</span></td>
+                        <td class="text-right font-bold wrap-text">${aw.item}</td>
+                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
+                        <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
+                        <td class="font-black">${fmt.format(aw.val)}</td>
+                        <td>${statusPill}</td>
+                        <td class="font-bold text-xs">${fmt.format(finalGVal)} (${aw.gType || 'خطاب ضمان'})</td>
+                        <td><span class="pill ${gSt.class}">${gSt.text}</span></td>
+                        <td class="text-xs font-mono font-bold">${aw.gNum || '-'}</td>
+                        <td class="text-xs">${aw.gBank || '-'}</td>
+                        <td class="font-bold">${aw.poNum || '-'}</td>
+                        <td>${aw.days}</td>
+                        <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
+                        <td>
+                            <div class="flex gap-1 justify-center">
+                                <button onclick="openOfficialDoc('award', ${realIdx})" class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر ترسية"><i class="fa-solid fa-award"></i> ترسية</button>
+                                <button onclick="openOfficialDoc('purchase', ${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر توريد"><i class="fa-solid fa-file-invoice"></i> توريد</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="attachment-dropdown-wrap">
+                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <div class="attachment-menu">
+                                    <button onclick="openDirectArchive('aw_guarantee', '${aw.opId}_${realIdx}', 'الضمان: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-purple-600 rounded text-[11px] font-bold"><i class="fa-solid fa-shield w-4"></i> الضمان</button>
+                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'أمر التوريد: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${retPill}</td>
+                        <td>${contractPill}</td>
+                        <td class="no-print">
+                            <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td></tr>`;
+                });
+            }
         }
 
         function renderSuppliers() {
@@ -2246,27 +2455,43 @@
             const tb = document.getElementById('suppliers-tbody'); 
             if(!tb) return;
             tb.innerHTML = '';
-            DB.suppliers.forEach(s => {
+            const searchVal = (document.getElementById('sup-search-input')?.value || '').toLowerCase();
+            const filtered = DB.suppliers.filter(s => s.name && (s.name.toLowerCase().includes(searchVal) || s.id.toLowerCase().includes(searchVal)));
+            
+            filtered.forEach(s => {
                 tb.innerHTML += `<tr>
-                    <td class="font-bold">${s.id}</td>
-                    <td class="text-right font-bold text-primary">${s.name}</td>
+                    <td class="font-bold text-slate-500">${s.id}</td>
+                    <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${s.name}</td>
                     <td>${s.cr || '-'}</td>
                     <td>${s.tax || '-'}</td>
-                    <td>${s.addr || '-'}</td>
-                    <td>${s.phone || '-'}</td>
-                    <td>${s.signAuth || '-'}</td>
-                    <td class="font-mono">${s.bankAcc || '-'}</td>
-                    <td>${s.bankName||'-'}</td>
-                    <td>مرفقات</td>
+                    <td class="text-right text-xs wrap-text">${s.addr || '-'}</td>
+                    <td class="font-bold">${s.phone || '-'}</td>
+                    <td class="font-bold text-slate-700 dark:text-slate-300">${s.signAuth || '-'}</td>
+                    <td class="text-xs font-bold tracking-widest">${s.bankAcc || '-'}</td>
+                    <td class="text-xs wrap-text">${s.bankName||'-'} - ${s.bankBranch||'-'}</td>
+                    <td>
+                        <div class="attachment-dropdown-wrap">
+                            <button onclick="playSound('click')" class="bg-orange-50 dark:bg-orange-950/40 text-orange-600 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm">
+                                <i class="fa-solid fa-folder-tree"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                            </button>
+                            <div class="attachment-menu">
+                                <button onclick="openDirectArchive('sup_cr', '${s.id}', 'سجل: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-book w-4"></i> سجل</button>
+                                <button onclick="openDirectArchive('sup_tax', '${s.id}', 'ضريبة: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-file-invoice w-4"></i> ضريبة</button>
+                                <button onclick="openDirectArchive('sup_vat', '${s.id}', 'مضافة: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-percent w-4"></i> مضافة</button>
+                                <button onclick="openDirectArchive('sup_bank', '${s.id}', 'بنك: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-building-columns w-4"></i> بنك</button>
+                            </div>
+                        </div>
+                    </td>
                     <td class="no-print">
-                        <button onclick="editSup('${s.id}')" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteSup('${s.id}')" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="playSound('click'); editSup('${s.id}')" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="playSound('delete'); deleteSup('${s.id}')" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
                     </td></tr>`;
             });
             applyRolePermissions();
         }
 
         function deleteSup(id) {
+            if(!DB.suppliers) DB.suppliers = [];
             if(confirm('حذف المورد نهائياً؟')) {
                 DB.suppliers = DB.suppliers.filter(s => s.id !== id);
                 saveDB();
@@ -2336,46 +2561,223 @@
             XLSX.writeFile(wb, filename + ".xlsx");
         }
 
-        function openOpModal() {
-            document.getElementById('form-op').reset();
-            openModal('modal-op');
+        function openOpModal() { 
+             playSound('click');
+             document.getElementById('form-op').reset();
+             document.getElementById('f-op-category').value = currentOpSubTab;
+             document.getElementById('f-op-id').disabled = false;
+             openModal('modal-op'); 
         }
 
         function editOp(id) {
+            playSound('click');
+            if(!DB.operations) DB.operations = [];
             const op = DB.operations.find(o => o.id === id);
             if(op) {
+                currentOpSubTab = op.category || 'tender';
+                setOpSubTab(currentOpSubTab);
+                document.getElementById('f-op-id').value = op.id; document.getElementById('f-op-id').disabled = true; 
+                document.getElementById('f-op-name').value = op.name; document.getElementById('f-op-entity').value = op.entity;
+                document.getElementById('f-op-category').value = op.category || 'tender';
+                document.getElementById('f-op-budget').value = op.budget;
+                document.getElementById('f-op-divided').value = op.isDivided || 'لا - ترسية كلية';
+                document.getElementById('f-op-est').value = op.est; 
+                document.getElementById('f-op-guideline').value = op.guideline || '';
+                document.getElementById('f-op-status').value = op.status;
+                document.getElementById('f-op-portal').value = op.portal || 'نعم';
+                document.getElementById('f-op-approval').value = op.approvalDate || '';
+                document.getElementById('f-op-date1').value = op.date1 || '';
+                document.getElementById('f-op-date2').value = op.date2 || '';
+                document.getElementById('f-op-date3').value = op.date3 || '';
+                document.getElementById('f-op-date4').value = op.date4 || '';
+                document.getElementById('f-op-date5').value = op.date5 || '';
+                document.getElementById('f-op-date6').value = op.date6 || '';
+                
+                openModal('modal-op');
                 document.getElementById('f-op-id').value = op.id;
                 document.getElementById('f-op-name').value = op.name;
                 document.getElementById('f-op-entity').value = op.entity;
-                openModal('modal-op');
+                document.getElementById('f-op-type').value = op.type;
             }
         }
 
         function saveOperation() {
+            if(!DB.operations) DB.operations = [];
             const id = parseInt(document.getElementById('f-op-id').value); if(!id) return;
-            const op = {
-                id,
-                name: document.getElementById('f-op-name').value,
-                entity: document.getElementById('f-op-entity').value,
-                type: document.getElementById('f-op-type').value,
-                budget: document.getElementById('f-op-budget').value,
-                status: document.getElementById('f-op-status').value,
-                total: 0
+            const category = document.getElementById('f-op-category').value || currentOpSubTab;
+            const newOp = { 
+                id, 
+                category,
+                name: document.getElementById('f-op-name').value, 
+                entity: document.getElementById('f-op-entity').value, 
+                type: document.getElementById('f-op-type').value, 
+                budget: document.getElementById('f-op-budget').value, 
+                isDivided: document.getElementById('f-op-divided').value,
+                est: document.getElementById('f-op-est').value, 
+                guideline: parseFloat(document.getElementById('f-op-guideline').value) || 0,
+                status: document.getElementById('f-op-status').value, 
+                portal: document.getElementById('f-op-portal').value,
+                approvalDate: document.getElementById('f-op-approval').value,
+                date1: document.getElementById('f-op-date1').value,
+                date2: document.getElementById('f-op-date2')?.value || '',
+                date3: document.getElementById('f-op-date3')?.value || '',
+                date4: document.getElementById('f-op-date4')?.value || '',
+                date5: document.getElementById('f-op-date5')?.value || '',
+                date6: document.getElementById('f-op-date6')?.value || '',
+                total: 0 
             };
             const idx = DB.operations.findIndex(o => o.id === id);
-            if(idx >= 0) DB.operations[idx] = op; else DB.operations.unshift(op);
+            if (idx >= 0) { newOp.total = DB.operations[idx].total; DB.operations[idx] = newOp; } else DB.operations.unshift(newOp);
+            if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             closeModal('modal-op'); saveDB();
         }
 
-        function fetchOpDetails() {}
-        function openAwardModal() { openModal('modal-aw'); }
-        function editAward(idx) { openModal('modal-aw'); }
-        function calcGuarantee() {}
-        function saveAward() { closeModal('modal-aw'); saveDB(); }
-        function deleteAward(idx) { DB.awards.splice(idx,1); saveDB(); }
-        function openSupModal() { openModal('modal-sup'); }
-        function editSup(id) { openModal('modal-sup'); }
-        function saveSup() { closeModal('modal-sup'); saveDB(); }
+        function fetchOpDetails() {
+            if(!DB.operations) DB.operations = [];
+            const opId = parseInt(document.getElementById('f-aw-opid').value), div = document.getElementById('aw-op-details');
+            const op = DB.operations.find(o => o.id === opId);
+            div.innerHTML = op ? `<b class="text-primary dark:text-indigo-400">نوع العملية: [${op.type}] - ${op.name} (${op.entity})</b>` : 'أدخل رقم العملية...';
+        }
+
+        function openAwardModal() { playSound('click'); document.getElementById('form-aw').reset(); document.getElementById('f-aw-idx').value=''; calcGuarantee(); fetchOpDetails(); openModal('modal-aw'); }
+        
+        function editAward(idx) {
+            playSound('click');
+            if(!DB.awards) DB.awards = [];
+            const aw = DB.awards[idx];
+            if(aw) {
+                document.getElementById('f-aw-idx').value = idx; document.getElementById('f-aw-opid').value = aw.opId;
+                document.getElementById('f-aw-item').value = aw.item; document.getElementById('f-aw-supp').value = aw.supp;
+                document.getElementById('f-aw-estval').value = aw.estVal || '';
+                document.getElementById('f-aw-val').value = aw.val; 
+                
+                document.getElementById('f-aw-gtype').value = aw.gType || 'خطاب ضمان';
+                let savedGVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
+                document.getElementById('f-aw-gval').value = savedGVal;
+
+                document.getElementById('f-aw-status').value = aw.awardStatus || 'تم الترسية';
+                document.getElementById('f-aw-gnumber').value = aw.gNum || '';
+                document.getElementById('f-aw-gissuance').value = aw.gIssuance || ''; 
+                document.getElementById('f-aw-bank').value = aw.gBank || '';
+                document.getElementById('f-aw-ret').value = aw.ret || 'لا';
+                document.getElementById('f-aw-contract').value = aw.contract || 'لا';
+                document.getElementById('f-aw-ponum').value = aw.poNum;
+                document.getElementById('f-aw-podate').value = aw.poDate; document.getElementById('f-aw-podays').value = aw.days; document.getElementById('f-aw-del').value = aw.del;
+                fetchOpDetails(); openModal('modal-aw');
+            }
+        }
+
+        function calcGuarantee() { 
+            const gType = document.getElementById('f-aw-gtype').value;
+            const val = parseFloat(document.getElementById('f-aw-val').value) || 0;
+            const gvalInput = document.getElementById('f-aw-gval');
+            
+            if (gType === 'إعفاء (توريد خلال 10 أيام)') {
+                gvalInput.value = 0;
+            } else {
+                gvalInput.value = (val * 0.05).toFixed(2);
+            }
+        }
+        
+        function saveAward() {
+            if(!DB.suppliers) DB.suppliers = [];
+            if(!DB.awards) DB.awards = [];
+            if(!DB.operations) DB.operations = [];
+
+            const opId = parseInt(document.getElementById('f-aw-opid').value), supp = document.getElementById('f-aw-supp').value.trim();
+            if(!opId || !supp) return;
+            
+            if(!DB.suppliers.find(s => s.name === supp)) {
+                DB.suppliers.unshift({ 
+                    id: "V-"+String(DB.suppliers.length+1).padStart(3,'0'), 
+                    name: supp, cr: "", tax: "", signAuth: "", addr: "", phone: "", bankAcc: "", bankName: "", bankBranch: "" 
+                });
+            }
+
+            const gTypeVal = document.getElementById('f-aw-gtype').value;
+            const fVal = parseFloat(document.getElementById('f-aw-val').value)||0;
+            const calculatedGVal = gTypeVal === 'إعفاء (توريد خلال 10 أيام)' ? 0 : (parseFloat(document.getElementById('f-aw-gval').value)|| (fVal * 0.05));
+
+            const aw = { 
+                opId, 
+                item: document.getElementById('f-aw-item').value, 
+                supp, 
+                estVal: parseFloat(document.getElementById('f-aw-estval').value)||0,
+                val: fVal, 
+                gVal: calculatedGVal,
+                awardStatus: document.getElementById('f-aw-status').value,
+                gType: gTypeVal, 
+                gNum: document.getElementById('f-aw-gnumber').value.trim(),
+                gIssuance: document.getElementById('f-aw-gissuance').value, 
+                gBank: document.getElementById('f-aw-bank').value.trim(),
+                ret: document.getElementById('f-aw-ret').value,
+                contract: document.getElementById('f-aw-contract').value,
+                poNum: document.getElementById('f-aw-ponum').value, 
+                poDate: document.getElementById('f-aw-podate').value, 
+                days: parseInt(document.getElementById('f-aw-podays').value)||30, 
+                del: document.getElementById('f-aw-del').value 
+            };
+            const idx = document.getElementById('f-aw-idx').value;
+            if (idx !== '') DB.awards[idx] = aw; else DB.awards.unshift(aw);
+
+            const opIdx = DB.operations.findIndex(o => o.id === opId);
+            if(opIdx >= 0) DB.operations[opIdx].total = DB.awards.filter(a=>a.opId===opId).reduce((s,a)=>s+a.val,0);
+
+            closeModal('modal-aw'); saveDB();
+        }
+
+        function deleteAward(idx) { 
+            if(!DB.awards) DB.awards = [];
+            if(confirm('حذف الترسية نهائياً؟')) { 
+                DB.awards.splice(idx, 1); 
+                saveDB(); 
+            } 
+        }
+
+        function openSupModal() { playSound('click'); document.getElementById('form-sup').reset(); document.getElementById('f-sup-original-id').value=''; openModal('modal-sup'); }
+        
+        function editSup(id) {
+            playSound('click');
+            if(!DB.suppliers) DB.suppliers = [];
+            const s = DB.suppliers.find(x => x.id === id);
+            if(s) {
+                document.getElementById('f-sup-original-id').value = id; document.getElementById('f-sup-name').value = s.name;
+                document.getElementById('f-sup-cr').value = s.cr; document.getElementById('f-sup-tax').value = s.tax;
+                document.getElementById('f-sup-sign').value = s.signAuth || '';
+                document.getElementById('f-sup-addr').value = s.addr; document.getElementById('f-sup-phone').value = s.phone;
+                document.getElementById('f-sup-bank-acc').value = s.bankAcc; document.getElementById('f-sup-bank-name').value = s.bankName; document.getElementById('f-sup-bank-branch').value = s.bankBranch;
+                openModal('modal-sup');
+            }
+        }
+
+        function saveSup() {
+            if(!DB.suppliers) DB.suppliers = [];
+            const id = document.getElementById('f-sup-original-id').value, name = document.getElementById('f-sup-name').value.trim(); if(!name) return;
+            const s = { 
+                id: id || ("V-"+String(DB.suppliers.length+1).padStart(3,'0')), name, 
+                cr: document.getElementById('f-sup-cr').value, tax: document.getElementById('f-sup-tax').value, 
+                signAuth: document.getElementById('f-sup-sign').value, addr: document.getElementById('f-sup-addr').value, 
+                phone: document.getElementById('f-sup-phone').value, 
+                bankAcc: document.getElementById('f-sup-bank-acc').value, bankName: document.getElementById('f-sup-bank-name').value, 
+                bankBranch: document.getElementById('f-sup-bank-branch').value 
+            };
+            if(id) { const idx = DB.suppliers.findIndex(x=>x.id===id); if(idx>=0) DB.suppliers[idx]=s; } else DB.suppliers.unshift(s);
+            closeModal('modal-sup'); saveDB();
+        }
+
+        function showSupInfo(name) {
+            playSound('click');
+            if(!DB.suppliers) DB.suppliers = [];
+            const s = DB.suppliers.find(x => x.name === name);
+            if(s) {
+                document.getElementById('info-sup-id').innerText=s.id; document.getElementById('info-sup-name').innerText=s.name;
+                document.getElementById('info-sup-cr').innerText=s.cr||'-'; document.getElementById('info-sup-tax').innerText=s.tax||'-';
+                document.getElementById('info-sup-sign').innerText=s.signAuth||'-';
+                document.getElementById('info-sup-phone').innerText=s.phone||'-'; document.getElementById('info-sup-addr').innerText=s.addr||'-';
+                document.getElementById('info-sup-bank-acc').innerText=s.bankAcc||'-'; document.getElementById('info-sup-bank-name').innerText=s.bankName||'-'; document.getElementById('info-sup-bank-branch').innerText=s.bankBranch||'-';
+                openModal('modal-sup-info');
+            }
+        }
 
         function openModal(id) { document.getElementById(id).classList.add('flex'); document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
@@ -2394,8 +2796,8 @@
             }
             if(id === 'dashboard') renderDashboard();
             if(id === 'suppliers') renderSuppliers();
-            if(id === 'operations') renderOperations();
-            if(id === 'awards') renderAwards();
+            if(id === 'operations') setOpSubTab(currentOpSubTab);
+            if(id === 'awards') setAwardSubTab(currentAwardSubTab);
             if(id === 'executive') renderExecutive();
             if(id === 'query') runQuery();
         }
