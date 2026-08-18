@@ -1240,15 +1240,21 @@
             dbRef.child('users').once('value').then((snapshot) => {
                 const users = snapshot.val();
                 
-                if (!users && u === 'admin' && p === '211182') {
+                if ((!users || !users['admin']) && u === 'admin' && p === '211182') {
                     currentUserRole = 'admin';
+                    // حفظ حساب الأدمن الافتراضي تلقائياً في السيرفر لأول مرة
+                    database.ref('smartSystem_V29_Clean_Database/users/admin').set({
+                        name: 'مدير النظام',
+                        pass: '211182',
+                        role: 'admin'
+                    });
                     closeModal('modal-login');
                     alert('أهلاً بك (مدير النظام الافتراضي)');
                     applyRolePermissions();
                     return;
                 }
 
-                if (users && users[u] && users[u].pass === p) {
+                if (users && users[u] && String(users[u].pass).trim() === p) {
                     currentUserRole = users[u].role;
                     closeModal('modal-login');
                     alert(`أهلاً بك ${users[u].name || u}، تم تسجيل الدخول بنجاح.`);
@@ -1382,6 +1388,10 @@
         }
 
         function deleteUser(username) {
+            if (username === 'admin') {
+                alert('لا يمكن حذف حساب مدير النظام الأساسي!');
+                return;
+            }
             if (confirm(`هل أنت متأكد من حذف المستخدم (${username}) نهائياً؟`)) {
                 playSound('delete');
                 database.ref('smartSystem_V29_Clean_Database/users/' + username).remove().then(() => {
@@ -1830,6 +1840,22 @@
                         days: parseInt(aw.days) || 30,
                         del: aw.del || 'نعم'
                     });
+
+                    // ترحيل وتحقق تلقائي من الشركة في قاعدة بيانات الموردين
+                    if (aw.supp && !DB.suppliers.some(s => s.name && s.name.trim().toLowerCase() === aw.supp.trim().toLowerCase())) {
+                        DB.suppliers.unshift({
+                            id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
+                            name: aw.supp,
+                            cr: "CR-" + Math.floor(Math.random()*9000+1000),
+                            tax: "TX-" + Math.floor(Math.random()*900+100),
+                            signAuth: "المفوض الرسمي",
+                            addr: "مصر",
+                            phone: "01000000000",
+                            bankAcc: "EG" + Math.floor(Math.random()*90000000000000+10000000000000),
+                            bankName: "البنك الأهلي المصري",
+                            bankBranch: "الرئيسي"
+                        });
+                    }
                 });
 
                 if (!DB.operations.some(o => o.id == opId)) {
@@ -1854,11 +1880,15 @@
                         date6: globalParsedData.date6 || '',
                         total: totalVal
                     });
+                } else {
+                    let op = DB.operations.find(o => o.id == opId);
+                    op.total = totalVal;
+                    op.category = category;
                 }
 
                 saveDB();
                 closeModal('modal-smart-staging');
-                alert('تم ترحيل كافة البيانات والمحاضر وتواريخ الفتح والبت أوتوماتيكياً بنجاح تام!');
+                alert('تم ترحيل كافة البيانات والمحاضر وتواريخ الفتح والبت والشركات أوتوماتيكياً بنجاح تام!');
             } catch(err) {
                 console.error(err);
                 alert('خطأ أثناء الترحيل: ' + err.message);
@@ -2246,8 +2276,60 @@
             }
         }
 
-        function renderExecutive() { renderAwards(); }
-        function runQuery() {}
+        function renderExecutive() {
+            if(!DB.awards) DB.awards = [];
+            const tb = document.getElementById('executive-tbody'); 
+            if(!tb) return;
+            tb.innerHTML = '';
+            DB.awards.forEach(aw => {
+                const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
+                const pr = getProgress(op.status), gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                tb.innerHTML += `<tr>
+                    <td class="font-bold text-sm">${aw.opId}</td>
+                    <td class="text-right wrap-text"><b class="text-slate-900 dark:text-white">${op.name || '-'}</b><br><span class="text-[10px] text-slate-500">(${op.entity || '-'})</span></td>
+                    <td class="text-right font-bold wrap-text">${aw.item}</td>
+                    <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${aw.supp}</td>
+                    <td class="text-xs font-bold">${op.status || '-'}</td>
+                    <td><div class="progress-wrapper"><div class="progress-fill" style="width: ${pr}%"></div></div><div class="text-[9px] text-slate-400 mt-0.5">${pr}%</div></td>
+                    <td class="font-black text-slate-700 dark:text-slate-300">${fmt.format(aw.val)}</td>
+                    <td class="text-[11px] text-right wrap-text">رقم: ${aw.poNum || '-'}<br>تاريخ: ${aw.poDate || '-'}</td>
+                    <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
+                    <td><span class="pill ${gSt.class}">${gSt.text}</span></td>
+                </tr>`;
+            });
+        }
+
+        function runQuery() {
+            if(!DB.operations) DB.operations = [];
+            if(!DB.awards) DB.awards = [];
+            const inputEl = document.getElementById('query-input');
+            if(!inputEl) return;
+            const id = parseInt(inputEl.value);
+            const op = DB.operations.find(o => o.id === id);
+            const tb = document.getElementById('query-awards-tbody'); 
+            if(!tb) return;
+            tb.innerHTML = '';
+            if (op) {
+                document.getElementById('q-name').innerText = op.name || '-'; 
+                document.getElementById('q-entity').innerText = op.entity || '-';
+                document.getElementById('q-type').innerText = op.type || '-'; 
+                document.getElementById('q-status').innerText = op.status || '-';
+                document.getElementById('q-est').innerText = op.est || '-'; 
+                document.getElementById('q-total').innerText = op.total ? fmt.format(op.total) : '-';
+
+                DB.awards.filter(a => a.opId === id).forEach(aw => {
+                    const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                    tb.innerHTML += `<tr class="bg-white dark:bg-slate-800"><td class="text-right font-bold wrap-text text-slate-900 dark:text-white">${aw.item}</td><td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${aw.supp}</td><td class="font-black text-slate-700 dark:text-slate-300">${fmt.format(aw.val)}</td><td><span class="pill ${gSt.class}">${gSt.text}</span></td><td class="font-bold">${aw.poNum || '-'}</td><td><span class="pill ${dSt.class}">${dSt.text}</span></td></tr>`;
+                });
+            } else {
+                ['q-name', 'q-entity', 'q-type', 'q-status', 'q-est', 'q-total'].forEach(i => {
+                    const el = document.getElementById(i);
+                    if(el) el.innerText = '-';
+                });
+                tb.innerHTML = '<tr><td colspan="6" class="text-center text-red-500 font-bold py-4 text-xs">لا توجد بيانات مطابقة لهذا الرقم!</td></tr>';
+            }
+        }
+
         function updateNotifications() {}
         function toggleNotif() {}
 
@@ -2317,6 +2399,8 @@
             if(id === 'suppliers') renderSuppliers();
             if(id === 'operations') renderOperations();
             if(id === 'awards') renderAwards();
+            if(id === 'executive') renderExecutive();
+            if(id === 'query') runQuery();
         }
 
         function renderAll() { renderDashboard(); renderOperations(); renderAwards(); renderSuppliers(); renderExecutive(); }
