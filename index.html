@@ -1242,7 +1242,6 @@
                 
                 if ((!users || !users['admin']) && u === 'admin' && p === '211182') {
                     currentUserRole = 'admin';
-                    // حفظ حساب الأدمن الافتراضي تلقائياً في السيرفر لأول مرة
                     database.ref('smartSystem_V29_Clean_Database/users/admin').set({
                         name: 'مدير النظام',
                         pass: '211182',
@@ -1287,7 +1286,6 @@
                 if(adminBtnTop) adminBtnTop.style.display = 'none';
                 if(adminBtnHome) adminBtnHome.style.display = 'none';
 
-                // إخفاء زرار درايف والإدارة وقارئ الـ AI عن الضيف
                 const driveCard = document.getElementById('card-drive');
                 const aiBtn = document.getElementById('ai-reader-btn');
                 const homeAiBtn = document.getElementById('home-ai-btn');
@@ -1295,7 +1293,6 @@
                 if(aiBtn) aiBtn.style.display = 'none';
                 if(homeAiBtn) homeAiBtn.style.display = 'none';
 
-                // منع الضيف من النقر على كروت الرئيسية ما عدا لوحة القيادة والاستعلام
                 ['card-operations', 'card-awards', 'card-suppliers', 'card-executive'].forEach(id => {
                     const el = document.getElementById(id);
                     if(el) {
@@ -1841,7 +1838,7 @@
                         del: aw.del || 'نعم'
                     });
 
-                    // ترحيل وتحقق تلقائي من الشركة في قاعدة بيانات الموردين
+                    // التأكد من حفظ الشركات تلقائياً في قائمة الموردين المركزية
                     if (aw.supp && !DB.suppliers.some(s => s.name && s.name.trim().toLowerCase() === aw.supp.trim().toLowerCase())) {
                         DB.suppliers.unshift({
                             id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
@@ -1950,7 +1947,7 @@
             playSound('click');
             const aw = DB.awards[realIdx];
             if(!aw) return alert('بيانات الترسية غير موجودة');
-            const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
+            const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
             const sup = (DB.suppliers || []).find(s => s.name === aw.supp) || { addr: 'مصر', phone: '-' };
             const gVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
 
@@ -2282,7 +2279,7 @@
             if(!tb) return;
             tb.innerHTML = '';
             DB.awards.forEach(aw => {
-                const op = (DB.operations || []).find(o => o.id == aw.opId) || {};
+                const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
                 const pr = getProgress(op.status), gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                 tb.innerHTML += `<tr>
                     <td class="font-bold text-sm">${aw.opId}</td>
@@ -2304,8 +2301,8 @@
             if(!DB.awards) DB.awards = [];
             const inputEl = document.getElementById('query-input');
             if(!inputEl) return;
-            const id = parseInt(inputEl.value);
-            const op = DB.operations.find(o => o.id === id);
+            const id = inputEl.value.trim();
+            const op = DB.operations.find(o => String(o.id) === String(id));
             const tb = document.getElementById('query-awards-tbody'); 
             if(!tb) return;
             tb.innerHTML = '';
@@ -2317,7 +2314,7 @@
                 document.getElementById('q-est').innerText = op.est || '-'; 
                 document.getElementById('q-total').innerText = op.total ? fmt.format(op.total) : '-';
 
-                DB.awards.filter(a => a.opId === id).forEach(aw => {
+                DB.awards.filter(a => String(a.opId) === String(id)).forEach(aw => {
                     const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                     tb.innerHTML += `<tr class="bg-white dark:bg-slate-800"><td class="text-right font-bold wrap-text text-slate-900 dark:text-white">${aw.item}</td><td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${aw.supp}</td><td class="font-black text-slate-700 dark:text-slate-300">${fmt.format(aw.val)}</td><td><span class="pill ${gSt.class}">${gSt.text}</span></td><td class="font-bold">${aw.poNum || '-'}</td><td><span class="pill ${dSt.class}">${dSt.text}</span></td></tr>`;
                 });
