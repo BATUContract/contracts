@@ -1404,12 +1404,16 @@
 
         const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         
+        // دالة مزامنة آمنة ومحدثة بالكامل لمنع أي خطأ
         function forceSyncDB() {
             playSound('click');
             dbRef.once('value').then((snapshot) => {
                 const data = snapshot.val();
-                if (data && data.operations) {
+                if (data) {
                     DB = data;
+                    DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
+                    DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
+                    DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
                     if (!DB.archives) DB.archives = {};
                     DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
                     if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
@@ -1417,10 +1421,11 @@
                     renderAll();
                     alert('تم مزامنة البيانات وتحديثها فوراً بنجاح!');
                 } else {
-                    alert('لا توجد بيانات جديدة على السيرفر.');
+                    alert('السيرفر لا يحتوي على بيانات حالياً.');
                 }
-            }).catch(() => {
-                alert('فشل الاتصال بالسيرفر للمزامنة.');
+            }).catch((error) => {
+                console.error("Sync Error:", error);
+                alert('فشل الاتصال بالسيرفر للمزامنة: ' + error.message);
             });
         }
 
@@ -1909,7 +1914,7 @@
                 if (!DB.archives) DB.archives = {};
                 DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
             } else {
-                DB = defaultDB;
+                DB = JSON.parse(JSON.stringify(defaultDB));
             }
             if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
             updateNotifications();
@@ -2414,7 +2419,7 @@
                         </td>
                         <td>
                             <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
+                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
                                 <div class="attachment-menu">
                                     <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
                                 </div>
@@ -2579,6 +2584,87 @@
                 tb.innerHTML = '<tr><td colspan="6" class="text-center text-red-500 font-bold py-4 text-xs">لا توجد بيانات مطابقة لهذا الرقم!</td></tr>';
             }
         }
+
+        // تفقد الإشعارات وجرس التنبيهات بذكاء
+        function updateNotifications() {
+            if(!DB.awards) DB.awards = [];
+            const list = document.getElementById('notif-list'); 
+            const homeList = document.getElementById('home-notif-list');
+            if(list) list.innerHTML = '';
+            if(homeList) homeList.innerHTML = '';
+            
+            let count = 0;
+            
+            DB.awards.forEach((aw) => {
+                const g = getGuaranteeStatus(aw.gType, aw.gIssuance);
+                const d = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                
+                if (g.code > 0 && aw.gType === 'خطاب ضمان') {
+                    count++;
+                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <p class="font-bold text-red-600">ضمان ${g.code === 2 ? 'منتهي!' : 'ينتهي قريباً'} (${aw.item})</p>
+                        <p class="text-[10px] text-slate-500">الشركة: ${aw.supp} - عملية: ${aw.opId}</p>
+                    </div>`;
+                    if(list) list.innerHTML += itemHtml;
+                    if(homeList) homeList.innerHTML += itemHtml;
+                }
+                
+                if (d.code === 2) {
+                    count++;
+                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <p class="font-bold text-red-600">تأخير في التوريد (${aw.item})</p>
+                        <p class="text-[10px] text-slate-500">الشركة: ${aw.supp} - عملية: ${aw.opId}</p>
+                    </div>`;
+                    if(list) list.innerHTML += itemHtml;
+                    if(homeList) homeList.innerHTML += itemHtml;
+                }
+            });
+
+            const badge = document.getElementById('notif-badge');
+            const homeBadge = document.getElementById('home-notif-badge');
+            const bellIcon = document.getElementById('bell-icon');
+            const homeBellIcon = document.getElementById('home-bell-icon');
+            
+            const countText = count > 0 ? `${count} تنبيهات` : `لا توجد`;
+            if(document.getElementById('notif-count-text')) document.getElementById('notif-count-text').innerText = countText;
+            if(document.getElementById('home-notif-count-text')) document.getElementById('home-notif-count-text').innerText = countText;
+            
+            if(count > 0) { 
+                 if(badge) { badge.innerText = count; badge.classList.remove('hidden'); }
+                 if(homeBadge) { homeBadge.innerText = count; homeBadge.classList.remove('hidden'); }
+                 if(bellIcon) bellIcon.classList.add('pulse-bell', 'text-accent');
+                 if(homeBellIcon) homeBellIcon.classList.add('pulse-bell', 'text-accent');
+                 document.getElementById('app-title').innerText = `🔴 (${count}) منظومة التعاقدات والتوريدات الذكية`;
+            } else { 
+                 if(badge) badge.classList.add('hidden');
+                 if(homeBadge) homeBadge.classList.add('hidden');
+                 if(bellIcon) bellIcon.classList.remove('pulse-bell', 'text-accent');
+                 if(homeBellIcon) homeBellIcon.classList.remove('pulse-bell', 'text-accent');
+                 document.getElementById('app-title').innerText = `منظومة التعاقدات والتوريدات الذكية (Smart V1.Pro)`;
+            }
+            if(count === 0) {
+                let emptyHtml = `<div class="p-3 text-center text-slate-400 text-xs">الأمور مستقرة تماماً ولا توجد تنبيهات</div>`;
+                if(list) list.innerHTML = emptyHtml;
+                if(homeList) homeList.innerHTML = emptyHtml;
+            }
+        }
+
+        function toggleNotif() { 
+            playSound('click');
+            const box = document.getElementById('notif-box');
+            const homeBox = document.getElementById('home-notif-box');
+            if(box) box.classList.toggle('show');
+            if(homeBox) homeBox.classList.toggle('show');
+        }
+
+        document.addEventListener('click', (e) => { 
+            if(!e.target.closest('.relative')) {
+                const box = document.getElementById('notif-box');
+                const homeBox = document.getElementById('home-notif-box');
+                if(box) box.classList.remove('show');
+                if(homeBox) homeBox.classList.remove('show');
+            }
+        });
 
         function exportExcel(tableId, filename) {
             let table = document.getElementById(tableId);
