@@ -271,8 +271,6 @@
         .notif-dropdown.show { display: block; animation: fadeInScale 0.2s ease-out; }
         
         .logo-nav { height: 35px; width: auto; object-fit: contain; background: transparent; }
-        
-        /* تعديل خاص لإظهار اللوجو والهيدر بوضوح تام عند الطباعة */
         .logo-print { height: 75px; width: auto; display: none; margin: 0 auto 10px; background: transparent; }
 
         @media (max-width: 768px) {
@@ -286,11 +284,8 @@
             .no-print, nav, #top-nav-bar, .modal { display: none !important; }
             .view-section { display: none !important; }
             .view-section.active { display: block !important; width: 100% !important; }
-            
-            /* إظهار هيدر الطباعة واللوجو إجبارياً */
             .print-header { display: block !important; }
             .logo-print { display: block !important; }
-
             #modal-doc-preview { position: absolute !important; inset: 0 !important; background: white !important; padding: 0 !important; z-index: 999999 !important; }
             #modal-doc-preview > div { max-width: 100% !important; height: auto !important; box-shadow: none !important; border: none !important; }
             .doc-print-container { padding: 0 !important; }
@@ -2129,11 +2124,12 @@
             }
         }
 
+        // دالة نسبة الإنجاز المحسنة حسب الموقف الفعلي للعملية
         function getProgress(status) {
-            if (status === 'مكتمل') return 100;
+            if (status === 'مكتمل' || status === 'تم الترسية') return 100;
             if (status === 'جاري البت المالي') return 75;
             if (status === 'جاري الدراسة الفنية') return 50;
-            return 25;
+            return 25; // تحت الطرح
         }
 
         function getGuaranteeStatus(type, issuanceDateStr) {
@@ -2176,12 +2172,69 @@
                 if(!typeBreakdown[t]) typeBreakdown[t] = { count: 0, totalVal: 0 };
                 typeBreakdown[t].count++;
             });
+
+            DB.awards.forEach(aw => {
+                const op = DB.operations.find(o => String(o.id) === String(aw.opId));
+                if(op) {
+                    let t = op.type || 'أخرى';
+                    if(!typeBreakdown[t]) typeBreakdown[t] = { count: 0, totalVal: 0 };
+                    typeBreakdown[t].totalVal += parseFloat(aw.val || 0);
+                }
+            });
+
             const typeTbody = document.getElementById('dash-type-breakdown-tbody');
             if(typeTbody) {
                 typeTbody.innerHTML = '';
-                for(let t in typeBreakdown) {
-                    typeTbody.innerHTML += `<tr><td class="font-bold text-right">${t}</td><td><span class="pill blue">${typeBreakdown[t].count} عملية</span></td><td>-</td><td>0.00 ج.م</td></tr>`;
+                if(Object.keys(typeBreakdown).length === 0) {
+                    typeTbody.innerHTML = '<tr><td colspan="4" class="text-center text-slate-400 py-3">لا توجد بيانات مسجلة</td></tr>';
+                } else {
+                    for(let t in typeBreakdown) {
+                        let data = typeBreakdown[t];
+                        let perc = DB.operations.length > 0 ? Math.round((data.count / DB.operations.length) * 100) : 0;
+                        typeTbody.innerHTML += `<tr>
+                            <td class="font-bold text-right text-primary">${t}</td>
+                            <td><span class="pill blue">${data.count} عملية</span></td>
+                            <td>${perc}%</td>
+                            <td class="font-black text-emerald-600">${fmt.format(data.totalVal)} ج.م</td>
+                        </tr>`;
+                    }
                 }
+            }
+
+            // تحديث موقف الإجراءات التنفيذية في لوحة القيادة
+            const statusBars = document.getElementById('dash-status-bars');
+            if(statusBars) {
+                statusBars.innerHTML = '';
+                const statuses = {};
+                DB.operations.forEach(op => {
+                    let st = op.status || 'تحت الطرح';
+                    statuses[st] = (statuses[st] || 0) + 1;
+                });
+                for(let st in statuses) {
+                    let p = Math.round((statuses[st] / (DB.operations.length || 1)) * 100);
+                    statusBars.innerHTML += `
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                <span>${st}</span>
+                                <span>${p}% (${statuses[st]})</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                                <div class="bg-primary h-2 rounded-full" style="width: ${p}%"></div>
+                            </div>
+                        </div>`;
+                }
+            }
+
+            // أحدث العمليات الجارية
+            const recentList = document.getElementById('dash-recent-list');
+            if(recentList) {
+                recentList.innerHTML = '';
+                DB.operations.slice(0, 5).forEach(op => {
+                    recentList.innerHTML += `<div class="border-b dark:border-slate-700 py-2 flex justify-between items-center text-xs">
+                        <div><b>${op.name}</b> <span class="text-slate-400">(${op.entity})</span></div>
+                        <span class="pill blue">${op.status}</span>
+                    </div>`;
+                });
             }
         }
 
@@ -2216,12 +2269,17 @@
 
             if (currentOpSubTab === 'tender') {
                 trHead.innerHTML = `
-                    <th>رقم</th><th>اسم العملية / التوريد</th><th>الجهة</th><th>اعتماد</th><th>النوع</th><th>هل مجزأة؟</th><th>تاريخ الموافقة</th><th>تأمين ابتدائي</th><th>البوابة</th><th>الطرح</th><th>فتح المظاريف</th><th>تقرير فني</th><th>بعد التظلمات</th><th>الفتح المالي</th><th>البت المالي</th><th>الموقف</th><th>إجمالي الترسية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
+                    <th>رقم</th><th>اسم العملية / التوريد</th><th>الجهة</th><th>اعتماد</th><th>النوع</th><th>هل مجزأة؟</th><th>تاريخ الموافقة</th><th>تأمين ابتدائي</th><th>البوابة</th><th>الطرح</th><th>فتح المظاريف</th><th>تقرير فني</th><th>بعد التظلمات</th><th>الفتح المالي</th><th>البت المالي</th><th>الموقف الحالي</th><th>إجمالي الترسية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
                 `;
                 filteredOps.forEach(op => {
                     let portalBadge = op.portal === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill red">تعذر</span>';
                     let initDep = getOperationInitialDepositStatus(op.id);
                     let dividedBadge = `<span class="pill blue">${op.isDivided || 'لا - ترسية كلية'}</span>`;
+                    
+                    // تنظيف النص الطويل للموقف الحالي ومنحه ميزة العنوان الظاهر عند الوقوف بالماوس
+                    let cleanStatus = op.status || '-';
+                    let shortStatus = cleanStatus.length > 25 ? cleanStatus.substring(0, 22) + '...' : cleanStatus;
+
                     tb.innerHTML += `<tr>
                         <td class="font-bold">${op.id}</td>
                         <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${op.name}</td>
@@ -2238,7 +2296,7 @@
                         <td class="text-[11px]">${op.date4 || '-'}</td>
                         <td class="text-[11px]">${op.date5 || '-'}</td>
                         <td class="text-[11px]">${op.date6 || '-'}</td>
-                        <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
+                        <td title="${cleanStatus}"><span class="pill blue truncate max-w-[150px] inline-block">${shortStatus}</span></td>
                         <td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>
                         <td>
                             <div class="attachment-dropdown-wrap">
@@ -2270,7 +2328,7 @@
                         <td class="text-[11px]">${op.date1 || '-'}</td>
                         <td class="font-bold text-amber-600">${op.guideline ? fmt.format(op.guideline) : '-'}</td>
                         <td>${portalBadge}</td>
-                        <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
+                        <td><span class="pill blue">${op.status}</span></td>
                         <td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>
                         <td>
                             <div class="attachment-dropdown-wrap">
@@ -2297,7 +2355,7 @@
                         <td><span class="pill blue">${op.type}</span></td>
                         <td class="text-[11px]">${op.date1 || '-'}</td>
                         <td class="text-[11px]">${op.date2 || '-'}</td>
-                        <td><span class="pill ${op.status==='مكتمل'?'green':'blue'}">${op.status}</span></td>
+                        <td><span class="pill blue">${op.status}</span></td>
                         <td>
                             <div class="attachment-dropdown-wrap">
                                 <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
