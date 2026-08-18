@@ -271,6 +271,8 @@
         .notif-dropdown.show { display: block; animation: fadeInScale 0.2s ease-out; }
         
         .logo-nav { height: 35px; width: auto; object-fit: contain; background: transparent; }
+        
+        /* تعديل خاص لإظهار اللوجو والهيدر بوضوح تام عند الطباعة */
         .logo-print { height: 75px; width: auto; display: none; margin: 0 auto 10px; background: transparent; }
 
         @media (max-width: 768px) {
@@ -284,6 +286,11 @@
             .no-print, nav, #top-nav-bar, .modal { display: none !important; }
             .view-section { display: none !important; }
             .view-section.active { display: block !important; width: 100% !important; }
+            
+            /* إظهار هيدر الطباعة واللوجو إجبارياً */
+            .print-header { display: block !important; }
+            .logo-print { display: block !important; }
+
             #modal-doc-preview { position: absolute !important; inset: 0 !important; background: white !important; padding: 0 !important; z-index: 999999 !important; }
             #modal-doc-preview > div { max-width: 100% !important; height: auto !important; box-shadow: none !important; border: none !important; }
             .doc-print-container { padding: 0 !important; }
