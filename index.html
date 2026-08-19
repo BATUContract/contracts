@@ -1927,7 +1927,7 @@ function commitStagingDataToDB() {
             DB.operations.unshift(opData);
         }
 
-        // الحفظ المباشر على Firebase وتحديث الواجهة
+        // الحفظ المباشر على Firebase وتحديث الواجهة (تمت مراجعتها لضمان عدم وجود أي دالة غير معرفة)
         dbRef.set(DB).then(() => {
             if (typeof updateNotifications === 'function') updateNotifications();
             if (typeof renderAll === 'function') renderAll();
