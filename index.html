@@ -1409,28 +1409,22 @@ let currentAwardSubTab = 'tender';
         const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         
         function forceSyncDB() {
-            playSound('click');
-            dbRef.once('value').then((snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    DB = data;
-                    DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
-                    DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
-                    DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
-                    if (!DB.archives) DB.archives = {};
-                    DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
-                    if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
-                    updateNotifications();
-                    renderAll();
-                    alert('تم مزامنة البيانات وتحديثها فوراً بنجاح!');
-                } else {
-                    alert('السيرفر لا يحتوي على بيانات حالياً.');
-                }
-            }).catch((error) => {
-                console.error("Sync Error:", error);
-                alert('فشل الاتصال بالسيرفر للمزامنة: ' + error.message);
-            });
-        }
+            playSound('click');function saveDB() {
+    if(!DB.suppliers) DB.suppliers = [];
+    if(!DB.operations) DB.operations = [];
+    if(!DB.awards) DB.awards = [];
+    
+    // التأكد من الترتيب قبل الحفظ
+    if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
+    
+    dbRef.set(DB).then(() => {
+        if (typeof updateNotifications === 'function') updateNotifications();
+        if (typeof renderAll === 'function') renderAll();
+    }).catch((err) => {
+        console.warn("Firebase save error:", err);
+        alert("حدث خطأ في مزامنة البيانات مع السيرفر، تحقق من اتصال الإنترنت.");
+    });
+}
 
         async function checkPortalStatus() {
             const dots = [document.getElementById('portal-status-dot'), document.getElementById('home-portal-status-dot')];
