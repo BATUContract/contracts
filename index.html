@@ -1800,7 +1800,6 @@
         }
 
 function saveDB() {
-    // تعريف احتياطي لمنع خطأ saveDB is not defined نهائياً
     if (typeof dbRef !== 'undefined' && typeof DB !== 'undefined') {
         dbRef.set(DB).catch(e => console.log(e));
     }
@@ -1808,9 +1807,13 @@ function saveDB() {
 
 function commitStagingDataToDB() {
     try {
+        // تعريف احتياطي شامل لضمان عدم ظهور أي متغير غير معروف نهائياً
         if (typeof DB === 'undefined' || !DB) {
             window.DB = { operations: [], awards: [], suppliers: [], archives: {} };
         }
+        if (typeof currentOpSubTab === 'undefined') { window.currentOpSubTab = 'tender'; }
+        if (typeof currentAwardSubTab === 'undefined') { window.currentAwardSubTab = 'tender'; }
+
         if(!DB.operations) DB.operations = [];
         if(!DB.awards) DB.awards = [];
         if(!DB.suppliers) DB.suppliers = [];
