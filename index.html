@@ -1799,6 +1799,13 @@
             }
         }
 
+function saveDB() {
+    // تعريف احتياطي لمنع خطأ saveDB is not defined نهائياً
+    if (typeof dbRef !== 'undefined' && typeof DB !== 'undefined') {
+        dbRef.set(DB).catch(e => console.log(e));
+    }
+}
+
 function commitStagingDataToDB() {
     try {
         if (typeof DB === 'undefined' || !DB) {
@@ -1927,7 +1934,6 @@ function commitStagingDataToDB() {
             DB.operations.unshift(opData);
         }
 
-        // الحفظ المباشر على Firebase وتحديث الواجهة (تمت مراجعتها لضمان عدم وجود أي دالة غير معرفة)
         dbRef.set(DB).then(() => {
             if (typeof updateNotifications === 'function') updateNotifications();
             if (typeof renderAll === 'function') renderAll();
