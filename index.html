@@ -1801,7 +1801,6 @@
 
 function commitStagingDataToDB() {
     try {
-        // التأكد من تعريف قاعدة البيانات محلياً وعاماً لعدم ظهور خطأ DB is not defined
         if (typeof DB === 'undefined' || !DB) {
             window.DB = { operations: [], awards: [], suppliers: [], archives: {} };
         }
@@ -1928,9 +1927,16 @@ function commitStagingDataToDB() {
             DB.operations.unshift(opData);
         }
 
-        saveDB();
-        closeModal('modal-smart-staging');
-        alert('تم دمج وتحديث بيانات المرحلة الحالية في نفس العملية على السيرفر بنجاح تام!');
+        // الحفظ المباشر على Firebase وتحديث الواجهة
+        dbRef.set(DB).then(() => {
+            if (typeof updateNotifications === 'function') updateNotifications();
+            if (typeof renderAll === 'function') renderAll();
+            closeModal('modal-smart-staging');
+            alert('تم دمج وتحديث بيانات المرحلة الحالية في نفس العملية على السيرفر بنجاح تام!');
+        }).catch((err) => {
+            alert('حدث خطأ أثناء الحفظ على السيرفر: ' + err.message);
+        });
+
     } catch(err) {
         console.error(err);
         alert('خطأ أثناء الترحيل والتحديث: ' + err.message);
