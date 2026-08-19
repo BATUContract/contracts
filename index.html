@@ -187,7 +187,7 @@
             width: 0%;
             background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981);
             border-radius: 999px;
-            transition: width 2.6s cubic-bezier(0.1, 1, 0.1, 1);
+            transition: width 1.5s cubic-bezier(0.1, 1, 0.1, 1);
         }
 
         .attachment-dropdown-wrap {
@@ -1144,28 +1144,28 @@
     </main>
 
     <script>
-        // تعريف المتغيرات العامة الأساسية لعدم حدوث أي خطأ undefined
+        // تعريف المتغيرات العامة الأساسية
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
         let currentUserRole = null;
         let globalParsedData = null;
 
-        // إعدادات الـ Intro (لوجو + بار تحميل متحرك)
+        // إعدادات شاشة التحميل الآمنة والسريعة (تمنع التوقف نهائياً)
         window.addEventListener('load', function() {
-            setTimeout(() => {
-                const bar = document.getElementById('intro-loading-bar');
-                if(bar) bar.style.width = '100%';
-            }, 100);
+            const bar = document.getElementById('intro-loading-bar');
+            if(bar) bar.style.width = '100%';
 
             const introOverlay = document.getElementById('intro-overlay');
             setTimeout(function() {
-                introOverlay.classList.add('fade-out');
-                setTimeout(function() {
-                    introOverlay.style.display = 'none';
-                    document.body.classList.remove('intro-active');
-                    openModal('modal-login');
-                }, 800);
-            }, 2700);
+                if(introOverlay) {
+                    introOverlay.classList.add('fade-out');
+                    setTimeout(function() {
+                        introOverlay.style.display = 'none';
+                        document.body.classList.remove('intro-active');
+                        openModal('modal-login');
+                    }, 500);
+                }
+            }, 1200);
         });
 
         if (!localStorage.getItem('mgmt_drive_folder_url')) {
