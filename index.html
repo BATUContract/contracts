@@ -187,7 +187,7 @@
             width: 0%;
             background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981);
             border-radius: 999px;
-            transition: width 1.5s cubic-bezier(0.1, 1, 0.1, 1);
+            transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1);
         }
 
         .attachment-dropdown-wrap {
@@ -1163,7 +1163,7 @@
                         introOverlay.style.display = 'none';
                         document.body.classList.remove('intro-active');
                         openModal('modal-login');
-                    }, 500);
+                    }, 400);
                 }
             }, 1200);
         });
@@ -1280,7 +1280,7 @@
             playSound('click');
             currentUserRole = 'guest';
             closeModal('modal-login');
-            alert('تم الدخول كضيف (مشاهدة لوحة القيادة فقط).');
+            alert('تم الدخول كضيف (مشاهدة الإحصائيات فقط).');
             applyRolePermissions();
             switchTab('dashboard');
         }
