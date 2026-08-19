@@ -1801,6 +1801,10 @@
 
 function commitStagingDataToDB() {
     try {
+        // التأكد من تعريف قاعدة البيانات محلياً وعاماً لعدم ظهور خطأ DB is not defined
+        if (typeof DB === 'undefined' || !DB) {
+            window.DB = { operations: [], awards: [], suppliers: [], archives: {} };
+        }
         if(!DB.operations) DB.operations = [];
         if(!DB.awards) DB.awards = [];
         if(!DB.suppliers) DB.suppliers = [];
@@ -1816,7 +1820,6 @@ function commitStagingDataToDB() {
             return;
         }
 
-        // 1. البحث عن العملية لو كانت مسجلة مسبقاً (لتحديثها تدرجياً)
         let existingOpIndex = DB.operations.findIndex(o => o.id == opId);
         let existingOp = existingOpIndex >= 0 ? DB.operations[existingOpIndex] : null;
 
@@ -1835,17 +1838,14 @@ function commitStagingDataToDB() {
 
         let awardsList = globalParsedData.awards || [];
 
-        // 2. الدمج الذكي لبنود الترسيات والأوامر والضمانات
         awardsList.forEach(aw => {
             let fVal = parseFloat(aw.val) || 0;
             let isAwarded = (aw.awardStatus === 'تم الترسية' && aw.supp && fVal > 0);
             let detectedDocType = aw.docOrderType || ((aw.item && (aw.item.includes('صيانة') || aw.item.includes('تركيب') || aw.item.includes('كامير') || aw.item.includes('تكييف') || aw.item.includes('صوت') || aw.item.includes('أمن') || aw.item.includes('نظافة') || aw.item.includes('سيار'))) ? 'أمر إسناد' : 'أمر توريد');
 
-            // هل البند ده موجود قبل كده لنفس العملية؟
             let existingAwardIdx = DB.awards.findIndex(a => String(a.opId) === String(opId) && (a.item === aw.item || DB.awards.filter(x=>String(x.opId)===String(opId)).length === 1));
 
             if (existingAwardIdx >= 0) {
-                // تحديث تدريجي للمرحلة الأخيرة (زي إضافة الشركة، الترسية، رقم الضمان النهائي، أمر التوريد)
                 let exAw = DB.awards[existingAwardIdx];
                 exAw.supp = isAwarded ? aw.supp : (aw.supp || exAw.supp || 'قيد البت المالي');
                 exAw.docOrderType = detectedDocType;
@@ -1867,7 +1867,6 @@ function commitStagingDataToDB() {
                     exAw.awardStatus = aw.awardStatus;
                 }
             } else {
-                // إضافة بند جديد لو لم يكن موجوداً
                 DB.awards.unshift({
                     opId: opId,
                     item: aw.item || opName,
@@ -1890,7 +1889,6 @@ function commitStagingDataToDB() {
                 });
             }
 
-            // التحقق من سجل الموردين المركزي وإضافته لو جديد
             if (isAwarded && aw.supp && !DB.suppliers.some(s => s.name && s.name.trim().toLowerCase() === aw.supp.trim().toLowerCase())) {
                 DB.suppliers.unshift({
                     id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
@@ -1900,10 +1898,8 @@ function commitStagingDataToDB() {
             }
         });
 
-        // 3. إعادة حساب إجمالي الترسيات للعملية
         let totalVal = DB.awards.filter(a => String(a.opId) === String(opId) && a.awardStatus === 'تم الترسية').reduce((sum, a) => sum + parseFloat(a.val || 0), 0);
 
-        // 4. الدمج التراكمي للتواريخ (الاحتفاظ بالقديم لو الجديد غير موجود في الملف الحالي)
         let opData = {
             id: opId,
             category: category,
@@ -1939,8 +1935,7 @@ function commitStagingDataToDB() {
         console.error(err);
         alert('خطأ أثناء الترحيل والتحديث: ' + err.message);
     }
- }
-
+}
         function deleteOp(id) { 
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
