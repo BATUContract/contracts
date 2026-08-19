@@ -1600,7 +1600,7 @@
             try {
                 let promptText = "";
                 if (parseMode === 'supplier') {
-                    promptText = `أنت خبير توثيق الشركات وقواعد البيانات وقانون التعاقدات 182 لسنة 2018. اقرأ المستندات المرفقة واستخرج بيانات الشركة بدقة تامة بصيغة JSON فقط وبدون أي نصوص إضافية:
+                    promptText = `أنت خبير توثيق الشركات وقواعد البيانات وقانون التعاقدات 182 لسنة 2018. اقرأ المستندات المرفقة واستخرج بيانات الشركة بدقة تامة بصيغة JSON فقط وبدون أي نصوص إضافية بالصيغة التالية:
                     {
                       "name": "اسم الشركة الكامل",
                       "cr": "رقم السجل التجاري أو null",
@@ -1692,7 +1692,7 @@
                     }
                 }
 
-                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: parts }] })
