@@ -43,8 +43,6 @@
                 }
             }
         }
-let currentOpSubTab = 'tender';
-let currentAwardSubTab = 'tender';
     </script>
     
     <style>
@@ -1049,7 +1047,6 @@ let currentAwardSubTab = 'tender';
                         <div class="flex flex-col sm:col-span-2"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">وصف البند / اللوط التفصيلي *</label><input type="text" id="f-aw-item" required oninput="autoDetectDocType()" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"></div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">الشركة الفائزة بالبند</label><input type="text" id="f-aw-supp" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold text-primary dark:text-indigo-400" placeholder="اسم الشركة..."></div>
                         
-                        <!-- الحقل الجديد: طبيعة الأمر (توريد أو إسناد) -->
                         <div class="flex flex-col">
                             <label class="text-[11px] font-bold mb-1 text-primary dark:text-indigo-300">طبيعة المستند / الأمر *</label>
                             <select id="f-aw-doc-type" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold">
@@ -1147,6 +1144,12 @@ let currentAwardSubTab = 'tender';
     </main>
 
     <script>
+        // تعريف المتغيرات العامة الأساسية لعدم حدوث أي خطأ undefined
+        let currentOpSubTab = 'tender';
+        let currentAwardSubTab = 'tender';
+        let currentUserRole = null;
+        let globalParsedData = null;
+
         // إعدادات الـ Intro (لوجو + بار تحميل متحرك)
         window.addEventListener('load', function() {
             setTimeout(() => {
@@ -1230,8 +1233,6 @@ let currentAwardSubTab = 'tender';
         }
         const database = firebase.database();
         const dbRef = database.ref('smartSystem_V29_Clean_Database');
-
-        let currentUserRole = null;
 
         function handleLogin() {
             playSound('click');
@@ -1409,22 +1410,28 @@ let currentAwardSubTab = 'tender';
         const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         
         function forceSyncDB() {
-            playSound('click');function saveDB() {
-    if(!DB.suppliers) DB.suppliers = [];
-    if(!DB.operations) DB.operations = [];
-    if(!DB.awards) DB.awards = [];
-    
-    // التأكد من الترتيب قبل الحفظ
-    if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
-    
-    dbRef.set(DB).then(() => {
-        if (typeof updateNotifications === 'function') updateNotifications();
-        if (typeof renderAll === 'function') renderAll();
-    }).catch((err) => {
-        console.warn("Firebase save error:", err);
-        alert("حدث خطأ في مزامنة البيانات مع السيرفر، تحقق من اتصال الإنترنت.");
-    });
-}
+            playSound('click');
+            dbRef.once('value').then((snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    DB = data;
+                    DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
+                    DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
+                    DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
+                    if (!DB.archives) DB.archives = {};
+                    DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
+                    if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
+                    updateNotifications();
+                    renderAll();
+                    alert('تم مزامنة البيانات وتحديثها فوراً بنجاح!');
+                } else {
+                    alert('السيرفر لا يحتوي على بيانات حالياً.');
+                }
+            }).catch((error) => {
+                console.error("Sync Error:", error);
+                alert('فشل الاتصال بالسيرفر للمزامنة: ' + error.message);
+            });
+        }
 
         async function checkPortalStatus() {
             const dots = [document.getElementById('portal-status-dot'), document.getElementById('home-portal-status-dot')];
@@ -1564,8 +1571,6 @@ let currentAwardSubTab = 'tender';
                 reader.onerror = error => reject(error);
             });
         }
-
-        let globalParsedData = null;
 
         async function processFilesSource(sourceType) {
             let apiKey = localStorage.getItem('gemini_api_key') || document.getElementById('ai-api-key-input').value.trim();
@@ -1795,157 +1800,182 @@ let currentAwardSubTab = 'tender';
             }
         }
 
-function saveDB() {
-    if (typeof dbRef !== 'undefined' && typeof DB !== 'undefined') {
-        dbRef.set(DB).catch(e => console.log(e));
-    }
-}
-
-function commitStagingDataToDB() {
-    try {
-        if (typeof DB === 'undefined' || !DB) {
-            window.DB = { operations: [], awards: [], suppliers: [], archives: {} };
-        }
-        if (typeof window.currentOpSubTab === 'undefined') { window.currentOpSubTab = 'tender'; }
-        if (typeof window.currentAwardSubTab === 'undefined') { window.currentAwardSubTab = 'tender'; }
-
-        if(!DB.operations) DB.operations = [];
-        if(!DB.awards) DB.awards = [];
-        if(!DB.suppliers) DB.suppliers = [];
-
-        if (!globalParsedData) {
-            alert('لا توجد بيانات مستخرجة للاعتماد.');
-            return;
-        }
-
-        let opId = parseInt(document.getElementById('st-op-id').value) || globalParsedData.opId;
-        if (!opId) {
-            alert('برجاء إدخال رقم عملية صحيح.');
-            return;
-        }
-
-        let existingOpIndex = DB.operations.findIndex(o => o.id == opId);
-        let existingOp = existingOpIndex >= 0 ? DB.operations[existingOpIndex] : null;
-
-        let opName = document.getElementById('st-op-name').value || globalParsedData.opName || (existingOp ? existingOp.name : 'عملية جديدة');
-        let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || (existingOp ? existingOp.entity : 'جامعة برج العرب التكنولوجية');
-        let opType = document.getElementById('st-op-type').value || globalParsedData.opType || (existingOp ? existingOp.type : 'مناقصة عامة');
-        let opEst = document.getElementById('st-op-est').value || globalParsedData.opEst || (existingOp ? existingOp.est : 'مظروف مغلق');
-        let currentStatus = globalParsedData.status || (existingOp ? existingOp.status : 'تحت الطرح');
-        
-        let category = 'tender';
-        if (opType && (opType.includes('أمر مباشر') || opType.includes('مباشر'))) {
-            category = 'direct';
-        } else if (opType && (opType.includes('تجديد') || opType.includes('تمديد'))) {
-            category = 'renewal';
-        }
-
-        let awardsList = globalParsedData.awards || [];
-
-        awardsList.forEach(aw => {
-            let fVal = parseFloat(aw.val) || 0;
-            let isAwarded = (aw.awardStatus === 'تم الترسية' && aw.supp && fVal > 0);
-            let detectedDocType = aw.docOrderType || ((aw.item && (aw.item.includes('صيانة') || aw.item.includes('تركيب') || aw.item.includes('كامير') || aw.item.includes('تكييف') || aw.item.includes('صوت') || aw.item.includes('أمن') || aw.item.includes('نظافة') || aw.item.includes('سيار'))) ? 'أمر إسناد' : 'أمر توريد');
-
-            let existingAwardIdx = DB.awards.findIndex(a => String(a.opId) === String(opId) && (a.item === aw.item || DB.awards.filter(x=>String(x.opId)===String(opId)).length === 1));
-
-            if (existingAwardIdx >= 0) {
-                let exAw = DB.awards[existingAwardIdx];
-                exAw.supp = isAwarded ? aw.supp : (aw.supp || exAw.supp || 'قيد البت المالي');
-                exAw.docOrderType = detectedDocType;
-                exAw.estVal = parseFloat(aw.estVal) || exAw.estVal || 0;
-                if (fVal > 0) exAw.val = fVal;
-                
-                if (isAwarded) {
-                    exAw.awardStatus = 'تم الترسية';
-                    exAw.gVal = aw.gType === 'إعفاء (توريد خلال 10 أيام)' ? 0 : (exAw.val * 0.05);
-                    exAw.gType = aw.gType || exAw.gType || 'خطاب ضمان';
-                    if (aw.gNum && aw.gNum !== '-') exAw.gNum = aw.gNum;
-                    if (aw.gIssuance) exAw.gIssuance = aw.gIssuance;
-                    if (aw.gBank && aw.gBank !== '-') exAw.gBank = aw.gBank;
-                    if (aw.poNum) exAw.poNum = aw.poNum;
-                    if (aw.poDate) exAw.poDate = aw.poDate;
-                    if (aw.days) exAw.days = parseInt(aw.days) || exAw.days;
-                    if (aw.del) exAw.del = aw.del;
-                } else if (aw.awardStatus) {
-                    exAw.awardStatus = aw.awardStatus;
+        // دالة الدمج التراكمي الذكي للعمليات والمراحل وتحديث السيرفر مباشرة
+        function commitStagingDataToDB() {
+            try {
+                if (typeof DB === 'undefined' || !DB) {
+                    window.DB = { operations: [], awards: [], suppliers: [], archives: {} };
                 }
-            } else {
-                DB.awards.unshift({
-                    opId: opId,
-                    item: aw.item || opName,
-                    supp: isAwarded ? aw.supp : (aw.supp || 'قيد البت المالي'),
-                    docOrderType: detectedDocType,
-                    estVal: parseFloat(aw.estVal) || 0,
-                    val: fVal,
-                    gVal: isAwarded ? (aw.gType === 'إعفاء (توريد خلال 10 أيام)' ? 0 : (fVal * 0.05)) : 0,
-                    awardStatus: isAwarded ? 'تم الترسية' : (aw.awardStatus || 'قيد البت المالي'),
-                    gType: isAwarded ? (aw.gType || 'خطاب ضمان') : '-',
-                    gNum: isAwarded ? (aw.gNum || '-') : '-',
-                    gIssuance: isAwarded ? (aw.gIssuance || '') : '',
-                    gBank: isAwarded ? (aw.gBank || '-') : '-',
-                    ret: aw.ret || 'لا',
-                    contract: isAwarded ? (aw.contract || 'لا') : 'لا',
-                    poNum: isAwarded ? (aw.poNum || '') : '',
-                    poDate: isAwarded ? (aw.poDate || '') : '',
-                    days: parseInt(aw.days) || 30,
-                    del: isAwarded ? (aw.del || 'لا') : 'لا'
+                if(!DB.operations) DB.operations = [];
+                if(!DB.awards) DB.awards = [];
+                if(!DB.suppliers) DB.suppliers = [];
+
+                if (!globalParsedData) {
+                    alert('لا توجد بيانات مستخرجة للاعتماد.');
+                    return;
+                }
+
+                let opId = parseInt(document.getElementById('st-op-id').value) || globalParsedData.opId;
+                if (!opId) {
+                    alert('برجاء إدخال رقم عملية صحيح.');
+                    return;
+                }
+
+                let existingOpIndex = DB.operations.findIndex(o => o.id == opId);
+                let existingOp = existingOpIndex >= 0 ? DB.operations[existingOpIndex] : null;
+
+                let opName = document.getElementById('st-op-name').value || globalParsedData.opName || (existingOp ? existingOp.name : 'عملية جديدة');
+                let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || (existingOp ? existingOp.entity : 'جامعة برج العرب التكنولوجية');
+                let opType = document.getElementById('st-op-type').value || globalParsedData.opType || (existingOp ? existingOp.type : 'مناقصة عامة');
+                let opEst = document.getElementById('st-op-est').value || globalParsedData.opEst || (existingOp ? existingOp.est : 'مظروف مغلق');
+                let currentStatus = globalParsedData.status || (existingOp ? existingOp.status : 'تحت الطرح');
+                
+                let category = 'tender';
+                if (opType && (opType.includes('أمر مباشر') || opType.includes('مباشر'))) {
+                    category = 'direct';
+                } else if (opType && (opType.includes('تجديد') || opType.includes('تمديد'))) {
+                    category = 'renewal';
+                }
+
+                let awardsList = globalParsedData.awards || [];
+
+                awardsList.forEach(aw => {
+                    let fVal = parseFloat(aw.val) || 0;
+                    let isAwarded = (aw.awardStatus === 'تم الترسية' && aw.supp && fVal > 0);
+                    let detectedDocType = aw.docOrderType || ((aw.item && (aw.item.includes('صيانة') || aw.item.includes('تركيب') || aw.item.includes('كامير') || aw.item.includes('تكييف') || aw.item.includes('صوت') || aw.item.includes('أمن') || aw.item.includes('نظافة') || aw.item.includes('سيار'))) ? 'أمر إسناد' : 'أمر توريد');
+
+                    let existingAwardIdx = DB.awards.findIndex(a => String(a.opId) === String(opId) && (a.item === aw.item || DB.awards.filter(x=>String(x.opId)===String(opId)).length === 1));
+
+                    if (existingAwardIdx >= 0) {
+                        let exAw = DB.awards[existingAwardIdx];
+                        exAw.supp = isAwarded ? aw.supp : (aw.supp || exAw.supp || 'قيد البت المالي');
+                        exAw.docOrderType = detectedDocType;
+                        exAw.estVal = parseFloat(aw.estVal) || exAw.estVal || 0;
+                        if (fVal > 0) exAw.val = fVal;
+                        
+                        if (isAwarded) {
+                            exAw.awardStatus = 'تم الترسية';
+                            exAw.gVal = aw.gType === 'إعفاء (توريد خلال 10 أيام)' ? 0 : (exAw.val * 0.05);
+                            exAw.gType = aw.gType || exAw.gType || 'خطاب ضمان';
+                            if (aw.gNum && aw.gNum !== '-') exAw.gNum = aw.gNum;
+                            if (aw.gIssuance) exAw.gIssuance = aw.gIssuance;
+                            if (aw.gBank && aw.gBank !== '-') exAw.gBank = aw.gBank;
+                            if (aw.poNum) exAw.poNum = aw.poNum;
+                            if (aw.poDate) exAw.poDate = aw.poDate;
+                            if (aw.days) exAw.days = parseInt(aw.days) || exAw.days;
+                            if (aw.del) exAw.del = aw.del;
+                        } else if (aw.awardStatus) {
+                            exAw.awardStatus = aw.awardStatus;
+                        }
+                    } else {
+                        DB.awards.unshift({
+                            opId: opId,
+                            item: aw.item || opName,
+                            supp: isAwarded ? aw.supp : (aw.supp || 'قيد البت المالي'),
+                            docOrderType: detectedDocType,
+                            estVal: parseFloat(aw.estVal) || 0,
+                            val: fVal,
+                            gVal: isAwarded ? (aw.gType === 'إعفاء (توريد خلال 10 أيام)' ? 0 : (fVal * 0.05)) : 0,
+                            awardStatus: isAwarded ? 'تم الترسية' : (aw.awardStatus || 'قيد البت المالي'),
+                            gType: isAwarded ? (aw.gType || 'خطاب ضمان') : '-',
+                            gNum: isAwarded ? (aw.gNum || '-') : '-',
+                            gIssuance: isAwarded ? (aw.gIssuance || '') : '',
+                            gBank: isAwarded ? (aw.gBank || '-') : '-',
+                            ret: aw.ret || 'لا',
+                            contract: isAwarded ? (aw.contract || 'لا') : 'لا',
+                            poNum: isAwarded ? (aw.poNum || '') : '',
+                            poDate: isAwarded ? (aw.poDate || '') : '',
+                            days: parseInt(aw.days) || 30,
+                            del: isAwarded ? (aw.del || 'لا') : 'لا'
+                        });
+                    }
+
+                    if (isAwarded && aw.supp && !DB.suppliers.some(s => s.name && s.name.trim().toLowerCase() === aw.supp.trim().toLowerCase())) {
+                        DB.suppliers.unshift({
+                            id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
+                            name: aw.supp,
+                            cr: "", tax: "", signAuth: "", addr: "مصر", phone: "", bankAcc: "", bankName: "", bankBranch: ""
+                        });
+                    }
                 });
+
+                let totalVal = DB.awards.filter(a => String(a.opId) === String(opId) && a.awardStatus === 'تم الترسية').reduce((sum, a) => sum + parseFloat(a.val || 0), 0);
+
+                let opData = {
+                    id: opId,
+                    category: category,
+                    name: opName,
+                    entity: opEntity,
+                    type: opType,
+                    budget: globalParsedData.budget || (existingOp ? existingOp.budget : 'نعم'),
+                    isDivided: globalParsedData.isDivided || (existingOp ? existingOp.isDivided : 'نعم - قابلة للتجزئة'),
+                    est: opEst,
+                    guideline: category === 'direct' ? totalVal : (parseFloat(globalParsedData.guideline) || (existingOp ? existingOp.guideline : 0)),
+                    status: currentStatus,
+                    portal: globalParsedData.portal || (existingOp ? existingOp.portal : 'نعم'),
+                    approvalDate: globalParsedData.approvalDate || (existingOp ? existingOp.approvalDate : ''),
+                    date1: globalParsedData.date1 || (existingOp ? existingOp.date1 : ''),
+                    date2: globalParsedData.date2 || (existingOp ? existingOp.date2 : ''),
+                    date3: globalParsedData.date3 || (existingOp ? existingOp.date3 : ''),
+                    date4: globalParsedData.date4 || (existingOp ? existingOp.date4 : ''),
+                    date5: globalParsedData.date5 || (existingOp ? existingOp.date5 : ''),
+                    date6: globalParsedData.date6 || (existingOp ? existingOp.date6 : ''),
+                    total: totalVal
+                };
+
+                if (existingOpIndex >= 0) {
+                    DB.operations[existingOpIndex] = opData;
+                } else {
+                    DB.operations.unshift(opData);
+                }
+
+                saveDB();
+                closeModal('modal-smart-staging');
+                alert('تم دمج وتحديث بيانات المرحلة الحالية في نفس العملية على السيرفر بنجاح تام!');
+            } catch(err) {
+                console.error(err);
+                alert('خطأ أثناء الترحيل والتحديث: ' + err.message);
             }
-
-            if (isAwarded && aw.supp && !DB.suppliers.some(s => s.name && s.name.trim().toLowerCase() === aw.supp.trim().toLowerCase())) {
-                DB.suppliers.unshift({
-                    id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
-                    name: aw.supp,
-                    cr: "", tax: "", signAuth: "", addr: "مصر", phone: "", bankAcc: "", bankName: "", bankBranch: ""
-                });
-            }
-        });
-
-        let totalVal = DB.awards.filter(a => String(a.opId) === String(opId) && a.awardStatus === 'تم الترسية').reduce((sum, a) => sum + parseFloat(a.val || 0), 0);
-
-        let opData = {
-            id: opId,
-            category: category,
-            name: opName,
-            entity: opEntity,
-            type: opType,
-            budget: globalParsedData.budget || (existingOp ? existingOp.budget : 'نعم'),
-            isDivided: globalParsedData.isDivided || (existingOp ? existingOp.isDivided : 'نعم - قابلة للتجزئة'),
-            est: opEst,
-            guideline: category === 'direct' ? totalVal : (parseFloat(globalParsedData.guideline) || (existingOp ? existingOp.guideline : 0)),
-            status: currentStatus,
-            portal: globalParsedData.portal || (existingOp ? existingOp.portal : 'نعم'),
-            approvalDate: globalParsedData.approvalDate || (existingOp ? existingOp.approvalDate : ''),
-            date1: globalParsedData.date1 || (existingOp ? existingOp.date1 : ''),
-            date2: globalParsedData.date2 || (existingOp ? existingOp.date2 : ''),
-            date3: globalParsedData.date3 || (existingOp ? existingOp.date3 : ''),
-            date4: globalParsedData.date4 || (existingOp ? existingOp.date4 : ''),
-            date5: globalParsedData.date5 || (existingOp ? existingOp.date5 : ''),
-            date6: globalParsedData.date6 || (existingOp ? existingOp.date6 : ''),
-            total: totalVal
-        };
-
-        if (existingOpIndex >= 0) {
-            DB.operations[existingOpIndex] = opData;
-        } else {
-            DB.operations.unshift(opData);
         }
 
-        dbRef.set(DB).then(() => {
-            if (typeof updateNotifications === 'function') updateNotifications();
-            if (typeof renderAll === 'function') renderAll();
-            closeModal('modal-smart-staging');
-            alert('تم دمج وتحديث بيانات المرحلة الحالية في نفس العملية على السيرفر بنجاح تام!');
-        }).catch((err) => {
-            alert('حدث خطأ أثناء الحفظ على السيرفر: ' + err.message);
+        const defaultDB = { operations: [], awards: [], suppliers: [], archives: {} };
+        let DB = { operations: [], awards: [], suppliers: [], archives: {} };
+
+        // الاستماع الفوري للتحديثات من السيرفر لضمان ظهور البيانات على أي جهاز فوراً
+        dbRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                DB = data;
+                DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
+                DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
+                DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
+                if (!DB.archives) DB.archives = {};
+                DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
+                if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
+            } else {
+                DB = JSON.parse(JSON.stringify(defaultDB));
+            }
+            updateNotifications();
+            renderAll();
+        }, (error) => {
+            console.warn("Database sync warning:", error);
         });
 
-    } catch(err) {
-        console.error(err);
-        alert('خطأ أثناء الترحيل والتحديث: ' + err.message);
-    }
-}
+        function saveDB() {
+            if(!DB.suppliers) DB.suppliers = [];
+            if(!DB.operations) DB.operations = [];
+            if(!DB.awards) DB.awards = [];
+            if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
+            
+            dbRef.set(DB).then(() => {
+                updateNotifications();
+                renderAll();
+            }).catch((err) => {
+                console.warn("Firebase save error:", err);
+                alert("حدث خطأ في مزامنة البيانات مع السيرفر، تحقق من اتصال الإنترنت.");
+            });
+        }
+
         function deleteOp(id) { 
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
@@ -1974,7 +2004,6 @@ function commitStagingDataToDB() {
             if(!aw) return alert('بيانات الترسية غير موجودة');
             const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
             const sup = (DB.suppliers || []).find(s => s.name === aw.supp) || { addr: 'مصر', phone: '-' };
-            const gVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
             const docTypeLabel = aw.docOrderType || 'أمر توريد';
 
             let html = '';
