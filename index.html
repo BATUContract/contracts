@@ -1059,7 +1059,7 @@
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">القيمة التقديرية للبند (استرشادية)</label><input type="number" step="0.01" id="f-aw-estval" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold" placeholder="0.00"></div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">قيمة الترسية النهائية</label><input type="number" step="0.01" id="f-aw-val" oninput="calcGuarantee()" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-emerald-50 dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 font-black text-xs"></div>
                         
-                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">حالة الترسية</label><select id="f-aw-status" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option>تم الترسية</option><option>اعلي من القيمة التقديرية لم يتم الترسية</option><option>اعلي من القيمة التقديرية و تم الترسية</option></select></div>
+                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">حالة الترسية</label><select id="f-aw-status" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option>تم الترسية</option><option>قيد البت المالي</option><option>جاري الفحص الفني</option><option>اعلي من القيمة التقديرية لم يتم الترسية</option><option>اعلي من القيمة التقديرية و تم الترسية</option></select></div>
 
                         <div class="flex flex-col">
                             <div class="flex justify-between items-center mb-1">
@@ -1600,57 +1600,78 @@
             try {
                 let promptText = "";
                 if (parseMode === 'supplier') {
-                    promptText = `أنت خبير توثيق الشركات وقواعد البيانات وقانون التعاقدات. اقرأ المستندات المرفقة واستخرج بيانات الشركة بدقة تامة بصيغة JSON فقط وبدون أي نصوص إضافية بالصيغة التالية:
+                    promptText = `أنت خبير توثيق الشركات وقواعد البيانات وقانون التعاقدات 182 لسنة 2018. اقرأ المستندات المرفقة واستخرج بيانات الشركة بدقة تامة بصيغة JSON فقط وبدون أي نصوص إضافية:
                     {
                       "name": "اسم الشركة الكامل",
-                      "cr": "رقم السجل التجاري",
-                      "tax": "رقم البطاقة الضريبية",
-                      "signAuth": "من له حق التوقيع",
-                      "addr": "العنوان بالتفصيل",
-                      "phone": "رقم التليفون",
-                      "bankAcc": "رقم الحساب أو IBAN",
-                      "bankName": "اسم البنك",
-                      "bankBranch": "الفرع"
+                      "cr": "رقم السجل التجاري أو null",
+                      "tax": "رقم البطاقة الضريبية أو null",
+                      "signAuth": "من له حق التوقيع أو null",
+                      "addr": "العنوان بالتفصيل أو null",
+                      "phone": "رقم التليفون أو null",
+                      "bankAcc": "رقم الحساب أو IBAN أو null",
+                      "bankName": "اسم البنك أو null",
+                      "bankBranch": "الفرع أو null"
                     }`;
                 } else {
-                    promptText = `أنت خبير التعاقدات الحكومية بقانون 182. اقرأ جميع الملفات والمستندات ومحاضر الفتح والبت بدقة بالغة واستخرج بيانات الترسيات والبنود بدقة تامة.
-                    قاعدة هامة جداً: حدد قيمة "docOrderType" إما "أمر إسناد" أو "أمر توريد":
-                    - اختر "أمر إسناد" إذا كان البند يشمل: (أعمال مقاولات، تركيبات، تشغيل، صيانة تكييفات، كاميرات مراقبة، أنظمة صوتية، شبكات، خدمات أمن وحراسة، خدمات نظافة وبيئة، إيجار سيارات، أو أي خدمات مستمرة تتطلب أعمالاً تنفيذية).
-                    - اختر "أمر توريد" فقط إذا كان البند شراء أصناف أو مهمات أو سلع مخزنية مادية مجردة تدخل المخزن.
+                    promptText = `أنت مستشار قانوني وخبير إدارة تعاقدات وتوريدات وممارسات حكومية مصرية متخصص في تطبيق القانون 182 لسنة 2018 ولائحته التنفيذية.
+اقرأ وحلل ملفات ومحاضر العملية المرفقة بدقة بالغة واستخرج بيانات الطرح والإجراءات والتواريخ.
 
-                    أخرج النتائج بصيغة JSON فقط وبدون أي نصوص إضافية بالهيكل التالي:
-                    {
-                      "opId": رقم العملية كعدد صحيح,
-                      "opName": "اسم المناقصة أو العملية كاملاً",
-                      "opEntity": "الجهة الطالبة",
-                      "opType": "نوع العملية",
-                      "opEst": "المبلغ التقديري",
-                      "budget": "نعم",
-                      "isDivided": "نعم - قابلة للتجزئة",
-                      "approvalDate": "تاريخ الموافقة YYYY-MM-DD",
-                      "portal": "نعم",
-                      "date1": "تاريخ الطرح YYYY-MM-DD",
-                      "date2": "تاريخ محضر فتح المظاريف الفنية YYYY-MM-DD",
-                      "date3": "تاريخ التقرير الفني YYYY-MM-DD",
-                      "date4": "تاريخ التقرير بعد التظلمات YYYY-MM-DD",
-                      "date5": "تاريخ فتح المظاريف المالية YYYY-MM-DD",
-                      "date6": "تاريخ البت المالي النهائي YYYY-MM-DD",
-                      "status": "الموقف الحالي",
-                      "awards": [
-                        {
-                          "item": "وصف البند أو اللوط",
-                          "supp": "اسم الشركة الفائزة الكامل",
-                          "docOrderType": "أمر إسناد أو أمر توريد",
-                          "estVal": القيمة التقديرية برقم,
-                          "val": قيمة الترسية النهائية برقم,
-                          "awardStatus": "تم الترسية",
-                          "gType": "خطاب ضمان",
-                          "gNum": "رقم الضمان",
-                          "gIssuance": "YYYY-MM-DD"
-                        }
-                      ],
-                      "suppliers": []
-                    }`;
+قواعد تنظيمية وقانونية صارمة (Strict Anti-Hallucination Constraints):
+1. تحديد المرحلة القانونية للعملية (Stage Detection):
+   - إذا كانت الأوراق المرفوعة تشمل (محاضر فتح المظاريف المالية أو كشوف تفريغ العروض والأسعار فقط) -> الموقف: "جاري البت المالي".
+   - ممنوع نهائياً وباتاً اعتبار الشركة الأقل سعراً في كشف التفريغ شركة فائزة، ولا تعتبر العملية "تم الترسية".
+   - لا تصبح العملية "تم الترسية" إلا إذا وُجد في الملفات صراحة (محضر لجنة البت المالي النهائي المعتمد من السلطة المختصة) أو (إخطار قبول رسمي وترسية معتمد).
+   - إذا لم يوجد محضر بت مالي نهائي معتمد، اجعل حقل "supp" فارغاً أو "قيد البت"، واجعل "awardStatus" هي "قيد البت المالي"، وحقول أمر التوريد والضمان النهائي null.
+
+2. منع الخلط بين التأمين المؤقت (الابتدائي) والتأمين النهائي (5%):
+   - بيانات إيصالات أو خطابات التأمين الابتدائي المسددة في المظروف الفني تخص جلسة فتح المظاريف الفنية فقط، وممنوع إدراجها كضمان نهائي.
+   - التأمين النهائي 5% لا يُطلب ولا تُسجل بياناته إلا بعد اعتماد الترسية رسمياً. إذا لم تُرسَ العملية بعد، اجعل "gNum" و "gBank" و "gIssuance" بقيمة null.
+
+3. منع توليد أرقام عشوائية للأوامر:
+   - لا تخترع رقم أمر توريد أو أمر إسناد (poNum) من دماغك. إذا لم يوجد أمر رسمي معتمد، ضعه null.
+
+4. تحديد طبيعة الأمر بدقة:
+   - "أمر إسناد": إذا كان البند يشمل مقاولات، تركيبات، صيانة (تكييف، مصاعد)، كاميرات مراقبة، صوتيات، شبكات، أمن وحراسة، نظافة وبيئة، إيجار سيارات، أو خدمات.
+   - "أمر توريد": إذا كان البند شراء سلع، أحبار، أدوات كتابية، ورق، أجهزة ومهمات مخزنية مجردة.
+
+أخرج النتيجة بصيغة JSON فقط وبدون أي نصوص إضافية بالهيكل التالي:
+{
+  "opId": رقم العملية كعدد صحيح أو null,
+  "opName": "اسم العملية كاملاً",
+  "opEntity": "الجهة الطالبة",
+  "opType": "مناقصة عامة / مناقصة محدودة / ممارسة عامة / ممارسة محدودة / أمر مباشر",
+  "opEst": "المبلغ التقديري أو مظروف مغلق",
+  "budget": "نعم / لا",
+  "isDivided": "نعم - قابلة للتجزئة / لا - ترسية كلية",
+  "approvalDate": "YYYY-MM-DD أو null",
+  "portal": "نعم / تعذر النشر",
+  "date1": "تاريخ الطرح YYYY-MM-DD أو null",
+  "date2": "تاريخ محضر فتح المظاريف الفنية YYYY-MM-DD أو null",
+  "date3": "تاريخ التقرير الفني YYYY-MM-DD أو null",
+  "date4": "تاريخ التقرير بعد التظلمات YYYY-MM-DD أو null",
+  "date5": "تاريخ فتح المظاريف المالية YYYY-MM-DD أو null",
+  "date6": "تاريخ البت المالي النهائي YYYY-MM-DD أو null",
+  "status": "تحت الطرح / جاري الدراسة الفنية / جاري البت المالي / تم الترسية",
+  "awards": [
+    {
+      "item": "وصف البند أو اللوط",
+      "supp": "اسم الشركة الفائزة المعتمدة فقط، أو null إذا كانت ما زالت قيد الدراسة",
+      "docOrderType": "أمر إسناد أو أمر توريد",
+      "estVal": القيمة التقديرية برقم أو null,
+      "val": قيمة الترسية المعتمدة برقم أو null,
+      "awardStatus": "تم الترسية / قيد البت المالي / جاري الفحص الفني",
+      "gType": "خطاب ضمان / نقدي / إعفاء (توريد خلال 10 أيام) / null",
+      "gNum": "رقم خطاب الضمان النهائي أو null",
+      "gIssuance": "YYYY-MM-DD أو null",
+      "gBank": "البنك المصدر للضمان النهائي أو null",
+      "poNum": "رقم أمر التوريد/الإسناد الرسمي أو null",
+      "poDate": "تاريخ أمر التوريد/الإسناد أو null",
+      "days": عدد الأيام كمهلة أو null,
+      "del": "نعم / لا / null"
+    }
+  ],
+  "suppliers": []
+}`;
                 }
 
                 let parts = [{ text: promptText }];
@@ -1671,7 +1692,7 @@
                     }
                 }
 
-                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: parts }] })
@@ -1701,7 +1722,7 @@
 
                     document.getElementById('ai-supplier-results-container').classList.remove('hidden');
                 } else {
-                    document.getElementById('st-op-id').value = parsed.opId || Math.floor(Math.random()*90+10);
+                    document.getElementById('st-op-id').value = parsed.opId || '';
                     document.getElementById('st-op-name').value = parsed.opName || '';
                     document.getElementById('st-op-entity').value = parsed.opEntity || 'جامعة برج العرب التكنولوجية';
                     
@@ -1720,14 +1741,18 @@
                     tbody.innerHTML = '';
                     (parsed.awards || []).forEach(aw => {
                         let detectedOrderType = aw.docOrderType || ((aw.item && (aw.item.includes('صيانة') || aw.item.includes('تركيب') || aw.item.includes('كامير') || aw.item.includes('تكييف') || aw.item.includes('صوت') || aw.item.includes('أمن') || aw.item.includes('نظافة') || aw.item.includes('سيار'))) ? 'أمر إسناد' : 'أمر توريد');
+                        let suppDisplay = aw.supp ? aw.supp : '<span class="pill yellow">قيد البت المالي</span>';
+                        let valDisplay = (aw.val && aw.awardStatus === 'تم الترسية') ? fmt.format(aw.val) : '-';
+                        let gDisplay = (aw.gNum && aw.awardStatus === 'تم الترسية') ? `${aw.gNum} (${aw.gIssuance || '-'})` : '-';
+
                         tbody.innerHTML += `
                             <tr>
                                 <td class="font-bold text-right">${aw.item || '-'}</td>
-                                <td class="font-bold text-primary">${aw.supp || '-'}</td>
+                                <td class="font-bold text-primary">${suppDisplay}</td>
                                 <td><span class="pill ${detectedOrderType === 'أمر إسناد' ? 'purple' : 'blue'}">${detectedOrderType}</span></td>
-                                <td>${fmt.format(aw.estVal || 0)}</td>
-                                <td class="font-black text-emerald-600">${fmt.format(aw.val || 0)}</td>
-                                <td class="font-mono font-bold">${aw.gNum || '-'} (${aw.gIssuance || '-'})</td>
+                                <td>${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
+                                <td class="font-black text-emerald-600">${valDisplay}</td>
+                                <td class="font-mono font-bold">${gDisplay}</td>
                             </tr>
                         `;
                     });
@@ -1735,7 +1760,7 @@
                     document.getElementById('ai-staging-results-container').classList.remove('hidden');
                 }
 
-                alert("تم استخراج البيانات والمحاضر والتواريخ بواسطة Gemini بنجاح تام!");
+                alert("تم استخراج وتدقيق بيانات ومراحل العملية بنجاح!");
 
             } catch(err) {
                 console.error(err);
@@ -1781,28 +1806,21 @@
                 if(!DB.suppliers) DB.suppliers = [];
 
                 if (!globalParsedData) {
-                    globalParsedData = {
-                        opId: parseInt(document.getElementById('st-op-id').value) || Math.floor(Math.random()*90+10),
-                        opName: document.getElementById('st-op-name').value || 'عملية توريد عامة',
-                        opEntity: document.getElementById('st-op-entity').value || 'جامعة برج العرب التكنولوجية',
-                        opType: document.getElementById('st-op-type').value || 'مناقصة عامة',
-                        opEst: document.getElementById('st-op-est').value || 'مظروف مغلق',
-                        budget: 'نعم',
-                        isDivided: 'نعم - قابلة للتجزئة',
-                        status: 'مكتمل',
-                        portal: 'نعم',
-                        approvalDate: new Date().toISOString().slice(0,10),
-                        date1: new Date().toISOString().slice(0,10),
-                        date2: '', date3: '', date4: '', date5: '', date6: '',
-                        awards: []
-                    };
+                    alert('لا توجد بيانات مستخرجة للاعتماد.');
+                    return;
                 }
 
-                let opId = parseInt(document.getElementById('st-op-id').value) || globalParsedData.opId || Math.floor(Math.random()*90+10);
-                let opName = document.getElementById('st-op-name').value || globalParsedData.opName || 'عملية توريد';
+                let opId = parseInt(document.getElementById('st-op-id').value) || globalParsedData.opId;
+                if (!opId) {
+                    alert('برجاء إدخال رقم عملية صحيح.');
+                    return;
+                }
+
+                let opName = document.getElementById('st-op-name').value || globalParsedData.opName || 'عملية جديدة';
                 let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || 'جامعة برج العرب التكنولوجية';
                 let opType = document.getElementById('st-op-type').value || globalParsedData.opType || 'مناقصة عامة';
                 let opEst = document.getElementById('st-op-est').value || globalParsedData.opEst || 'مظروف مغلق';
+                let currentStatus = globalParsedData.status || 'تحت الطرح';
                 
                 let category = 'tender';
                 if (opType && (opType.includes('أمر مباشر') || opType.includes('مباشر'))) {
@@ -1813,98 +1831,79 @@
 
                 let totalVal = 0;
                 let awardsList = globalParsedData.awards || [];
-                
-                if (awardsList.length === 0) {
-                    awardsList = [{
-                        item: opName,
-                        supp: 'شركة معتمدة',
-                        docOrderType: 'أمر توريد',
-                        estVal: 0, val: 0,
-                        awardStatus: 'تم الترسية',
-                        gType: 'خطاب ضمان', gNum: '-',
-                        gIssuance: new Date().toISOString().slice(0,10),
-                        gBank: 'البنك الأهلي المصري',
-                        ret: 'نعم', contract: 'نعم',
-                        poNum: Math.floor(Math.random()*90+10),
-                        poDate: new Date().toISOString().slice(0,10),
-                        days: 30, del: 'نعم'
-                    }];
-                }
 
                 awardsList.forEach(aw => {
                     let fVal = parseFloat(aw.val) || 0;
-                    totalVal += fVal;
+                    let isAwarded = (aw.awardStatus === 'تم الترسية' && aw.supp && fVal > 0);
                     
+                    if (isAwarded) {
+                        totalVal += fVal;
+                    }
+
                     let detectedDocType = aw.docOrderType || ((aw.item && (aw.item.includes('صيانة') || aw.item.includes('تركيب') || aw.item.includes('كامير') || aw.item.includes('تكييف') || aw.item.includes('صوت') || aw.item.includes('أمن') || aw.item.includes('نظافة') || aw.item.includes('سيار'))) ? 'أمر إسناد' : 'أمر توريد');
 
                     DB.awards.unshift({
                         opId: opId,
                         item: aw.item || opName,
-                        supp: aw.supp || 'شركة معتمدة',
+                        supp: isAwarded ? aw.supp : (aw.supp || 'قيد البت المالي'),
                         docOrderType: detectedDocType,
                         estVal: parseFloat(aw.estVal) || 0,
                         val: fVal,
-                        gVal: aw.gType === 'إعفاء (توريد خلال 10 أيام)' ? 0 : (fVal * 0.05),
-                        awardStatus: aw.awardStatus || 'تم الترسية',
-                        gType: aw.gType || 'خطاب ضمان',
-                        gNum: aw.gNum || '-',
-                        gIssuance: aw.gIssuance || new Date().toISOString().slice(0,10),
-                        gBank: aw.gBank || 'البنك الأهلي المصري',
+                        gVal: isAwarded ? (aw.gType === 'إعفاء (توريد خلال 10 أيام)' ? 0 : (fVal * 0.05)) : 0,
+                        awardStatus: isAwarded ? 'تم الترسية' : (aw.awardStatus || (currentStatus === 'تم الترسية' ? 'تم الترسية' : 'قيد البت المالي')),
+                        gType: isAwarded ? (aw.gType || 'خطاب ضمان') : '-',
+                        gNum: isAwarded ? (aw.gNum || '-') : '-',
+                        gIssuance: isAwarded ? (aw.gIssuance || '') : '',
+                        gBank: isAwarded ? (aw.gBank || '-') : '-',
                         ret: aw.ret || 'لا',
-                        contract: aw.contract || 'نعم',
-                        poNum: aw.poNum || Math.floor(Math.random()*90+10),
-                        poDate: aw.poDate || new Date().toISOString().slice(0,10),
+                        contract: isAwarded ? (aw.contract || 'لا') : 'لا',
+                        poNum: isAwarded ? (aw.poNum || '') : '',
+                        poDate: isAwarded ? (aw.poDate || '') : '',
                         days: parseInt(aw.days) || 30,
-                        del: aw.del || 'نعم'
+                        del: isAwarded ? (aw.del || 'لا') : 'لا'
                     });
 
-                    if (aw.supp && !DB.suppliers.some(s => s.name && s.name.trim().toLowerCase() === aw.supp.trim().toLowerCase())) {
+                    if (isAwarded && aw.supp && !DB.suppliers.some(s => s.name && s.name.trim().toLowerCase() === aw.supp.trim().toLowerCase())) {
                         DB.suppliers.unshift({
                             id: "V-" + String(DB.suppliers.length + 1).padStart(3, '0'),
                             name: aw.supp,
-                            cr: "CR-" + Math.floor(Math.random()*9000+1000),
-                            tax: "TX-" + Math.floor(Math.random()*900+100),
-                            signAuth: "المفوض الرسمي",
-                            addr: "مصر",
-                            phone: "01000000000",
-                            bankAcc: "EG" + Math.floor(Math.random()*90000000000000+10000000000000),
-                            bankName: "البنك الأهلي المصري",
-                            bankBranch: "الرئيسي"
+                            cr: "", tax: "", signAuth: "", addr: "مصر", phone: "", bankAcc: "", bankName: "", bankBranch: ""
                         });
                     }
                 });
 
-                if (!DB.operations.some(o => o.id == opId)) {
-                    DB.operations.unshift({
-                        id: opId,
-                        category: category,
-                        name: opName,
-                        entity: opEntity,
-                        type: opType,
-                        budget: globalParsedData.budget || 'نعم',
-                        isDivided: globalParsedData.isDivided || 'نعم - قابلة للتجزئة',
-                        est: opEst,
-                        guideline: category === 'direct' ? totalVal : 0,
-                        status: globalParsedData.status || 'مكتمل',
-                        portal: globalParsedData.portal || 'نعم',
-                        approvalDate: globalParsedData.approvalDate || new Date().toISOString().slice(0,10),
-                        date1: globalParsedData.date1 || new Date().toISOString().slice(0,10),
-                        date2: globalParsedData.date2 || '',
-                        date3: globalParsedData.date3 || '',
-                        date4: globalParsedData.date4 || '',
-                        date5: globalParsedData.date5 || '',
-                        date6: globalParsedData.date6 || '',
-                        total: totalVal
-                    });
+                let existingOpIndex = DB.operations.findIndex(o => o.id == opId);
+                let opData = {
+                    id: opId,
+                    category: category,
+                    name: opName,
+                    entity: opEntity,
+                    type: opType,
+                    budget: globalParsedData.budget || 'نعم',
+                    isDivided: globalParsedData.isDivided || 'نعم - قابلة للتجزئة',
+                    est: opEst,
+                    guideline: category === 'direct' ? totalVal : (parseFloat(globalParsedData.guideline) || 0),
+                    status: currentStatus,
+                    portal: globalParsedData.portal || 'نعم',
+                    approvalDate: globalParsedData.approvalDate || '',
+                    date1: globalParsedData.date1 || '',
+                    date2: globalParsedData.date2 || '',
+                    date3: globalParsedData.date3 || '',
+                    date4: globalParsedData.date4 || '',
+                    date5: globalParsedData.date5 || '',
+                    date6: globalParsedData.date6 || '',
+                    total: totalVal
+                };
+
+                if (existingOpIndex >= 0) {
+                    DB.operations[existingOpIndex] = opData;
                 } else {
-                    let op = DB.operations.find(o => o.id == opId);
-                    op.total = totalVal;
-                    op.category = category;
+                    DB.operations.unshift(opData);
                 }
 
                 saveDB();
                 closeModal('modal-smart-staging');
-                alert('تم ترحيل كافة البيانات والمحاضر وتواريخ الفتح والبت والشركات أوتوماتيكياً بنجاح تام!');
+                alert('تم ترحيل واعتماد بيانات المرحلة بنجاح دون أي افتراضات غير دقيقة!');
             } catch(err) {
                 console.error(err);
                 alert('خطأ أثناء الترحيل: ' + err.message);
@@ -2226,7 +2225,7 @@
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
             animateCounter('kpi-total-ops', DB.operations.length, false);
-            animateCounter('kpi-total-val', DB.awards.reduce((sum, aw) => sum + parseFloat(aw.val || 0), 0), true);
+            animateCounter('kpi-total-val', DB.awards.filter(aw => aw.awardStatus === 'تم الترسية').reduce((sum, aw) => sum + parseFloat(aw.val || 0), 0), true);
             animateCounter('kpi-comp-ops', DB.operations.filter(o => o.status === 'مكتمل').length, false);
             animateCounter('kpi-active-ops', DB.operations.filter(o => o.status !== 'مكتمل').length, false);
             
@@ -2238,11 +2237,13 @@
             });
 
             DB.awards.forEach(aw => {
-                const op = DB.operations.find(o => String(o.id) === String(aw.opId));
-                if(op) {
-                    let t = op.type || 'أخرى';
-                    if(!typeBreakdown[t]) typeBreakdown[t] = { count: 0, totalVal: 0 };
-                    typeBreakdown[t].totalVal += parseFloat(aw.val || 0);
+                if(aw.awardStatus === 'تم الترسية') {
+                    const op = DB.operations.find(o => String(o.id) === String(aw.opId));
+                    if(op) {
+                        let t = op.type || 'أخرى';
+                        if(!typeBreakdown[t]) typeBreakdown[t] = { count: 0, totalVal: 0 };
+                        typeBreakdown[t].totalVal += parseFloat(aw.val || 0);
+                    }
                 }
             });
 
@@ -2453,11 +2454,25 @@
                 filteredAwards.forEach((aw) => {
                     const realIdx = DB.awards.findIndex(a => String(a.opId) === String(aw.opId) && a.item === aw.item && a.supp === aw.supp);
                     const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
+                    const isAwarded = (aw.awardStatus === 'تم الترسية');
                     const dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                     const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
-                    const statusPill = aw.awardStatus && aw.awardStatus !== 'تم الترسية' ? '<span class="pill yellow">' + aw.awardStatus + '</span>' : '<span class="pill green">تم الترسية</span>';
-                    const docTypePill = (aw.docOrderType === 'أمر إسناد') ? '<span class="pill purple">أمر إسناد</span>' : '<span class="pill blue">أمر توريد</span>';
                     
+                    let statusPill = '';
+                    if (isAwarded) {
+                        statusPill = '<span class="pill green">تم الترسية</span>';
+                    } else if (aw.awardStatus === 'قيد البت المالي' || op.status === 'جاري البت المالي') {
+                        statusPill = '<span class="pill yellow">قيد البت المالي</span>';
+                    } else if (aw.awardStatus === 'جاري الفحص الفني' || op.status === 'جاري الدراسة الفنية') {
+                        statusPill = '<span class="pill blue">جاري الفحص الفني</span>';
+                    } else {
+                        statusPill = `<span class="pill yellow">${aw.awardStatus || 'قيد البت المالي'}</span>`;
+                    }
+
+                    const docTypePill = (aw.docOrderType === 'أمر إسناد') ? '<span class="pill purple">أمر إسناد</span>' : '<span class="pill blue">أمر توريد</span>';
+                    const displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : '-';
+                    const displayPo = (isAwarded && aw.poNum) ? aw.poNum : '-';
+
                     tb.innerHTML += `<tr>
                         <td class="font-bold">${aw.opId}</td>
                         <td><span class="pill blue">${op.type || 'أمر مباشر'}</span></td>
@@ -2465,10 +2480,10 @@
                         <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
                         <td>${docTypePill}</td>
                         <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
-                        <td class="font-black">${fmt.format(aw.val)}</td>
+                        <td class="font-black">${displayVal}</td>
                         <td>${statusPill}</td>
-                        <td class="font-bold">${aw.poNum || '-'}</td>
-                        <td>${aw.days}</td>
+                        <td class="font-bold">${displayPo}</td>
+                        <td>${aw.days || '-'}</td>
                         <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
                         <td>
                             <div class="flex gap-1 justify-center">
@@ -2502,7 +2517,7 @@
                         <td><span class="pill blue">${op.type || 'تجديد'}</span></td>
                         <td class="text-right font-bold wrap-text">${aw.item}</td>
                         <td class="text-right text-primary dark:text-indigo-400 font-bold wrap-text">${aw.supp}</td>
-                        <td class="font-black">${fmt.format(aw.val)}</td>
+                        <td class="font-black">${aw.val ? fmt.format(aw.val) : '-'}</td>
                         <td><span class="pill green">ساري</span></td>
                         <td class="text-[11px]">${aw.poDate || '-'}</td>
                         <td class="text-[11px]">${aw.gIssuance || '-'}</td>
@@ -2531,12 +2546,30 @@
                 filteredAwards.forEach((aw) => {
                     const realIdx = DB.awards.findIndex(a => String(a.opId) === String(aw.opId) && a.item === aw.item && a.supp === aw.supp);
                     const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
-                    const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                    const isAwarded = (aw.awardStatus === 'تم الترسية');
+                    const gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: "قيد البت", class: "yellow", code: 0 };
+                    const dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: "قيد الإجراء", class: "blue", code: 0 };
                     const retPill = aw.ret === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill blue">لا</span>';
                     const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
-                    const statusPill = aw.awardStatus && aw.awardStatus !== 'تم الترسية' ? '<span class="pill yellow">' + aw.awardStatus + '</span>' : '<span class="pill green">تم الترسية</span>';
-                    const finalGVal = aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05);
+                    
+                    let statusPill = '';
+                    if (isAwarded) {
+                        statusPill = '<span class="pill green">تم الترسية</span>';
+                    } else if (aw.awardStatus === 'قيد البت المالي' || op.status === 'جاري البت المالي') {
+                        statusPill = '<span class="pill yellow">قيد البت المالي</span>';
+                    } else if (aw.awardStatus === 'جاري الفحص الفني' || op.status === 'جاري الدراسة الفنية') {
+                        statusPill = '<span class="pill blue">جاري الفحص الفني</span>';
+                    } else {
+                        statusPill = `<span class="pill yellow">${aw.awardStatus || 'قيد البت المالي'}</span>`;
+                    }
+
+                    const finalGVal = isAwarded ? (aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05)) : 0;
                     const docTypePill = (aw.docOrderType === 'أمر إسناد') ? '<span class="pill purple">أمر إسناد</span>' : '<span class="pill blue">أمر توريد</span>';
+                    const displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : '-';
+                    const displayPo = (isAwarded && aw.poNum) ? aw.poNum : '-';
+                    const displayGVal = isAwarded ? `${fmt.format(finalGVal)} (${aw.gType || 'خطاب ضمان'})` : '-';
+                    const displayGBank = isAwarded ? (aw.gBank || '-') : '-';
+                    const displayGNum = isAwarded ? (aw.gNum || '-') : '-';
 
                     tb.innerHTML += `<tr>
                         <td class="font-bold">${aw.opId}</td>
@@ -2545,14 +2578,14 @@
                         <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
                         <td>${docTypePill}</td>
                         <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
-                        <td class="font-black">${fmt.format(aw.val)}</td>
+                        <td class="font-black">${displayVal}</td>
                         <td>${statusPill}</td>
-                        <td class="font-bold text-xs">${fmt.format(finalGVal)} (${aw.gType || 'خطاب ضمان'})</td>
+                        <td class="font-bold text-xs">${displayGVal}</td>
                         <td><span class="pill ${gSt.class}">${gSt.text}</span></td>
-                        <td class="text-xs font-mono font-bold">${aw.gNum || '-'}</td>
-                        <td class="text-xs">${aw.gBank || '-'}</td>
-                        <td class="font-bold">${aw.poNum || '-'}</td>
-                        <td>${aw.days}</td>
+                        <td class="text-xs font-mono font-bold">${displayGNum}</td>
+                        <td class="text-xs">${displayGBank}</td>
+                        <td class="font-bold">${displayPo}</td>
+                        <td>${aw.days || '-'}</td>
                         <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
                         <td>
                             <div class="flex gap-1 justify-center">
@@ -2634,8 +2667,13 @@
             tb.innerHTML = '';
             DB.awards.forEach(aw => {
                 const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
-                const pr = getProgress(op.status), gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                const isAwarded = (aw.awardStatus === 'تم الترسية');
+                const pr = getProgress(op.status);
+                const gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: "قيد البت", class: "yellow" };
+                const dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: "قيد الإجراء", class: "blue" };
                 const docLabel = (aw.docOrderType === 'أمر إسناد') ? '<span class="pill purple">إسناد</span>' : '<span class="pill blue">توريد</span>';
+                const displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : '-';
+                const displayPoText = isAwarded ? `${docLabel} رقم: ${aw.poNum || '-'}<br>تاريخ: ${aw.poDate || '-'}` : '<span class="text-slate-400">قيد البت</span>';
                 
                 tb.innerHTML += `<tr>
                     <td class="font-bold text-sm">${aw.opId}</td>
@@ -2644,8 +2682,8 @@
                     <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${aw.supp}</td>
                     <td class="text-xs font-bold">${op.status || '-'}</td>
                     <td><div class="progress-wrapper"><div class="progress-fill" style="width: ${pr}%"></div></div><div class="text-[9px] text-slate-400 mt-0.5">${pr}%</div></td>
-                    <td class="font-black text-slate-700 dark:text-slate-300">${fmt.format(aw.val)}</td>
-                    <td class="text-[11px] text-right wrap-text">${docLabel} رقم: ${aw.poNum || '-'}<br>تاريخ: ${aw.poDate || '-'}</td>
+                    <td class="font-black text-slate-700 dark:text-slate-300">${displayVal}</td>
+                    <td class="text-[11px] text-right wrap-text">${displayPoText}</td>
                     <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
                     <td><span class="pill ${gSt.class}">${gSt.text}</span></td>
                 </tr>`;
@@ -2671,9 +2709,14 @@
                 document.getElementById('q-total').innerText = op.total ? fmt.format(op.total) : '-';
 
                 DB.awards.filter(a => String(a.opId) === String(id)).forEach(aw => {
-                    const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance), dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                    const isAwarded = (aw.awardStatus === 'تم الترسية');
+                    const gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: "قيد البت", class: "yellow" };
+                    const dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: "قيد الإجراء", class: "blue" };
                     const docTag = (aw.docOrderType === 'أمر إسناد') ? '<span class="pill purple">أمر إسناد</span>' : '<span class="pill blue">أمر توريد</span>';
-                    tb.innerHTML += `<tr class="bg-white dark:bg-slate-800"><td class="text-right font-bold wrap-text text-slate-900 dark:text-white">${aw.item}</td><td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${aw.supp}</td><td class="font-black text-slate-700 dark:text-slate-300">${fmt.format(aw.val)}</td><td><span class="pill ${gSt.class}">${gSt.text}</span></td><td class="font-bold">${docTag} (${aw.poNum || '-'})</td><td><span class="pill ${dSt.class}">${dSt.text}</span></td></tr>`;
+                    const displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : '-';
+                    const displayPo = (isAwarded && aw.poNum) ? `${docTag} (${aw.poNum})` : '<span class="text-slate-400">قيد البت</span>';
+
+                    tb.innerHTML += `<tr class="bg-white dark:bg-slate-800"><td class="text-right font-bold wrap-text text-slate-900 dark:text-white">${aw.item}</td><td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${aw.supp}</td><td class="font-black text-slate-700 dark:text-slate-300">${displayVal}</td><td><span class="pill ${gSt.class}">${gSt.text}</span></td><td class="font-bold">${displayPo}</td><td><span class="pill ${dSt.class}">${dSt.text}</span></td></tr>`;
                 });
             } else {
                 ['q-name', 'q-entity', 'q-type', 'q-status', 'q-est', 'q-total'].forEach(i => {
@@ -2694,27 +2737,29 @@
             let count = 0;
             
             DB.awards.forEach((aw) => {
-                const g = getGuaranteeStatus(aw.gType, aw.gIssuance);
-                const d = getDeliveryStatus(aw.del, aw.poDate, aw.days);
-                
-                if (g.code > 0 && aw.gType === 'خطاب ضمان') {
-                    count++;
-                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-                        <p class="font-bold text-red-600">ضمان ${g.code === 2 ? 'منتهي!' : 'ينتهي قريباً'} (${aw.item})</p>
-                        <p class="text-[10px] text-slate-500">الشركة: ${aw.supp} - عملية: ${aw.opId}</p>
-                    </div>`;
-                    if(list) list.innerHTML += itemHtml;
-                    if(homeList) homeList.innerHTML += itemHtml;
-                }
-                
-                if (d.code === 2) {
-                    count++;
-                    let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-                        <p class="font-bold text-red-600">تأخير في التنفيذ/التوريد (${aw.item})</p>
-                        <p class="text-[10px] text-slate-500">الشركة: ${aw.supp} - عملية: ${aw.opId}</p>
-                    </div>`;
-                    if(list) list.innerHTML += itemHtml;
-                    if(homeList) homeList.innerHTML += itemHtml;
+                if (aw.awardStatus === 'تم الترسية') {
+                    const g = getGuaranteeStatus(aw.gType, aw.gIssuance);
+                    const d = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                    
+                    if (g.code > 0 && aw.gType === 'خطاب ضمان') {
+                        count++;
+                        let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                            <p class="font-bold text-red-600">ضمان ${g.code === 2 ? 'منتهي!' : 'ينتهي قريباً'} (${aw.item})</p>
+                            <p class="text-[10px] text-slate-500">الشركة: ${aw.supp} - عملية: ${aw.opId}</p>
+                        </div>`;
+                        if(list) list.innerHTML += itemHtml;
+                        if(homeList) homeList.innerHTML += itemHtml;
+                    }
+                    
+                    if (d.code === 2) {
+                        count++;
+                        let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                            <p class="font-bold text-red-600">تأخير في التنفيذ/التوريد (${aw.item})</p>
+                            <p class="text-[10px] text-slate-500">الشركة: ${aw.supp} - عملية: ${aw.opId}</p>
+                        </div>`;
+                        if(list) list.innerHTML += itemHtml;
+                        if(homeList) homeList.innerHTML += itemHtml;
+                    }
                 }
             });
 
@@ -2944,7 +2989,7 @@
             if (idx !== '') DB.awards[idx] = aw; else DB.awards.unshift(aw);
 
             const opIdx = DB.operations.findIndex(o => o.id === opId);
-            if(opIdx >= 0) DB.operations[opIdx].total = DB.awards.filter(a=>a.opId===opId).reduce((s,a)=>s+a.val,0);
+            if(opIdx >= 0) DB.operations[opIdx].total = DB.awards.filter(a=>a.opId===opId && a.awardStatus==='تم الترسية').reduce((s,a)=>s+a.val,0);
 
             closeModal('modal-aw'); saveDB();
         }
