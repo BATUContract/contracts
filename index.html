@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -1563,6 +1565,63 @@
             alert('تم حفظ المفتاح بنجاح!');
         }
 
+        // اختيار أوتوماتيك لأفضل موديل متاح (يفضّل سلسلة 2.6 ثم أحدث Flash)
+        async function resolveBestGeminiModel(apiKey) {
+            // لو فيه موديل محفوظ وصالح نستخدمه مباشرة لتسريع
+            const cached = localStorage.getItem('gemini_model');
+            if (cached && (cached.includes('2.6') || cached.includes('2.5') || cached.includes('2.0') || cached.includes('1.5'))) {
+                return cached;
+            }
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+                const data = await res.json();
+                if (data.error || !data.models) {
+                    console.warn('Models list error, falling back', data.error);
+                    return 'gemini-2.0-flash';
+                }
+                const names = (data.models || [])
+                    .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+                    .map(m => (m.name || '').replace(/^models\//, ''))
+                    .filter(Boolean);
+
+                if (names.length === 0) return 'gemini-2.0-flash';
+
+                // أولوية: أي موديل يبدأ بـ 2.6 (flash أو pro)
+                const v26 = names.filter(n => /gemini-2\.6/i.test(n));
+                if (v26.length) {
+                    // فضّل flash لو موجود
+                    const flash26 = v26.find(n => /flash/i.test(n)) || v26[0];
+                    localStorage.setItem('gemini_model', flash26);
+                    return flash26;
+                }
+
+                // ثاني: 2.5
+                const v25 = names.filter(n => /gemini-2\.5/i.test(n));
+                if (v25.length) {
+                    const flash25 = v25.find(n => /flash/i.test(n)) || v25[0];
+                    localStorage.setItem('gemini_model', flash25);
+                    return flash25;
+                }
+
+                // ثالث: أي flash حديث (2.0 أو أحدث)
+                const flash = names.filter(n => /flash/i.test(n) && !/1\.5/.test(n));
+                if (flash.length) {
+                    // رتّب حسب الاسم تقريباً (الأحدث أولاً)
+                    flash.sort().reverse();
+                    localStorage.setItem('gemini_model', flash[0]);
+                    return flash[0];
+                }
+
+                // رابع: أي موديل متاح
+                const fallback = names.find(n => /flash/i.test(n)) || names[0];
+                localStorage.setItem('gemini_model', fallback);
+                return fallback;
+            } catch (err) {
+                console.warn('Auto model resolve failed:', err);
+                return localStorage.getItem('gemini_model') || 'gemini-2.0-flash';
+            }
+        }
+
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1688,7 +1747,9 @@
                     }
                 }
 
-                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
+                // اختيار أوتوماتيك لأفضل موديل متاح (يفضّل 2.6 ثم أحدث Flash)
+                let selectedModel = await resolveBestGeminiModel(apiKey);
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: parts }] })
