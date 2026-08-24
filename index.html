@@ -1565,60 +1565,74 @@
             alert('تم حفظ المفتاح بنجاح!');
         }
 
-        // اختيار أوتوماتيك لأفضل موديل متاح (يفضّل سلسلة 2.6 ثم أحدث Flash)
+        // اختيار أوتوماتيك لأفضل موديل متاح
+        // أولوية: 3.6 → 2.6 → أي Flash حديث (مع تجاهل الموديلات الموقوفة زي 2.5 للمستخدمين الجدد)
         async function resolveBestGeminiModel(apiKey) {
-            // لو فيه موديل محفوظ وصالح نستخدمه مباشرة لتسريع
+            const DEFAULT_MODEL = 'gemini-3.6-flash';
+            // مسح أي كاش قديم معروف إنه موقف (2.5 و 2.0 القديمة)
             const cached = localStorage.getItem('gemini_model');
-            if (cached && (cached.includes('2.6') || cached.includes('2.5') || cached.includes('2.0') || cached.includes('1.5'))) {
-                return cached;
+            if (cached && (/gemini-2\.5/i.test(cached) || /gemini-2\.0-flash(?!-)/i.test(cached) && !/3\./.test(cached))) {
+                localStorage.removeItem('gemini_model');
+            }
+            // لو الكاش حديث (3.6 أو 2.6) نستخدمه مباشرة
+            const freshCache = localStorage.getItem('gemini_model');
+            if (freshCache && (/gemini-3\.6/i.test(freshCache) || /gemini-2\.6/i.test(freshCache))) {
+                return freshCache;
             }
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
                 const data = await res.json();
                 if (data.error || !data.models) {
-                    console.warn('Models list error, falling back', data.error);
-                    return 'gemini-2.0-flash';
+                    console.warn('Models list error, falling back to', DEFAULT_MODEL, data.error);
+                    localStorage.setItem('gemini_model', DEFAULT_MODEL);
+                    return DEFAULT_MODEL;
                 }
                 const names = (data.models || [])
                     .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
                     .map(m => (m.name || '').replace(/^models\//, ''))
                     .filter(Boolean);
 
-                if (names.length === 0) return 'gemini-2.0-flash';
+                if (names.length === 0) {
+                    localStorage.setItem('gemini_model', DEFAULT_MODEL);
+                    return DEFAULT_MODEL;
+                }
 
-                // أولوية: أي موديل يبدأ بـ 2.6 (flash أو pro)
+                // 1) أولوية قصوى: أي موديل 3.6 (يفضّل flash)
+                const v36 = names.filter(n => /gemini-3\.6/i.test(n));
+                if (v36.length) {
+                    const best = v36.find(n => /flash/i.test(n)) || v36[0];
+                    localStorage.setItem('gemini_model', best);
+                    return best;
+                }
+
+                // 2) سلسلة 2.6
                 const v26 = names.filter(n => /gemini-2\.6/i.test(n));
                 if (v26.length) {
-                    // فضّل flash لو موجود
-                    const flash26 = v26.find(n => /flash/i.test(n)) || v26[0];
-                    localStorage.setItem('gemini_model', flash26);
-                    return flash26;
+                    const best = v26.find(n => /flash/i.test(n)) || v26[0];
+                    localStorage.setItem('gemini_model', best);
+                    return best;
                 }
 
-                // ثاني: 2.5
-                const v25 = names.filter(n => /gemini-2\.5/i.test(n));
-                if (v25.length) {
-                    const flash25 = v25.find(n => /flash/i.test(n)) || v25[0];
-                    localStorage.setItem('gemini_model', flash25);
-                    return flash25;
+                // 3) أي Flash حديث غير 2.5 و 1.5
+                const modernFlash = names.filter(n =>
+                    /flash/i.test(n) &&
+                    !/gemini-2\.5/i.test(n) &&
+                    !/gemini-1\.5/i.test(n)
+                );
+                if (modernFlash.length) {
+                    modernFlash.sort().reverse();
+                    localStorage.setItem('gemini_model', modernFlash[0]);
+                    return modernFlash[0];
                 }
 
-                // ثالث: أي flash حديث (2.0 أو أحدث)
-                const flash = names.filter(n => /flash/i.test(n) && !/1\.5/.test(n));
-                if (flash.length) {
-                    // رتّب حسب الاسم تقريباً (الأحدث أولاً)
-                    flash.sort().reverse();
-                    localStorage.setItem('gemini_model', flash[0]);
-                    return flash[0];
-                }
-
-                // رابع: أي موديل متاح
-                const fallback = names.find(n => /flash/i.test(n)) || names[0];
-                localStorage.setItem('gemini_model', fallback);
-                return fallback;
+                // 4) أي موديل متاح غير 2.5
+                const anySafe = names.find(n => !/gemini-2\.5/i.test(n)) || names[0];
+                localStorage.setItem('gemini_model', anySafe || DEFAULT_MODEL);
+                return anySafe || DEFAULT_MODEL;
             } catch (err) {
                 console.warn('Auto model resolve failed:', err);
-                return localStorage.getItem('gemini_model') || 'gemini-2.0-flash';
+                localStorage.setItem('gemini_model', DEFAULT_MODEL);
+                return DEFAULT_MODEL;
             }
         }
 
@@ -1747,7 +1761,7 @@
                     }
                 }
 
-                // اختيار أوتوماتيك لأفضل موديل متاح (يفضّل 2.6 ثم أحدث Flash)
+                // اختيار أوتوماتيك لأفضل موديل متاح (يفضّل 3.6)
                 let selectedModel = await resolveBestGeminiModel(apiKey);
                 let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`, {
                     method: 'POST',
@@ -1756,6 +1770,17 @@
                 });
 
                 let result = await response.json();
+                // لو الموديل المختار موقف، جرّب gemini-3.6-flash مباشرة مرة واحدة
+                if (result.error && /no longer available|update your code|gemini-3\.6/i.test(result.error.message || '')) {
+                    selectedModel = 'gemini-3.6-flash';
+                    localStorage.setItem('gemini_model', selectedModel);
+                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: parts }] })
+                    });
+                    result = await response.json();
+                }
                 if(result.error) {
                     alert('خطأ من جيميناي: ' + result.error.message);
                     return;
