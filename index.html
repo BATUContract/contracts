@@ -1210,7 +1210,7 @@
         <div class="loading-bar-container">
             <div id="intro-loading-bar" class="loading-bar-fill"></div>
         </div>
-        <p class="text-xs text-indigo-100/80 font-bold mt-4 tracking-[0.2em]">نظام إدارة ومتابعة التعاقدات العامة</p>
+        <p class="text-xs text-indigo-100/80 font-bold mt-4 tracking-[0.2em]"> إدارة التعاقدات </p>
         <p class="text-[10px] text-slate-400 font-semibold mt-1 tracking-widest">جامعة برج العرب التكنولوجية</p>
     </div>
 
@@ -1251,6 +1251,7 @@
             </button>
             <button onclick="forceSyncDB()" class="px-2.5 py-1 rounded-xl bg-slate-800 text-xs text-amber-400 hover:text-white transition border border-slate-700 flex items-center gap-1.5" title="مزامنة فورية للداتا من السيرفر">
                 <i class="fa-solid fa-sync anim-sync"></i> مزامنة فورية
+                <span id="sync-status-dot" class="w-2 h-2 rounded-full bg-emerald-500" title="حالة الاتصال"></span>
             </button>
 
             <a id="etenders-link" href="https://etenders.gov.eg/" target="_blank" onclick="playSound('click')" class="flex items-center gap-1.5 bg-slate-800 px-2.5 py-1 rounded-xl text-xs text-slate-300 hover:text-white transition border border-slate-700" title="بوابة التعاقدات العامة">
@@ -1286,6 +1287,7 @@
                 </button>
                 <button onclick="forceSyncDB()" class="px-2 py-1 rounded-xl text-xs text-amber-500 hover:text-amber-600 transition flex items-center gap-1 font-bold" title="مزامنة فورية للداتا">
                     <i class="fa-solid fa-sync anim-sync"></i> مزامنة
+                    <span id="home-sync-status-dot" class="w-2 h-2 rounded-full bg-emerald-500" title="حالة الاتصال"></span>
                 </button>
                 <a id="home-etenders-link" href="https://etenders.gov.eg/" target="_blank" onclick="playSound('click')" class="flex items-center gap-1.5 px-2 py-1 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:text-primary transition" title="بوابة التعاقدات العامة">
                     <i class="fa-solid fa-globe"></i>
@@ -1322,7 +1324,7 @@
                 </div>
                 <h1 class="text-2xl md:text-4xl font-black text-[#0F172A] dark:text-white tracking-tight mb-2">نظام إدارة ومتابعة التعاقدات </h1>
                 <p class="text-[#4F46E5] dark:text-indigo-300 font-bold text-sm tracking-wide">جامعة برج العرب التكنولوجية</p>
-                <p class="text-slate-500 dark:text-slate-400 font-semibold text-xs mt-1">إدارة التعاقدات والتوريدات · </p>
+                <p class="text-slate-500 dark:text-slate-400 font-semibold text-xs mt-1">إدارة للتعاقدات </p>
             </div>
 
             <!-- ب) عدّادات التنبيهات الذكية -->
@@ -1824,7 +1826,7 @@
                 <div class="text-center mb-6">
                     <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="mx-auto mb-3" style="height: 70px; object-fit: contain;">
                     <h2 class="text-lg font-extrabold text-slate-900 tracking-tight">تسجيل الدخول</h2>
-                    <p class="text-xs text-slate-500 mt-1.5 font-semibold">نظام إدارة ومتابعة التعاقدات العامة</p>
+                    <p class="text-xs text-slate-500 mt-1.5 font-semibold">نظام إدارة ومتابعة التعاقدات </p>
                 </div>
                 <div class="space-y-4">
                     <div>
@@ -2562,21 +2564,25 @@
             dbRef.once('value').then((snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    DB = data;
-                    DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
-                    DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
-                    DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
-                    if (!DB.archives) DB.archives = {};
-                    DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
-                    if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
-                    updateNotifications();
-                    renderAll();
+                    if (typeof applyRemoteDB === 'function') applyRemoteDB(data, 'manual');
+                    else {
+                        DB = data;
+                        DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
+                        DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
+                        DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
+                        if (!DB.archives) DB.archives = {};
+                        DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
+                        if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
+                        updateNotifications();
+                        renderAll();
+                    }
                     alert('تم مزامنة البيانات وتحديثها فوراً بنجاح!');
                 } else {
                     alert('السيرفر لا يحتوي على بيانات حالياً.');
                 }
             }).catch((error) => {
-                console.error("Sync Error:", error);
+                console.error('Sync Error:', error);
+                if (typeof setSyncStatus === 'function') setSyncStatus(false, 'sync-error');
                 alert('فشل الاتصال بالسيرفر للمزامنة: ' + error.message);
             });
         }
@@ -3458,67 +3464,150 @@
         let aiCautiousMode = localStorage.getItem('ai_cautious_mode') !== '0';
         let uiPrefs = JSON.parse(localStorage.getItem('ui_table_prefs') || '{}');
 
-        // الاستماع الفوري للتحديثات من السيرفر لضمان ظهور البيانات على أي جهاز فوراً
-        dbRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                DB = data;
-                DB.operations = Array.isArray(DB.operations) ? DB.operations : (DB.operations ? Object.values(DB.operations) : []);
-                DB.awards = Array.isArray(DB.awards) ? DB.awards : (DB.awards ? Object.values(DB.awards) : []);
-                DB.suppliers = Array.isArray(DB.suppliers) ? DB.suppliers : (DB.suppliers ? Object.values(DB.suppliers) : []);
-                if (!DB.archives) DB.archives = {};
+        // ===== مزامنة لحظية محسّنة بين الأجهزة =====
+        let _applyingRemote = false;
+        let _lastRemoteStamp = 0;
+        let _firebaseConnected = true;
+
+        function normalizeDBFromServer(data) {
+            if (!data) return JSON.parse(JSON.stringify(defaultDB));
+            const next = data;
+            next.operations = Array.isArray(next.operations) ? next.operations : (next.operations ? Object.values(next.operations) : []);
+            next.awards = Array.isArray(next.awards) ? next.awards : (next.awards ? Object.values(next.awards) : []);
+            next.suppliers = Array.isArray(next.suppliers) ? next.suppliers : (next.suppliers ? Object.values(next.suppliers) : []);
+            if (!next.archives) next.archives = {};
+            next.operations.forEach(op => { if (!op.category) op.category = 'tender'; });
+            next.operations.sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
+            return next;
+        }
+
+        function applyRemoteDB(data, source) {
+            _applyingRemote = true;
+            try {
+                DB = normalizeDBFromServer(data);
                 if (typeof ensureDBShape === 'function') ensureDBShape();
                 else {
-                    if(!DB.favorites) DB.favorites = [];
-                    if(!DB.todos) DB.todos = [];
-                    if(!DB.opMeta) DB.opMeta = {};
-                    if(!DB.aiVersions) DB.aiVersions = [];
-                    if(!DB.applicants) DB.applicants = [];
-                    if(!DB.pendingApprovals) DB.pendingApprovals = [];
-                    if(!DB.syncErrors) DB.syncErrors = [];
-                    if(!DB.auditLog) DB.auditLog = [];
+                    if (!DB.favorites) DB.favorites = [];
+                    if (!DB.todos) DB.todos = [];
+                    if (!DB.opMeta) DB.opMeta = {};
+                    if (!DB.aiVersions) DB.aiVersions = [];
+                    if (!DB.applicants) DB.applicants = [];
+                    if (!DB.pendingApprovals) DB.pendingApprovals = [];
+                    if (!DB.syncErrors) DB.syncErrors = [];
+                    if (!DB.auditLog) DB.auditLog = [];
                 }
-                DB.operations.forEach(op => { if(!op.category) op.category = 'tender'; });
-                if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
+                if (DB.meta && DB.meta.updatedAt) _lastRemoteStamp = Number(DB.meta.updatedAt) || _lastRemoteStamp;
+                try { localStorage.setItem('smart_v1_offline_cache', JSON.stringify(DB)); } catch (e) {}
+                if (typeof updateNotifications === 'function') updateNotifications();
+                if (typeof renderAll === 'function') renderAll();
+                // إعادة رسم التبويب الظاهر حتى تظهر التعديلات فوراً في الجداول
+                try {
+                    const active = document.querySelector('.view-section.active');
+                    if (active) {
+                        if (active.id === 'view-operations' && typeof renderOperations === 'function') renderOperations();
+                        if (active.id === 'view-awards' && typeof renderAwards === 'function') renderAwards();
+                        if (active.id === 'view-suppliers' && typeof renderSuppliers === 'function') renderSuppliers();
+                        if (active.id === 'view-executive' && typeof renderExecutive === 'function') renderExecutive();
+                        if (active.id === 'view-dashboard' && typeof renderDashboard === 'function') renderDashboard();
+                        if (active.id === 'view-tasks' && typeof renderTodayTasks === 'function') renderTodayTasks(_tasksFilter || 'all');
+                    }
+                } catch (e) {}
+                setSyncStatus(true, source || 'remote');
+            } finally {
+                setTimeout(function () { _applyingRemote = false; }, 50);
+            }
+        }
+
+        function setSyncStatus(ok, reason) {
+            const dots = [document.getElementById('sync-status-dot'), document.getElementById('home-sync-status-dot')];
+            dots.forEach(function (dot) {
+                if (!dot) return;
+                dot.classList.remove('bg-emerald-500', 'bg-red-500', 'bg-amber-500', 'animate-pulse');
+                if (ok) {
+                    dot.classList.add('bg-emerald-500');
+                    dot.title = 'متصل — مزامنة نشطة' + (reason ? (' (' + reason + ')') : '');
+                } else {
+                    dot.classList.add('bg-red-500', 'animate-pulse');
+                    dot.title = 'غير متصل بالسيرفر — التعديلات قد لا تظهر على الأجهزة الأخرى';
+                }
+            });
+        }
+
+        // حالة الاتصال
+        try {
+            database.ref('.info/connected').on('value', function (snap) {
+                _firebaseConnected = snap.val() === true;
+                setSyncStatus(_firebaseConnected, _firebaseConnected ? 'online' : 'offline');
+                if (_firebaseConnected) {
+                    // عند رجوع الاتصال اسحب أحدث نسخة
+                    dbRef.once('value').then(function (s) {
+                        if (s.exists()) applyRemoteDB(s.val(), 'reconnect');
+                    }).catch(function () {});
+                }
+            });
+        } catch (e) {}
+
+        // الاستماع الفوري للتحديثات من السيرفر
+        dbRef.on('value', function (snapshot) {
+            const data = snapshot.val();
+            if (data) {
+                applyRemoteDB(data, 'live');
             } else {
                 DB = JSON.parse(JSON.stringify(defaultDB));
+                if (typeof updateNotifications === 'function') updateNotifications();
+                if (typeof renderAll === 'function') renderAll();
             }
-            updateNotifications();
-            renderAll();
-        }, (error) => {
-            console.warn("Database sync warning:", error);
+        }, function (error) {
+            console.warn('Database sync warning:', error);
+            setSyncStatus(false, 'error');
         });
 
         function ensureDBShape() {
-            if(!DB.suppliers) DB.suppliers = [];
-            if(!DB.operations) DB.operations = [];
-            if(!DB.awards) DB.awards = [];
-            if(!DB.archives) DB.archives = {};
-            if(!DB.favorites) DB.favorites = [];
-            if(!DB.todos) DB.todos = [];
-            if(!DB.opMeta) DB.opMeta = {};
-            if(!DB.aiVersions) DB.aiVersions = [];
-            if(!DB.applicants) DB.applicants = [];
-            if(!DB.pendingApprovals) DB.pendingApprovals = [];
-            if(!DB.syncErrors) DB.syncErrors = [];
-            if(!DB.auditLog) DB.auditLog = [];
+            if (!DB.suppliers) DB.suppliers = [];
+            if (!DB.operations) DB.operations = [];
+            if (!DB.awards) DB.awards = [];
+            if (!DB.archives) DB.archives = {};
+            if (!DB.favorites) DB.favorites = [];
+            if (!DB.todos) DB.todos = [];
+            if (!DB.opMeta) DB.opMeta = {};
+            if (!DB.aiVersions) DB.aiVersions = [];
+            if (!DB.applicants) DB.applicants = [];
+            if (!DB.pendingApprovals) DB.pendingApprovals = [];
+            if (!DB.syncErrors) DB.syncErrors = [];
+            if (!DB.auditLog) DB.auditLog = [];
+            if (!DB.meta) DB.meta = {};
         }
 
         function saveDB() {
+            if (_applyingRemote) return; // لا تعِد الكتابة أثناء تطبيق تحديث قادم من السيرفر
             ensureDBShape();
-            if (DB.operations) DB.operations.sort((a, b) => a.id - b.id);
-            try { localStorage.setItem('smart_v1_offline_cache', JSON.stringify(DB)); } catch(e) {}
-            
-            dbRef.set(DB).then(() => {
-                updateNotifications();
-                renderAll();
-            }).catch((err) => {
-                console.warn("Firebase save error:", err);
+            if (DB.operations) DB.operations.sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
+            DB.meta = DB.meta || {};
+            DB.meta.updatedAt = Date.now();
+            DB.meta.updatedBy = (typeof currentUserName !== 'undefined' && currentUserName) ? currentUserName : ((typeof currentUserRole !== 'undefined' && currentUserRole) ? currentUserRole : 'user');
+
+            // تنظيف undefined (Firebase يرفضها أحياناً)
+            let payload;
+            try {
+                payload = JSON.parse(JSON.stringify(DB));
+            } catch (e) {
+                payload = DB;
+            }
+            try { localStorage.setItem('smart_v1_offline_cache', JSON.stringify(payload)); } catch (e) {}
+
+            return dbRef.set(payload).then(function () {
+                setSyncStatus(true, 'saved');
+                if (typeof updateNotifications === 'function') updateNotifications();
+                if (typeof renderAll === 'function') renderAll();
+            }).catch(function (err) {
+                console.warn('Firebase save error:', err);
+                if (!DB.syncErrors) DB.syncErrors = [];
                 DB.syncErrors.push({ at: new Date().toISOString(), message: String(err && err.message || err), action: 'saveDB' });
-                try { localStorage.setItem('smart_v1_offline_cache', JSON.stringify(DB)); } catch(e) {}
-                alert("تعذر المزامنة مع السيرفر. تم حفظ نسخة مؤقتة محلياً (Offline Cache).");
-                updateNotifications();
-                renderAll();
+                try { localStorage.setItem('smart_v1_offline_cache', JSON.stringify(payload)); } catch (e) {}
+                setSyncStatus(false, 'save-error');
+                alert('تعذر المزامنة مع السيرفر. تم حفظ نسخة مؤقتة محلياً (Offline Cache).\\nتأكد من الاتصال ثم اضغط «مزامنة فورية».');
+                if (typeof updateNotifications === 'function') updateNotifications();
+                if (typeof renderAll === 'function') renderAll();
             });
         }
 
@@ -4628,14 +4717,14 @@
                 if (bellIcon) bellIcon.classList.add('pulse-bell', 'text-accent');
                 if (homeBellIcon) homeBellIcon.classList.add('pulse-bell', 'text-accent');
                 const titleEl = document.getElementById('app-title');
-                if (titleEl) titleEl.innerText = '🔴 (' + count + ') نظام إدارة ومتابعة التعاقدات العامة';
+                if (titleEl) titleEl.innerText = '🔴 (' + count + ') نظام إدارة ومتابعة التعاقدات ';
             } else {
                 if (badge) badge.classList.add('hidden');
                 if (homeBadge) homeBadge.classList.add('hidden');
                 if (bellIcon) bellIcon.classList.remove('pulse-bell', 'text-accent');
                 if (homeBellIcon) homeBellIcon.classList.remove('pulse-bell', 'text-accent');
                 const titleEl = document.getElementById('app-title');
-                if (titleEl) titleEl.innerText = 'نظام إدارة ومتابعة التعاقدات العامة';
+                if (titleEl) titleEl.innerText = 'نظام إدارة ومتابعة التعاقدات ';
                 const emptyHtml = '<div class="p-3 text-center text-slate-400 text-xs">الأمور مستقرة — لا توجد تنبيهات</div>';
                 if (list) list.innerHTML = emptyHtml;
                 if (homeList) homeList.innerHTML = emptyHtml;
