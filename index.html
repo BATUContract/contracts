@@ -1,11 +1,12 @@
 
 
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="app-title">منظومة التعاقدات والتوريدات الذكية (Smart V1.Pro)</title>
+    <title id="app-title">نظام إدارة ومتابعة التعاقدات العامة | جامعة برج العرب التكنولوجية</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,14 +33,14 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#4f46e5',
-                        primaryHover: '#4338ca',
-                        secondary: '#0f766e',
-                        accent: '#e11d48',
-                        warning: '#f59e0b',
-                        success: '#16a34a',
-                        darkBg: '#0f172a',
-                        lightBg: '#f8fafc',
+                        primary: '#4F46E5',
+                        primaryHover: '#3730A3',
+                        secondary: '#6366F1',
+                        accent: '#F97316',
+                        warning: '#F59E0B',
+                        success: '#10B981',
+                        darkBg: '#0B0F1A',
+                        lightBg: '#F5F7FB',
                         cardBg: '#ffffff',
                     },
                     fontFamily: { cairo: ['Cairo', 'sans-serif'] },
@@ -50,17 +51,83 @@
     </script>
     
     <style>
-        /* ===== Classic Theme (الألوان الأساسية للمنظومة) ===== */
-        body {
-            font-family: 'Cairo', system-ui, sans-serif;
-            background: linear-gradient(145deg, #eef2ff 0%, #f8fafc 40%, #f0fdfa 100%);
-            color: #1e293b;
-            min-height: 100vh;
-            transition: background 0.3s ease, color 0.25s ease;
+        /* ===== Enterprise Design System (Fluent + refined Arabic UI) ===== */
+        :root {
+            /* Orritech-inspired — indigo / violet / coral tech agency */
+            --ori-indigo: #4F46E5;
+            --ori-indigo-dark: #3730A3;
+            --ori-violet: #7C3AED;
+            --ori-navy: #0F172A;
+            --ori-navy-deep: #020617;
+            --ori-coral: #F97316;
+            --ori-coral-hot: #EA580C;
+            --gov-navy: #0F172A;
+            --gov-blue: #4F46E5;
+            --gov-mid: #6366F1;
+            --gov-teal: #4F46E5;
+            --gov-gold: #F97316;
+            --gov-gold-soft: #FB923C;
+            --accent: #4F46E5;
+            --accent-2: #7C3AED;
+            --text: #0F172A;
+            --text-2: #64748B;
+            --border: #E2E8F0;
+            --bg-page: #F5F7FB;
+            --bg-panel: #FFFFFF;
+            --bg-elevated: #F8FAFC;
+            --input-bg: #FFFFFF;
+            --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -8px rgba(79, 70, 229, 0.12);
+            --shadow-lg: 0 12px 32px -10px rgba(79, 70, 229, 0.22);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --ring: 0 0 0 3px rgba(79, 70, 229, 0.22);
         }
         body.dark {
-            background: linear-gradient(165deg, #0f172a 0%, #1e293b 100%);
-            color: #f1f5f9;
+            --ori-indigo: #818CF8;
+            --ori-indigo-dark: #4F46E5;
+            --ori-violet: #A78BFA;
+            --ori-navy: #020617;
+            --ori-navy-deep: #000000;
+            --ori-coral: #FB923C;
+            --ori-coral-hot: #F97316;
+            --gov-navy: #020617;
+            --gov-blue: #1E1B4B;
+            --gov-mid: #312E81;
+            --gov-teal: #818CF8;
+            --gov-gold: #FB923C;
+            --gov-gold-soft: #FDBA74;
+            --accent: #818CF8;
+            --accent-2: #A78BFA;
+            --text: #F1F5F9;
+            --text-2: #94A3B8;
+            --border: #1E293B;
+            --bg-page: #0B0F1A;
+            --bg-panel: #111827;
+            --bg-elevated: #1E293B;
+            --input-bg: #0F172A;
+            --shadow: 0 1px 2px rgba(0,0,0,0.45), 0 12px 32px -12px rgba(0,0,0,0.6);
+            --shadow-lg: 0 16px 40px -12px rgba(79, 70, 229, 0.35);
+            --ring: 0 0 0 3px rgba(129, 140, 248, 0.25);
+        }
+        body {
+            font-family: 'Cairo', 'Segoe UI', Tahoma, system-ui, sans-serif;
+            background: var(--bg-page);
+            background-image:
+                radial-gradient(ellipse 70% 45% at 100% -5%, rgba(124, 58, 237, 0.08), transparent 55%),
+                radial-gradient(ellipse 55% 40% at 0% 0%, rgba(79, 70, 229, 0.07), transparent 50%),
+                linear-gradient(180deg, #EEF0FF 0%, var(--bg-page) 180px);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.25s ease;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        body.dark {
+            background: var(--bg-page);
+            background-image:
+                radial-gradient(ellipse 70% 45% at 100% 0%, rgba(124, 58, 237, 0.12), transparent 50%),
+                radial-gradient(ellipse 50% 35% at 0% 10%, rgba(79, 70, 229, 0.1), transparent 45%);
+            color: var(--text);
         }
 
         .view-section { display: none; }
@@ -113,14 +180,15 @@
             color: #ffffff !important;
         }
         .app-card:hover {
-            transform: translateY(-2px);
-            border-color: color-mix(in srgb, var(--accent) 45%, var(--border)) !important;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg) !important;
+            border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
         }
 
         /* Typography hierarchy */
         .page-title {
-            font-weight: 900;
-            letter-spacing: -0.02em;
+            font-weight: 800;
+            letter-spacing: -0.025em;
             color: var(--text);
         }
         .page-subtitle {
@@ -129,28 +197,60 @@
             font-size: 12px;
         }
 
-        /* Inputs unified */
+        /* Inputs unified — enterprise focus ring */
         input, select, textarea {
             background: var(--input-bg) !important;
-            border-color: var(--border) !important;
+            border: 1px solid var(--border) !important;
             color: var(--text) !important;
             border-radius: var(--radius-sm) !important;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
         input:focus, select:focus, textarea:focus {
             outline: none !important;
-            border-color: color-mix(in srgb, var(--accent) 60%, transparent) !important;
-            box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent) !important;
+            border-color: var(--accent) !important;
+            box-shadow: var(--ring) !important;
         }
 
-        /* Buttons */
+        /* Buttons — refined primary */
         .btn-primary, .bg-primary {
-            background: linear-gradient(180deg, #7c7ff2 0%, #5457e0 100%) !important;
+            background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
             color: #fff !important;
-            border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: 0 1px 0 rgba(255,255,255,0.15) inset, 0 8px 18px rgba(79,70,229,0.28);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 999px !important;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.2) inset, 0 8px 22px rgba(249, 115, 22, 0.38);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+        .btn-primary:hover, .bg-primary:hover, .hover\:bg-primaryHover:hover {
+            filter: brightness(1.05);
+            box-shadow: 0 1px 0 rgba(255,255,255,0.15) inset, 0 6px 18px rgba(12,35,64,0.35);
         }
         body:not(.dark) .btn-primary, body:not(.dark) .bg-primary {
-            box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, 0 6px 16px rgba(79,70,229,0.22);
+            box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 4px 12px rgba(12,35,64,0.22);
+        }
+        button {
+            transition: transform 0.12s ease, opacity 0.12s ease, background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+            border-radius: 999px !important;
+        }
+        button:active { transform: scale(0.985); }
+        /* Orritech-style primary CTA pills */
+        .btn-primary, .bg-primary,
+        button.bg-primary,
+        a.bg-primary {
+            border-radius: 999px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.01em;
+            padding-left: 1.1rem !important;
+            padding-right: 1.1rem !important;
+        }
+        /* Soft secondary / outline pills */
+        button.rounded-xl, a.rounded-xl,
+        button.rounded-2xl, a.rounded-2xl,
+        button.rounded-lg, a.rounded-lg {
+            border-radius: 999px !important;
+        }
+        /* Keep icon-only square-ish slightly rounded but soft */
+        button.p-2, button.p-1\.5, button.p-1 {
+            border-radius: 999px !important;
         }
 
         /* Stronger clearer icon animations */
@@ -236,8 +336,9 @@
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.15) 0%, transparent 55%),
-                #09090b;
+                radial-gradient(ellipse at 30% 20%, rgba(124, 58, 237, 0.35) 0%, transparent 45%),
+                radial-gradient(ellipse at 70% 80%, rgba(79, 70, 229, 0.3) 0%, transparent 45%),
+                linear-gradient(145deg, #0F172A 0%, #1E1B4B 40%, #020617 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -251,10 +352,10 @@
             pointer-events: none;
         }
         .intro-logo {
-            height: 96px;
+            height: 110px;
             width: auto;
             object-fit: contain;
-            filter: drop-shadow(0 8px 32px rgba(99,102,241,0.35));
+            filter: drop-shadow(0 12px 40px rgba(129, 140, 248, 0.45));
             animation: logoSoft 2.4s ease-in-out infinite;
         }
         @keyframes logoSoft {
@@ -272,7 +373,7 @@
         .loading-bar-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #6366f1, #22d3ee);
+            background: linear-gradient(90deg, #4F46E5, #A78BFA, #F97316);
             border-radius: 999px;
             transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1);
         }
@@ -320,16 +421,16 @@
         .excel-table-container {
             overflow-x: auto;
             overflow-y: auto;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.06);
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             max-height: 75vh;
         }
         body.dark .excel-table-container {
-            background: #0f172a;
-            border-color: #1e293b;
-            box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.35);
+            background: var(--bg-panel);
+            border-color: var(--border);
+            box-shadow: var(--shadow);
         }
 
         .excel-table-container::-webkit-scrollbar { height: 10px; width: 8px; }
@@ -352,30 +453,34 @@
             min-width: max-content;
         }
         .excel-table th, .excel-table td {
-            border-bottom: 1px solid #e2e8f0;
-            border-left: 1px solid #e2e8f0;
-            padding: 0.4rem 0.55rem;
+            border-bottom: 1px solid var(--border);
+            border-left: 1px solid var(--border);
+            padding: 0.28rem 0.38rem;
             text-align: center;
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             vertical-align: middle;
             white-space: nowrap;
+            line-height: 1.25;
         }
         body.dark .excel-table th, body.dark .excel-table td {
-            border-color: #1e293b;
+            border-color: var(--border);
             color: #cbd5e1;
         }
 
         .excel-table th {
-            background-color: #f8fafc;
+            background: linear-gradient(180deg, #e8eef5 0%, #dce4ef 100%);
             color: #0f172a;
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: 0;
             position: sticky;
             top: 0;
             z-index: 10;
             border-top: none;
+            font-size: 0.62rem;
+            text-transform: none;
         }
         body.dark .excel-table th {
-            background-color: #1e293b;
+            background: linear-gradient(180deg, #1e293b 0%, #172033 100%);
             color: #f1f5f9;
         }
 
@@ -383,27 +488,30 @@
         .excel-table tbody tr:hover { background-color: rgba(99, 102, 241, 0.05); }
         body.dark .excel-table tbody tr:hover { background-color: rgba(99, 102, 241, 0.1); }
 
-        /* عمود الرقم فقط ثابت — بدون لخبطة */
+        /* عمود الرقم فقط ثابت */
         .excel-table th:first-child,
         .excel-table td:first-child {
             position: sticky;
             right: 0;
             z-index: 20;
-            background-color: #ffffff;
-            border-left: 2px solid #cbd5e1;
-            min-width: 48px;
+            background-color: var(--bg-panel);
+            border-left: 2px solid var(--border);
+            min-width: 36px;
+            max-width: 42px;
             font-weight: 800;
+            padding-left: 0.25rem !important;
+            padding-right: 0.25rem !important;
         }
         body.dark .excel-table td:first-child {
-            background-color: #0f172a;
-            border-left-color: #334155;
+            background-color: var(--bg-panel);
+            border-left-color: var(--border);
         }
         .excel-table th:first-child {
-            background-color: #e2e8f0;
+            background: linear-gradient(180deg, #d6e0ec 0%, #c5d0de 100%);
             z-index: 30;
         }
         body.dark .excel-table th:first-child {
-            background-color: #1e293b;
+            background: linear-gradient(180deg, #1e293b 0%, #172033 100%);
         }
         .excel-table tbody tr:hover td:first-child {
             background-color: #eef2ff;
@@ -411,24 +519,28 @@
         body.dark .excel-table tbody tr:hover td:first-child {
             background-color: #1e1b4b;
         }
+        .excel-table tbody tr {
+            transition: background-color 0.12s ease;
+        }
 
         .wrap-text {
             white-space: normal !important;
-            line-height: 1.35;
-            max-width: 200px;
+            line-height: 1.3;
+            max-width: 110px;
             text-align: right;
+            word-break: break-word;
         }
 
         .excel-table.compact th,
         .excel-table.compact td {
-            padding: 0.25rem 0.35rem;
-            font-size: 0.66rem;
+            padding: 0.22rem 0.3rem;
+            font-size: 0.62rem;
         }
-        .excel-table.compact .wrap-text { max-width: 130px; }
+        .excel-table.compact .wrap-text { max-width: 100px; }
 
         .pill {
             display: inline-flex; align-items: center; justify-content: center;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 999px;
             font-weight: 700;
             font-size: 0.62rem;
@@ -461,16 +573,43 @@
             border-color: rgba(51, 65, 85, 0.7) !important;
         }
         #top-nav-bar {
-            backdrop-filter: blur(12px);
-            background: rgba(11, 15, 25, 0.92) !important;
+            backdrop-filter: blur(14px) saturate(1.2);
+            -webkit-backdrop-filter: blur(14px) saturate(1.2);
+            background: linear-gradient(90deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%) !important;
+            border-bottom: 1px solid rgba(129, 140, 248, 0.2) !important;
+            box-shadow: 0 4px 24px rgba(15, 23, 42, 0.4);
+            padding-top: 0.55rem !important;
+            padding-bottom: 0.55rem !important;
         }
         body:not(.dark) #top-nav-bar {
-            background: rgba(15, 23, 42, 0.95) !important;
+            background: linear-gradient(90deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%) !important;
+        }
+        body.dark #top-nav-bar {
+            background: linear-gradient(90deg, #020617 0%, #0F172A 50%, #1E1B4B 100%) !important;
+            border-bottom-color: rgba(129, 140, 248, 0.25) !important;
+        }
+        #top-nav-bar .nav-btn {
+            border-radius: 999px;
+            letter-spacing: 0.01em;
+            padding: 0.4rem 0.8rem !important;
+            color: rgba(226, 232, 240, 0.92);
+            border: 1px solid transparent;
+        }
+        #top-nav-bar .nav-btn:hover {
+            background: rgba(129, 140, 248, 0.18);
+            color: #fff;
+            border-color: rgba(129, 140, 248, 0.25);
+        }
+        #top-nav-bar .nav-btn.active-nav {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
         }
         
         .progress-wrapper { background-color: #e2e8f0; border-radius: 999px; overflow: hidden; height: 5px; width: 100%; max-width: 60px; margin: 0 auto;}
         body.dark .progress-wrapper { background-color: #374151; }
-        .progress-fill { background: linear-gradient(90deg, #4f46e5, #818cf8); height: 100%; transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1); }
+        .progress-fill { background: linear-gradient(90deg, #4F46E5, #A78BFA); height: 100%; transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1); }
 
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
@@ -483,24 +622,221 @@
         .logo-nav { height: 35px; width: auto; object-fit: contain; background: transparent; }
         .logo-print { height: 75px; width: auto; display: none; margin: 0 auto 10px; background: transparent; }
 
+        /* ========== Responsive UI System ========== */
+        @media (max-width: 1280px) {
+            #top-nav-bar .nav-btn {
+                font-size: 10px !important;
+                padding: 0.35rem 0.55rem !important;
+            }
+            #top-nav-bar .nav-btn i { font-size: 0.75rem; }
+        }
+
+        @media (max-width: 1024px) {
+            main { padding: 0.75rem !important; }
+            #top-nav-bar {
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+                padding: 0.5rem 0.75rem !important;
+            }
+            #top-nav-bar > div {
+                flex-wrap: wrap !important;
+                gap: 0.35rem !important;
+            }
+            .excel-table th, .excel-table td {
+                font-size: 0.62rem !important;
+                padding: 0.22rem 0.28rem !important;
+            }
+            .excel-table thead th {
+                font-size: 0.58rem !important;
+                padding: 0.28rem 0.3rem !important;
+            }
+        }
+
         @media (max-width: 768px) {
-            #top-nav-bar { flex-direction: column; gap: 8px; padding: 10px; }
-            .excel-table-container { height: 65vh; }
+            #top-nav-bar {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.5rem !important;
+                padding: 0.6rem 0.75rem !important;
+            }
+            #top-nav-bar > div:first-child {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.4rem !important;
+            }
+            #top-nav-bar .nav-btn {
+                justify-content: flex-start !important;
+                width: 100%;
+                font-size: 11px !important;
+                padding: 0.5rem 0.75rem !important;
+            }
+            #top-nav-bar > div:last-child {
+                justify-content: flex-start !important;
+                flex-wrap: wrap !important;
+                gap: 0.35rem !important;
+            }
+            /* إخفاء نص العلامة في الموبايل — يبقى اللوجو */
+            #top-nav-bar .hidden.lg\:flex { display: none !important; }
+
+            main {
+                padding: 0.5rem !important;
+            }
+            .excel-table-container {
+                height: auto !important;
+                max-height: 60vh !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            .excel-table th, .excel-table td {
+                font-size: 0.58rem !important;
+                padding: 0.2rem 0.25rem !important;
+            }
+            .excel-table thead th {
+                font-size: 0.55rem !important;
+            }
+            /* عناوين الصفحات */
+            .page-title, h2.text-lg, h2.text-xl, h1 {
+                font-size: 1.05rem !important;
+                line-height: 1.35 !important;
+            }
+            /* أشرطة الأدوات فوق الجداول */
+            #view-operations > div:first-child,
+            #view-awards > div:first-child,
+            #view-suppliers > div:first-child,
+            #view-executive > div:first-child,
+            #view-dashboard > div:first-child {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.5rem !important;
+            }
+            /* تبويبات فرعية */
+            #view-operations .flex.gap-2,
+            #view-awards .flex.gap-2 {
+                flex-wrap: wrap !important;
+            }
+            /* الصفحة الرئيسية */
+            #view-home {
+                padding: 0.75rem !important;
+            }
+            #view-home .absolute.top-4.left-4,
+            #view-home .absolute.top-4.right-4 {
+                position: static !important;
+                margin-bottom: 0.5rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            #view-home .grid {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem !important;
+            }
+            #view-home .app-card {
+                min-height: auto !important;
+            }
+            /* مودالات */
+            [id^="modal-"] > div {
+                max-width: 96vw !important;
+                margin: 0.5rem !important;
+                max-height: 92vh !important;
+            }
+            [id^="modal-"] .overflow-y-auto {
+                max-height: 70vh !important;
+            }
+            /* حقول النماذج */
+            input, select, textarea {
+                font-size: 16px !important; /* منع زوم iOS */
+            }
+            /* إشعارات */
+            .notif-dropdown {
+                width: min(280px, 92vw) !important;
+                left: 0 !important;
+                right: auto !important;
+            }
+            /* أزرار الإجراءات في الجداول */
+            .excel-table button {
+                padding: 0.2rem 0.4rem !important;
+                font-size: 0.6rem !important;
+            }
+            .pill {
+                font-size: 0.55rem !important;
+                padding: 1px 5px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #top-nav-bar .nav-btn span,
+            #top-nav-bar .nav-btn {
+                font-size: 10px !important;
+            }
+            main { padding: 0.35rem !important; }
+            .excel-table-container { max-height: 55vh !important; }
+            #view-home h1 {
+                font-size: 1.15rem !important;
+            }
+            /* شريط بحث أصغر */
+            input[type="search"],
+            input[placeholder*="بحث"] {
+                min-width: 0 !important;
+                width: 100% !important;
+            }
+        }
+
+        /* تابلت بالعرض */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            #view-home .grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            #top-nav-bar .nav-btn {
+                font-size: 10px !important;
+            }
+        }
+
+        /* شاشات عريضة */
+        @media (min-width: 1440px) {
+            main {
+                max-width: 1600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
         }
 
 
 
+
         .app-card {
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
             position: relative;
             overflow: hidden;
         }
         .app-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 16px 36px rgba(0,0,0,0.12);
+            box-shadow: var(--shadow-lg);
         }
         body.dark .app-card:hover {
-            box-shadow: 0 16px 36px rgba(0,0,0,0.35);
+            box-shadow: var(--shadow-lg);
+        }
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--text-2);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .empty-state i {
+            font-size: 1.75rem;
+            opacity: 0.35;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        /* KPI cards on dashboard — glass enterprise */
+        #view-dashboard .app-card {
+            background: var(--bg-panel) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--text) !important;
+            backdrop-filter: blur(8px);
+        }
+        #view-dashboard .app-card p,
+        #view-dashboard .app-card h3 {
+            color: inherit !important;
         }
         .view-section { display: none; }
         .view-section.active {
@@ -513,10 +849,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .bg-primary {
-            background: #4f46e5 !important;
+            background: linear-gradient(135deg, #F97316, #EA580C) !important;
         }
         .bg-primary:hover, .hover\:bg-primaryHover:hover {
-            background: #4338ca !important;
+            background: linear-gradient(135deg, #EA580C, #C2410C) !important;
         }
 
         .print-footer {
@@ -526,6 +862,163 @@
             border-top: 1px solid #64748b;
             font-size: 10px;
             color: #1e293b;
+        }
+
+
+        /* ===== Orritech-inspired visual system ===== */
+        .excel-table thead th {
+            background: linear-gradient(180deg, #312E81 0%, #1E1B4B 100%) !important;
+            color: #F8FAFC !important;
+            font-weight: 800 !important;
+            font-size: 0.62rem !important;
+            letter-spacing: 0;
+            border-color: #1E1B4B !important;
+            padding: 0.32rem 0.35rem !important;
+        }
+        body.dark .excel-table thead th {
+            background: linear-gradient(180deg, #312E81 0%, #0F172A 100%) !important;
+            border-color: #1E293B !important;
+            color: #E2E8F0 !important;
+        }
+        .excel-table tbody tr:nth-child(even) td {
+            background: rgba(79, 70, 229, 0.03);
+        }
+        body.dark .excel-table tbody tr:nth-child(even) td {
+            background: rgba(129, 140, 248, 0.04);
+        }
+        .excel-table tbody tr:hover td {
+            background: rgba(79, 70, 229, 0.08) !important;
+        }
+        body.dark .excel-table tbody tr:hover td {
+            background: rgba(129, 140, 248, 0.1) !important;
+        }
+        main { background: transparent; }
+        .surface, .excel-table-container {
+            border-radius: var(--radius) !important;
+            box-shadow: var(--shadow);
+        }
+        #view-home .app-card {
+            border-radius: 18px !important;
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            box-shadow: 0 12px 32px -10px rgba(15, 23, 42, 0.35) !important;
+        }
+        #view-home .app-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.16) 0%, transparent 45%);
+            pointer-events: none;
+            border-radius: inherit;
+        }
+        #view-dashboard .app-card {
+            border-radius: 16px !important;
+            border-top: 3px solid #4F46E5 !important;
+            box-shadow: var(--shadow);
+        }
+        body.dark #view-dashboard .app-card {
+            border-top-color: #818CF8 !important;
+        }
+        [id^="modal-"] .rounded-t-2xl,
+        [id^="modal-"] .rounded-t-xl {
+            border-top: 3px solid #4F46E5;
+        }
+        body.dark [id^="modal-"] .rounded-t-2xl,
+        body.dark [id^="modal-"] .rounded-t-xl {
+            border-top-color: #818CF8;
+        }
+        #top-nav-bar { position: relative; }
+        #top-nav-bar::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; bottom: -2px;
+            height: 2px;
+            background: linear-gradient(90deg, #4F46E5, #7C3AED 40%, #F97316 100%);
+            pointer-events: none;
+        }
+
+
+        /* ===== Orritech pill buttons & soft surfaces ===== */
+        #top-nav-bar .nav-btn {
+            border-radius: 999px !important;
+            padding: 0.45rem 0.95rem !important;
+        }
+        /* File inputs styled as pills */
+        input[type="file"]::file-selector-button,
+        input[type="file"]::-webkit-file-upload-button {
+            border-radius: 999px !important;
+            border: none;
+            padding: 0.4rem 0.9rem;
+            background: linear-gradient(135deg, #F97316, #EA580C);
+            color: #fff;
+            font-weight: 700;
+            font-size: 11px;
+            cursor: pointer;
+            margin-inline-end: 0.5rem;
+        }
+        /* Home action chips */
+        #view-home button,
+        #view-home a.flex {
+            border-radius: 999px !important;
+        }
+        /* Module cards keep soft 18px — icons inside circular */
+        #view-home .app-card .rounded-xl,
+        #view-home .app-card .bg-white\/20 {
+            border-radius: 999px !important;
+        }
+        /* Table action buttons */
+        .excel-table button {
+            border-radius: 999px !important;
+        }
+        /* Modal footers */
+        [id^="modal-"] button {
+            border-radius: 999px !important;
+        }
+        /* Secondary slate buttons look like Orritech outline */
+        button.bg-slate-800, button.bg-slate-100, button.bg-slate-200,
+        a.bg-slate-800 {
+            border-radius: 999px !important;
+        }
+        /* Login / emerald */
+        button.bg-emerald-600, button.bg-amber-600, button.bg-indigo-600 {
+            border-radius: 999px !important;
+        }
+        /* Soft card hover like Orritech service cards */
+        .app-card {
+            border-radius: 18px !important;
+        }
+        .surface {
+            border-radius: 16px !important;
+        }
+        /* Inputs slightly more rounded */
+        input, select, textarea {
+            border-radius: 12px !important;
+        }
+
+
+        /* Table density — أقل عرض أفقي */
+        .excel-table {
+            min-width: 0 !important;
+            width: 100%;
+            table-layout: auto;
+        }
+        .excel-table th, .excel-table td {
+            max-width: 120px;
+        }
+        .excel-table th:not(:first-child),
+        .excel-table td:not(:first-child) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        /* أعمدة طويلة مسموح تلف سطرين */
+        .excel-table td.wrap-text,
+        .excel-table .wrap-text {
+            max-width: 100px;
+            white-space: normal !important;
+            overflow: visible;
+            text-overflow: unset;
+        }
+        .excel-table-container {
+            overflow-x: auto;
         }
 
         @media print {
@@ -648,7 +1141,7 @@
                 background: #fff !important;
             }
 
-            /* التقرير التنفيذي: Landscape عشان الأعمدة كتير */
+            /* التقرير التنفيذي الشامل لموقف التعاقدات: Landscape عشان الأعمدة كتير */
             #view-executive {
                 width: 100% !important;
             }
@@ -706,10 +1199,7 @@
                 width: 32% !important;
                 text-align: right !important;
             }
-            #modal-doc-preview { position: absolute !important; inset: 0 !important; background: white !important; padding: 0 !important; z-index: 999999 !important; }
-            #modal-doc-preview > div { max-width: 100% !important; height: auto !important; box-shadow: none !important; border: none !important; }
-            .doc-print-container { padding: 0 !important; }
-        }
+}
     </style>
 </head>
 <body class="flex flex-col min-h-screen intro-active">
@@ -720,29 +1210,35 @@
         <div class="loading-bar-container">
             <div id="intro-loading-bar" class="loading-bar-fill"></div>
         </div>
-        <p class="text-xs text-slate-400 font-bold mt-3 tracking-widest">جاري تحميل المنظومة الذكية...</p>
+        <p class="text-xs text-indigo-100/80 font-bold mt-4 tracking-[0.2em]">نظام إدارة ومتابعة التعاقدات العامة</p>
+        <p class="text-[10px] text-slate-400 font-semibold mt-1 tracking-widest">جامعة برج العرب التكنولوجية</p>
     </div>
 
     <!-- Top Navigation -->
-    <nav id="top-nav-bar" class="hidden bg-slate-900 text-slate-300 px-4 py-2 z-40 shrink-0 justify-between items-center shadow-lg border-b border-slate-800">
+    <nav id="top-nav-bar" class="hidden bg-[#0F172A] text-slate-100 px-4 py-2 z-40 shrink-0 justify-between items-center shadow-lg border-b border-indigo-900/40">
         <div class="flex items-center gap-3 flex-wrap">
             <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="logo-nav drop-shadow-md">
+            <div class="hidden lg:flex flex-col leading-tight ml-1 mr-2 border-r border-white/15 pr-3">
+                <span class="text-[11px] font-black text-white tracking-wide">منظومة التعاقدات</span>
+                <span class="text-[9px] font-semibold text-indigo-200/90">Smart Contracts Platform</span>
+            </div>
             <div class="flex items-center gap-1.5 flex-wrap">
-                <button onclick="playSound('click'); switchTab('home')" class="nav-btn px-3 py-1.5 rounded-xl transition font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-house"></i> الرئيسية</button>
-                <button onclick="playSound('click'); openDriveFolderModal()" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1 text-amber-400"><i class="fa-brands fa-google-drive"></i> فولدر الإدارة</button>
-                <button onclick="playSound('click'); switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-chart-pie"></i> لوحة القيادة</button>
-                <button onclick="playSound('click'); switchTab('operations')" id="nav-operations" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-file-signature"></i> سجل الطرح</button>
-                <button onclick="playSound('click'); switchTab('awards')" id="nav-awards" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-medal"></i> الترسيات</button>
-                <button onclick="playSound('click'); switchTab('suppliers')" id="nav-suppliers" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-building"></i> الموردين</button>
-                <button onclick="playSound('click'); switchTab('executive')" id="nav-executive" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-file-contract"></i> التقرير</button>
-                <button onclick="playSound('click'); switchTab('query')" id="nav-query" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1 text-yellow-300"><i class="fa-solid fa-magnifying-glass"></i> استعلام</button>
+                <button onclick="playSound('click'); switchTab('home')" class="nav-btn px-3 py-1.5 rounded-xl transition font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-house"></i> الصفحة الرئيسية</button>
+                <button onclick="playSound('click'); openDriveFolderModal()" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1 text-amber-400"><i class="fa-brands fa-google-drive"></i> أرشيف المستندات</button>
+                <button onclick="playSound('click'); switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-chart-pie"></i> المؤشرات التنفيذية</button>
+                <button onclick="playSound('click'); switchTab('operations')" id="nav-operations" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-file-signature"></i> سجل إجراءات الطرح</button>
+                <button onclick="playSound('click'); switchTab('awards')" id="nav-awards" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-medal"></i> قرارات الترسية</button>
+                <button onclick="playSound('click'); switchTab('suppliers')" id="nav-suppliers" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-building"></i> سجل الموردين والمقاولين</button>
+                <button onclick="playSound('click'); switchTab('executive')" id="nav-executive" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-file-contract"></i> التقرير التنفيذي الشامل لموقف التعاقدات</button>
+                <button onclick="playSound('click'); switchTab('query')" id="nav-query" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1 text-yellow-300"><i class="fa-solid fa-magnifying-glass"></i> استعلام عملية</button>
+                <button onclick="playSound('click'); switchTab('tasks')" id="nav-tasks" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1 text-orange-300"><i class="fa-solid fa-list-check"></i> مهام اليوم</button>
             </div>
         </div>
         
         <!-- Controls & Notifications & Portal Status & Sync Button -->
         <div class="flex items-center gap-2">
             <button onclick="openManageUsersModal()" id="nav-manage-users-btn" class="px-2.5 py-1 rounded-xl bg-slate-800 text-xs text-amber-400 hover:text-white transition border border-slate-700 flex items-center gap-1.5 font-bold" style="display:none;">
-                <i class="fa-solid fa-users-gear"></i> إدارة المستخدمين
+                <i class="fa-solid fa-users-gear"></i> إدارة حسابات المستخدمين
             </button>
             <button onclick="openLoginFromApp()" id="nav-login-btn" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-xs text-white hover:bg-emerald-700 transition flex items-center gap-1.5 font-bold" style="display:none;" title="تسجيل الدخول بحسابك">
                 <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول
@@ -750,19 +1246,19 @@
             <button onclick="handleLogout()" id="nav-logout-btn" class="px-2.5 py-1 rounded-xl bg-slate-800 text-xs text-rose-400 hover:text-white transition border border-slate-700 flex items-center gap-1.5 font-bold" style="display:none;" title="تسجيل الخروج">
                 <i class="fa-solid fa-right-from-bracket"></i> خروج
             </button>
-            <button onclick="openSmartStagingModal()" id="ai-reader-btn" class="px-2.5 py-1 rounded-xl bg-indigo-600 text-xs text-white hover:bg-indigo-700 transition font-bold flex items-center gap-1" title="قارئ AI">
-                <i class="fa-solid fa-brain"></i> قارئ AI
+            <button onclick="openSmartStagingModal()" id="ai-reader-btn" class="px-2.5 py-1 rounded-xl bg-[#4F46E5] text-xs text-white hover:bg-[#3730A3] transition font-bold flex items-center gap-1" title="وحدة الاستخراج الذكي للمستندات">
+                <i class="fa-solid fa-brain"></i> الاستخراج الذكي
             </button>
             <button onclick="forceSyncDB()" class="px-2.5 py-1 rounded-xl bg-slate-800 text-xs text-amber-400 hover:text-white transition border border-slate-700 flex items-center gap-1.5" title="مزامنة فورية للداتا من السيرفر">
                 <i class="fa-solid fa-sync anim-sync"></i> مزامنة فورية
             </button>
 
-            <a id="etenders-link" href="https://etenders.gov.eg/" target="_blank" onclick="playSound('click')" class="flex items-center gap-1.5 bg-slate-800 px-2.5 py-1 rounded-xl text-xs text-slate-300 hover:text-white transition border border-slate-700" title="بوابة التعاقدات الحكومية">
+            <a id="etenders-link" href="https://etenders.gov.eg/" target="_blank" onclick="playSound('click')" class="flex items-center gap-1.5 bg-slate-800 px-2.5 py-1 rounded-xl text-xs text-slate-300 hover:text-white transition border border-slate-700" title="بوابة التعاقدات العامة">
                 <i class="fa-solid fa-globe"></i>
                 <span id="portal-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" title="جاري فحص حالة البوابة..."></span>
             </a>
 
-            <button onclick="playSound('click'); toggleDarkMode()" class="p-2 text-base transition transform hover:rotate-45" title="الوضع الليلي / النهاري">
+            <button onclick="playSound('click'); toggleDarkMode()" class="p-2 text-base transition transform hover:rotate-45" title="الوضع الداكن / الفاتح">
                 <i id="theme-icon" class="fa-solid fa-moon text-slate-300 dark:text-white"></i>
             </button>
 
@@ -772,7 +1268,7 @@
                     <span id="notif-badge" class="absolute top-0 right-0 bg-accent text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full hidden">0</span>
                 </button>
                 <div id="notif-box" class="notif-dropdown p-0">
-                    <div class="p-3 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 rounded-t-12 flex justify-between items-center"><h4 class="font-bold text-slate-800 dark:text-white text-xs">مركز الإشعارات</h4><span class="text-[10px] text-slate-500" id="notif-count-text">لا توجد إشعارات</span></div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 rounded-t-12 flex justify-between items-center"><h4 class="font-bold text-slate-800 dark:text-white text-xs">مركز التنبيهات</h4><span class="text-[10px] text-slate-500" id="notif-count-text">لا توجد تنبيهات</span></div>
                     <div id="notif-list" class="p-2 max-h-60 overflow-y-auto"></div>
                 </div>
             </div>
@@ -785,17 +1281,17 @@
         <div id="view-home" class="view-section active w-full items-center justify-center p-4 min-h-full relative">
             
             <div class="absolute top-4 left-4 flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700">
-                <button onclick="openSmartStagingModal()" id="home-ai-btn" class="px-2.5 py-1 rounded-xl text-xs bg-indigo-600 text-white hover:bg-indigo-700 transition flex items-center gap-1 font-bold shadow-sm">
-                    <i class="fa-solid fa-brain"></i> قارئ AI
+                <button onclick="openSmartStagingModal()" id="home-ai-btn" class="px-2.5 py-1 rounded-xl text-xs bg-[#4F46E5] text-white hover:bg-[#3730A3] transition flex items-center gap-1 font-bold shadow-sm">
+                    <i class="fa-solid fa-brain"></i> الاستخراج الذكي
                 </button>
                 <button onclick="forceSyncDB()" class="px-2 py-1 rounded-xl text-xs text-amber-500 hover:text-amber-600 transition flex items-center gap-1 font-bold" title="مزامنة فورية للداتا">
                     <i class="fa-solid fa-sync anim-sync"></i> مزامنة
                 </button>
-                <a id="home-etenders-link" href="https://etenders.gov.eg/" target="_blank" onclick="playSound('click')" class="flex items-center gap-1.5 px-2 py-1 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:text-primary transition" title="بوابة التعاقدات الحكومية">
+                <a id="home-etenders-link" href="https://etenders.gov.eg/" target="_blank" onclick="playSound('click')" class="flex items-center gap-1.5 px-2 py-1 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:text-primary transition" title="بوابة التعاقدات العامة">
                     <i class="fa-solid fa-globe"></i>
                     <span id="home-portal-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" title="جاري فحص البوابة..."></span>
                 </a>
-                <button onclick="playSound('click'); toggleDarkMode()" class="p-1.5 text-base transition transform hover:rotate-45" title="الوضع الليلي / النهاري">
+                <button onclick="playSound('click'); toggleDarkMode()" class="p-1.5 text-base transition transform hover:rotate-45" title="الوضع الداكن / الفاتح">
                     <i id="home-theme-icon" class="fa-solid fa-moon text-slate-800 dark:text-white"></i>
                 </button>
                 <div class="relative">
@@ -804,7 +1300,7 @@
                         <span id="home-notif-badge" class="absolute top-0 right-0 bg-accent text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full hidden">0</span>
                     </button>
                     <div id="home-notif-box" class="notif-dropdown p-0">
-                        <div class="p-3 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 rounded-t-12 flex justify-between items-center"><h4 class="font-bold text-slate-800 dark:text-white text-xs">مركز الإشعارات</h4><span class="text-[10px] text-slate-500" id="home-notif-count-text">لا توجد إشعارات</span></div>
+                        <div class="p-3 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 rounded-t-12 flex justify-between items-center"><h4 class="font-bold text-slate-800 dark:text-white text-xs">مركز التنبيهات</h4><span class="text-[10px] text-slate-500" id="home-notif-count-text">لا توجد تنبيهات</span></div>
                         <div id="home-notif-list" class="p-2 max-h-60 overflow-y-auto"></div>
                     </div>
                 </div>
@@ -812,21 +1308,45 @@
 
             <div id="home-admin-controls" class="absolute top-4 right-4 hidden">
                 <button onclick="openManageUsersModal()" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-md transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-users-gear"></i> إدارة المستخدمين
+                    <i class="fa-solid fa-users-gear"></i> إدارة حسابات المستخدمين
                 </button>
             </div>
 
-            <div class="text-center mb-8 mt-6">
-                <div class="mb-3">
-                    <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="mx-auto drop-shadow-xl" style="height: 100px; width: auto; object-fit: contain;">
+            <div class="text-center mb-10 mt-6">
+                <div class="mb-4">
+                    <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="mx-auto drop-shadow-xl" style="height: 96px; width: auto; object-fit: contain;">
                 </div>
-                <div class="inline-block bg-gradient-to-r from-indigo-500 to-violet-500 text-white px-4 py-1 rounded-full font-black text-[11px] mb-2 tracking-wider shadow-lg shadow-indigo-500/30">Smart V1.Pro</div>
-                <h1 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-1">منظومة التعاقدات والتوريدات</h1>
-                <p class="text-slate-500 dark:text-slate-400 font-bold text-xs tracking-wide">جامعة برج العرب التكنولوجية · إدارة التعاقدات</p>
+                <div class="inline-flex items-center gap-2 bg-gradient-to-l from-[#4F46E5] to-[#7C3AED] text-white px-5 py-1.5 rounded-full font-bold text-[11px] mb-3 tracking-wide shadow-md border border-white/10">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#F97316]"></span>
+                    وفقاً لأحكام القانون رقم 182 لسنة 2018 ولائحته التنفيذية
+                </div>
+                <h1 class="text-2xl md:text-4xl font-black text-[#0F172A] dark:text-white tracking-tight mb-2">نظام إدارة ومتابعة التعاقدات </h1>
+                <p class="text-[#4F46E5] dark:text-indigo-300 font-bold text-sm tracking-wide">جامعة برج العرب التكنولوجية</p>
+                <p class="text-slate-500 dark:text-slate-400 font-semibold text-xs mt-1">إدارة التعاقدات والتوريدات · </p>
+            </div>
+
+            <!-- ب) عدّادات التنبيهات الذكية -->
+            <div id="home-alerts-bar" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl w-full mx-auto mb-8">
+                <button type="button" onclick="playSound('click'); switchTab('tasks'); setTasksFilter('delivery_late')" class="surface bg-white dark:bg-slate-800/80 rounded-2xl p-3 text-center border border-red-200/60 dark:border-red-900/40 hover:shadow-md transition">
+                    <div class="text-2xl font-black text-red-600" id="home-cnt-late">0</div>
+                    <div class="text-[10px] font-bold text-slate-500 mt-1">توريد متأخر</div>
+                </button>
+                <button type="button" onclick="playSound('click'); switchTab('tasks'); setTasksFilter('final_insurance')" class="surface bg-white dark:bg-slate-800/80 rounded-2xl p-3 text-center border border-amber-200/60 dark:border-amber-900/40 hover:shadow-md transition">
+                    <div class="text-2xl font-black text-amber-600" id="home-cnt-insurance">0</div>
+                    <div class="text-[10px] font-bold text-slate-500 mt-1">تأمين نهائي ناقص</div>
+                </button>
+                <button type="button" onclick="playSound('click'); switchTab('tasks'); setTasksFilter('guarantee_expiring')" class="surface bg-white dark:bg-slate-800/80 rounded-2xl p-3 text-center border border-orange-200/60 dark:border-orange-900/40 hover:shadow-md transition">
+                    <div class="text-2xl font-black text-orange-600" id="home-cnt-guarantee">0</div>
+                    <div class="text-[10px] font-bold text-slate-500 mt-1">ضمانات تنتهي قريباً</div>
+                </button>
+                <button type="button" onclick="playSound('click'); switchTab('tasks'); setTasksFilter('all')" class="surface bg-white dark:bg-slate-800/80 rounded-2xl p-3 text-center border border-indigo-200/60 dark:border-indigo-900/40 hover:shadow-md transition">
+                    <div class="text-2xl font-black text-indigo-600" id="home-cnt-tasks">0</div>
+                    <div class="text-[10px] font-bold text-slate-500 mt-1">مهام اليوم</div>
+                </button>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl w-full mx-auto">
-                <button id="card-drive" onclick="playSound('click'); openDriveFolderModal()" class="app-card bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-amber-300/40">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl w-full mx-auto">
+                <button id="card-drive" onclick="playSound('click'); openDriveFolderModal()" class="app-card bg-gradient-to-br from-[#312E81] via-[#4F46E5] to-[#1E1B4B] text-white rounded-2xl p-5 shadow-lg text-right flex flex-col justify-between min-h-[7.5rem] border border-indigo-300/20">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-user-tie anim-glow"></i>
@@ -834,10 +1354,10 @@
                         </div>
                         <i class="fa-solid fa-arrow-left text-xs"></i>
                     </div>
-                    <div><h3 class="text-sm font-black mb-0.5">فولدر الإدارة (Drive)</h3><p class="text-amber-100 text-[11px] font-semibold">مشاركة الملفات</p></div>
+                    <div><h3 class="text-sm font-black mb-0.5">أرشيف المستندات الإدارية</h3><p class="text-amber-100 text-[11px] font-semibold">مستودع الملفات والمستندات الرسمية</p></div>
                 </button>
 
-                <button onclick="playSound('click'); switchTab('dashboard')" class="app-card bg-gradient-to-br from-blue-600 to-cyan-500 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-blue-300/40">
+                <button onclick="playSound('click'); switchTab('dashboard')" class="app-card bg-gradient-to-br from-[#7C3AED] via-[#4F46E5] to-[#312E81] text-white rounded-2xl p-5 shadow-lg text-right flex flex-col justify-between min-h-[7.5rem] border border-indigo-200/25">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-chart-line anim-chart"></i>
@@ -845,10 +1365,10 @@
                         </div>
                         <i class="fa-solid fa-arrow-left text-xs"></i>
                     </div>
-                    <div><h3 class="text-sm font-black mb-0.5">لوحة القيادة</h3><p class="text-blue-100 text-[11px] font-semibold">مؤشرات الاداء</p></div>
+                    <div><h3 class="text-sm font-black mb-0.5">المؤشرات التنفيذية</h3><p class="text-blue-100 text-[11px] font-semibold">مؤشرات الأداء والمتابعة</p></div>
                 </button>
 
-                <button id="card-operations" onclick="playSound('click'); switchTab('operations')" class="app-card bg-gradient-to-br from-pink-600 to-rose-600 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-pink-300/40">
+                <button id="card-operations" onclick="playSound('click'); switchTab('operations')" class="app-card bg-gradient-to-br from-[#4F46E5] via-[#3730A3] to-[#1E1B4B] text-white rounded-2xl p-5 shadow-lg text-right flex flex-col justify-between min-h-[7.5rem] border border-violet-200/20">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-book-open floating-icon"></i>
@@ -856,20 +1376,20 @@
                         </div>
                         <i class="fa-solid fa-arrow-left text-xs"></i>
                     </div>
-                    <div><h3 class="text-sm font-black mb-0.5">سجل الطرح</h3><p class="text-pink-100 text-[11px] font-semibold">سجل العمليات والدورة المستندية</p></div>
+                    <div><h3 class="text-sm font-black mb-0.5">سجل إجراءات الطرح</h3><p class="text-pink-100 text-[11px] font-semibold">إجراءات الطرح والدورة المستندية</p></div>
                 </button>
 
-                <button id="card-awards" onclick="playSound('click'); switchTab('awards')" class="app-card bg-gradient-to-br from-purple-600 to-fuchsia-600 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-purple-300/40">
+                <button id="card-awards" onclick="playSound('click'); switchTab('awards')" class="app-card bg-gradient-to-br from-[#6366F1] to-[#312E81] text-white rounded-2xl p-5 shadow-lg text-right flex flex-col justify-between min-h-[7.5rem] border border-indigo-300/20">
                     <div class="flex justify-between items-start mb-1">
                         <div class="text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-handshake anim-handshake"></i>
                         </div>
                         <i class="fa-solid fa-arrow-left text-xs"></i>
                     </div>
-                    <div><h3 class="text-sm font-black mb-0.5">الترسيات والضمانات</h3><p class="text-purple-100 text-[11px] font-semibold">إتمام الاتفاق وتسليم العقود</p></div>
+                    <div><h3 class="text-sm font-black mb-0.5">قرارات الترسية والضمانات</h3><p class="text-purple-100 text-[11px] font-semibold">قرارات الترسية وأوامر التوريد/الإسناد</p></div>
                 </button>
 
-                <button id="card-suppliers" onclick="playSound('click'); switchTab('suppliers')" class="app-card bg-gradient-to-br from-red-600 to-rose-700 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-red-300/40">
+                <button id="card-suppliers" onclick="playSound('click'); switchTab('suppliers')" class="app-card bg-gradient-to-br from-[#4F46E5] to-[#0F172A] text-white rounded-2xl p-5 shadow-lg text-right flex flex-col justify-between min-h-[7.5rem] border border-violet-300/15">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-building floating-icon"></i>
@@ -877,10 +1397,10 @@
                         </div>
                         <i class="fa-solid fa-arrow-left text-xs"></i>
                     </div>
-                    <div><h3 class="text-sm font-black mb-0.5">سجل الموردين</h3><p class="text-rose-100 text-[11px] font-semibold">قاعدة بيانات الشركات والموردين</p></div>
+                    <div><h3 class="text-sm font-black mb-0.5">سجل الموردين والمقاولين</h3><p class="text-rose-100 text-[11px] font-semibold">قاعدة بيانات الموردين والمقاولين المعتمدين</p></div>
                 </button>
 
-                <button id="card-executive" onclick="playSound('click'); switchTab('executive')" class="app-card bg-gradient-to-br from-indigo-600 to-violet-700 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-indigo-300/40">
+                <button id="card-executive" onclick="playSound('click'); switchTab('executive')" class="app-card bg-gradient-to-br from-[#7C3AED] to-[#4F46E5] text-white rounded-2xl p-5 shadow-lg text-right flex flex-col justify-between min-h-[7.5rem] border border-indigo-200/25">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-file-contract floating-icon"></i>
@@ -888,20 +1408,20 @@
                         </div>
                         <i class="fa-solid fa-arrow-left text-xs"></i>
                     </div>
-                    <div><h3 class="text-sm font-black mb-0.5">التقرير التنفيذي</h3><p class="text-indigo-100 text-[11px] font-semibold">تقرير مجمع بالعمليات</p></div>
+                    <div><h3 class="text-sm font-black mb-0.5">التقرير التنفيذي الشامل لموقف التعاقدات</h3><p class="text-indigo-100 text-[11px] font-semibold">موقف التعاقدات والتوريدات</p></div>
                 </button>
 
-                <button id="card-query" onclick="playSound('click'); switchTab('query')" class="app-card bg-gradient-to-br from-yellow-300 to-amber-400 text-slate-950 rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-yellow-200/60 font-black">
+                <button id="card-query" onclick="playSound('click'); switchTab('query')" class="app-card bg-gradient-to-br from-[#F97316] via-[#EA580C] to-[#7C3AED] text-white rounded-2xl p-5 shadow-lg text-right flex flex-col justify-between min-h-[7.5rem] border border-orange-300/30 font-black">
                     <div class="flex justify-between items-start mb-1">
                         <div class="text-xl bg-slate-950/10 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-magnifying-glass anim-search text-slate-950"></i>
                         </div>
                         <i class="fa-solid fa-arrow-left text-xs"></i>
                     </div>
-                    <div><h3 class="text-sm font-black mb-0.5">استعلام</h3><p class="text-slate-900 text-[11px] font-extrabold">استعلام عملية فردية</p></div>
+                    <div><h3 class="text-sm font-black mb-0.5">استعلام</h3><p class="text-slate-900 text-[11px] font-extrabold">استعلام حالة عملية تعاقدية</p></div>
                 </button>
 
-                <button onclick="playSound('click'); exportAllDatabaseToExcel()" class="app-card bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-4 shadow-lg text-right flex flex-col justify-between h-30 border border-emerald-300/40">
+                <button onclick="playSound('click'); exportAllDatabaseToExcel()" class="app-card bg-gradient-to-br from-[#10B981] via-[#059669] to-[#4F46E5] text-white rounded-2xl p-5 shadow-lg text-right flex flex-col justify-between min-h-[7.5rem] border border-emerald-200/25">
                     <div class="flex justify-between items-start mb-1">
                         <div class="relative flex items-center gap-1.5 text-xl bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                             <i class="fa-solid fa-file-excel floating-icon text-emerald-200"></i>
@@ -909,14 +1429,14 @@
                         </div>
                         <i class="fa-solid fa-arrow-left text-xs"></i>
                     </div>
-                    <div><h3 class="text-sm font-black mb-0.5">سحب البيانات (Excel)</h3><p class="text-emerald-100 text-[11px] font-semibold">تصدير فوري لكافة الجداول</p></div>
+                    <div><h3 class="text-sm font-black mb-0.5">تصدير البيانات الرسمية</h3><p class="text-emerald-100 text-[11px] font-semibold">تصدير جداول النظام بصيغة Excel</p></div>
                 </button>
             </div>
 
             <!-- نسخ احتياطي / استعادة -->
             <div class="flex flex-wrap justify-center gap-3 mt-5 max-w-6xl w-full mx-auto">
                 <button onclick="downloadFullBackup()" class="px-4 py-2 rounded-xl bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-600 text-white text-xs font-bold shadow-md transition flex items-center gap-2 border border-slate-600">
-                    <i class="fa-solid fa-database"></i> نسخ احتياطي كامل (JSON)
+                    <i class="fa-solid fa-database"></i> نسخة احتياطية كاملة (JSON)
                 </button>
                 <button onclick="triggerRestoreBackup()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-md transition flex items-center gap-2">
                     <i class="fa-solid fa-upload"></i> استعادة نسخة احتياطية
@@ -927,34 +1447,34 @@
 
         <!-- DASHBOARD -->
         <div id="view-dashboard" class="view-section p-3 md:p-6">
-            <div class="flex justify-between items-center mb-4 no-print"><h2 class="text-xl font-black text-slate-900 dark:text-white"><i class="fa-solid fa-chart-pie text-primary ml-2"></i> لوحة القيادة ومؤشرات الأداء (KPIs)</h2></div>
+            <div class="flex justify-between items-center mb-4 no-print"><h2 class="text-xl font-black text-slate-900 dark:text-white"><i class="fa-solid fa-chart-pie text-primary ml-2"></i> المؤشرات التنفيذية ومؤشرات الأداء (KPIs)</h2></div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-                <div class="bg-zinc-900/80 dark:bg-zinc-900/80 backdrop-blur-md rounded-2xl p-5 border border-white/10 border-b-4 border-b-blue-500 shadow-sm flex items-center justify-between app-card">
+                <div class="bg-white dark:bg-slate-800/90 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700 border-b-4 border-b-blue-500 shadow-sm flex items-center justify-between">
                     <div>
-                        <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1.5 tracking-wide">إجمالي العمليات ككل</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1.5 tracking-wide">إجمالي عمليات التعاقد</p>
                         <h3 class="text-2xl font-black text-blue-600 dark:text-blue-400" id="kpi-total-ops">0</h3>
                     </div>
-                    <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xl"><i class="fa-solid fa-folder-open anim-chart"></i></div>
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xl"><i class="fa-solid fa-folder-open"></i></div>
                 </div>
                 
-                <div class="bg-zinc-900/80 dark:bg-zinc-900/80 backdrop-blur-md rounded-2xl p-5 border border-white/10 border-b-4 border-b-emerald-500 shadow-sm flex items-center justify-between app-card">
+                <div class="bg-white dark:bg-slate-800/90 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700 border-b-4 border-b-emerald-500 shadow-sm flex items-center justify-between">
                     <div>
-                        <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1.5 tracking-wide">إجمالي الترسيات الكلية (ج.م)</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1.5 tracking-wide">إجمالي قيم الترسية (ج.م)</p>
                         <h3 class="text-xl font-black text-emerald-600 dark:text-emerald-400" id="kpi-total-val">0.00</h3>
                     </div>
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl"><i class="fa-solid fa-money-bill-wave anim-money text-amber-400"></i></div>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl"><i class="fa-solid fa-money-bill-wave"></i></div>
                 </div>
                 
-                <div class="bg-zinc-900/80 dark:bg-zinc-900/80 backdrop-blur-md rounded-2xl p-5 border border-white/10 border-b-4 border-b-slate-600 shadow-sm flex items-center justify-between app-card">
+                <div class="bg-white dark:bg-slate-800/90 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700 border-b-4 border-b-slate-500 shadow-sm flex items-center justify-between">
                     <div>
                         <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1.5 tracking-wide">عمليات مكتملة</p>
                         <h3 class="text-2xl font-black text-slate-800 dark:text-slate-200" id="kpi-comp-ops">0</h3>
                     </div>
-                    <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-700/80 flex items-center justify-center text-slate-700 dark:text-slate-200 text-xl"><i class="fa-solid fa-check-double anim-glow"></i></div>
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-700/80 flex items-center justify-center text-slate-700 dark:text-slate-200 text-xl"><i class="fa-solid fa-check-double"></i></div>
                 </div>
                 
-                <div class="bg-zinc-900/80 dark:bg-zinc-900/80 backdrop-blur-md rounded-2xl p-5 border border-white/10 border-b-4 border-b-amber-500 shadow-sm flex items-center justify-between app-card">
+                <div class="bg-white dark:bg-slate-800/90 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700 border-b-4 border-b-amber-500 shadow-sm flex items-center justify-between">
                     <div>
                         <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1.5 tracking-wide">عمليات جارية</p>
                         <h3 class="text-2xl font-black text-amber-500 dark:text-amber-400" id="kpi-active-ops">0</h3>
@@ -966,18 +1486,18 @@
             <!-- Charts -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-pie text-indigo-500"></i> توزيع أنواع العمليات</h3>
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-pie text-indigo-500"></i> توزيع أساليب التعاقد</h3>
                     <div class="relative" style="height:220px"><canvas id="chart-ops-type"></canvas></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-column text-emerald-500"></i> إجمالي الترسيات حسب النوع</h3>
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-column text-emerald-500"></i> قيم الترسية حسب أسلوب التعاقد</h3>
                     <div class="relative" style="height:220px"><canvas id="chart-awards-val"></canvas></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4 lg:col-span-2 flex flex-col">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-layer-group text-indigo-500"></i> تفصيلي أعداد وترسيات كل نوع عملية</h3>
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-layer-group text-indigo-500"></i> تفصيل أعداد وقيم الترسية لكل أسلوب</h3>
                     <div class="excel-table-container flex-1">
                         <table class="excel-table w-full">
                             <thead>
@@ -994,7 +1514,7 @@
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4 flex flex-col">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-bar text-cyan-500"></i> موقف الإجراءات التنفيذية</h3>
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-bar text-cyan-500"></i> موقف مراحل الإجراءات</h3>
                     <div id="dash-status-bars" class="space-y-3 flex-1"></div>
                     <div class="relative mt-3" style="height:140px"><canvas id="chart-status"></canvas></div>
                 </div>
@@ -1002,7 +1522,7 @@
 
             <div class="grid grid-cols-1 gap-4">
                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-500"></i> أحدث العمليات الجارية بالمنظومة</h3>
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-500"></i> أحدث العمليات الجارية بالنظام</h3>
                     <div class="overflow-y-auto max-h-48 pr-1" id="dash-recent-list"></div>
                 </div>
             </div>
@@ -1011,23 +1531,23 @@
         <!-- OPERATIONS -->
         <div id="view-operations" class="view-section p-3 md:p-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 no-print gap-2">
-                <h2 class="font-black text-slate-900 dark:text-white text-lg">سجل طرح العمليات والدورة المستندية</h2>
+                <h2 class="font-black text-slate-900 dark:text-white text-lg">سجل إجراءات الطرح والدورة المستندية</h2>
                 <div class="flex gap-2 w-full sm:w-auto">
                     <button onclick="playSound('click'); exportExcel('tbl-operations', 'سجل_الطرح')" class="bg-success text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-green-700 transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                    <button onclick="playSound('click'); openSmartStagingModal()" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-indigo-700 transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-brain"></i> قارئ AI</button>
-                    <button onclick="playSound('click'); openOpModal()" class="bg-primary text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-primaryHover transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-plus"></i> إضافة عملية</button>
+                    <button onclick="playSound('click'); openSmartStagingModal()" class="bg-[#1a365d] text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-[#0c2340] transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-brain"></i> الاستخراج الذكي</button>
+                    <button onclick="playSound('click'); openOpModal()" class="bg-primary text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-primaryHover transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-plus"></i> قيد عملية جديدة</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 no-print">
                 <button onclick="playSound('click'); setOpSubTab('tender')" id="subtab-tender" class="p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-primary text-white">
-                    <i class="fa-solid fa-gavel anim-gavel text-base"></i> مناقصات وممارسات عامة/محدودة
+                    <i class="fa-solid fa-gavel anim-gavel text-base"></i> المناقصات والممارسات (عامة / محدودة)
                 </button>
                 <button onclick="playSound('click'); setOpSubTab('direct')" id="subtab-direct" class="p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                    <i class="fa-solid fa-bolt anim-lightning text-base text-amber-500"></i> أوامر مباشرة وسريعة
+                    <i class="fa-solid fa-bolt anim-lightning text-base text-amber-500"></i> الاتفاق المباشر والأوامر العاجلة
                 </button>
                 <button onclick="playSound('click'); setOpSubTab('renewal')" id="subtab-renewal" class="p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                    <i class="fa-solid fa-clock-rotate-left anim-sync text-base text-cyan-400"></i> تجديد وتمديد التعاقدات
+                    <i class="fa-solid fa-clock-rotate-left anim-sync text-base text-cyan-400"></i> تجديد وتمديد العقود
                 </button>
             </div>
 
@@ -1052,22 +1572,22 @@
         <!-- AWARDS -->
         <div id="view-awards" class="view-section p-3 md:p-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 no-print gap-2">
-                <h2 class="font-black text-slate-900 dark:text-white text-lg">الترسيات، الضمانات وأوامر التوريد والإسناد</h2>
+                <h2 class="font-black text-slate-900 dark:text-white text-lg">قرارات الترسية والضمانات وأوامر التوريد والإسناد</h2>
                 <div class="flex gap-2 w-full sm:w-auto">
                     <button onclick="playSound('click'); exportExcel('tbl-awards', 'الترسيات_والضمانات')" class="bg-success text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-green-700 transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                    <button onclick="playSound('click'); openAwardModal()" class="bg-primary text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-primaryHover transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-plus"></i> إضافة لوط</button>
+                    <button onclick="playSound('click'); openAwardModal()" class="bg-primary text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-primaryHover transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-plus"></i> تسجيل بند / لوط</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 no-print">
                 <button onclick="playSound('click'); setAwardSubTab('tender')" id="aw-subtab-tender" class="p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-primary text-white">
-                    <i class="fa-solid fa-gavel anim-gavel text-base"></i> مناقصات وممارسات (ترسيات)
+                    <i class="fa-solid fa-gavel anim-gavel text-base"></i> ترسيات المناقصات والممارسات
                 </button>
                 <button onclick="playSound('click'); setAwardSubTab('direct')" id="aw-subtab-direct" class="p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                    <i class="fa-solid fa-bolt anim-lightning text-base text-amber-500"></i> أوامر مباشرة وسريعة
+                    <i class="fa-solid fa-bolt anim-lightning text-base text-amber-500"></i> الاتفاق المباشر والأوامر العاجلة
                 </button>
                 <button onclick="playSound('click'); setAwardSubTab('renewal')" id="aw-subtab-renewal" class="p-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                    <i class="fa-solid fa-clock-rotate-left anim-sync text-base text-cyan-400"></i> تجديد وتمديد التعاقدات
+                    <i class="fa-solid fa-clock-rotate-left anim-sync text-base text-cyan-400"></i> تجديد وتمديد العقود
                 </button>
             </div>
 
@@ -1092,11 +1612,11 @@
         <!-- SUPPLIERS -->
         <div id="view-suppliers" class="view-section p-3 md:p-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 no-print gap-2">
-                <h2 class="font-black text-slate-900 dark:text-white text-lg">قاعدة بيانات الموردين المركزية</h2>
+                <h2 class="font-black text-slate-900 dark:text-white text-lg">السجل المركزي للموردين والمقاولين</h2>
                 <div class="flex gap-2 w-full sm:w-auto">
                     <input type="text" id="sup-search-input" oninput="suppliersSearchQ=this.value; suppliersPage=1; renderSuppliers();" placeholder="بحث باسم الشركة أو الكود..." class="border dark:border-slate-600 rounded-xl px-3 py-1.5 bg-white dark:bg-slate-900 dark:text-white text-xs font-bold outline-none">
                     <button onclick="playSound('click'); exportExcel('tbl-suppliers', 'بيانات_الموردين')" class="bg-success text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-green-700 transition flex items-center gap-1.5 text-xs justify-center"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                    <button onclick="playSound('click'); openSupModal()" class="bg-primary text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-primaryHover transition flex items-center gap-1.5 text-xs justify-center"><i class="fa-solid fa-plus"></i> إضافة شركة</button>
+                    <button onclick="playSound('click'); openSupModal()" class="bg-primary text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-primaryHover transition flex items-center gap-1.5 text-xs justify-center"><i class="fa-solid fa-plus"></i> تسجيل مورد / مقاول</button>
                 </div>
             </div>
             <div id="suppliers-pagination" class="flex items-center justify-end gap-2 text-xs font-bold mb-2 no-print"></div>
@@ -1125,7 +1645,7 @@
         <!-- EXECUTIVE REPORT -->
         <div id="view-executive" class="view-section p-3 md:p-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 no-print gap-2">
-                <h2 class="font-black text-slate-900 dark:text-white text-lg">التقرير التنفيذي الشامل</h2>
+                <h2 class="font-black text-slate-900 dark:text-white text-lg">التقرير التنفيذي الشامل لموقف التعاقدات الشامل</h2>
                 <div class="flex gap-2 w-full sm:w-auto">
                     <button onclick="playSound('click'); exportExcel('tbl-executive', 'التقرير_التنفيذي_الشامل')" class="bg-success text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-green-700 transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-file-excel"></i> Excel</button>
                     <button onclick="playSound('click'); window.print()" class="bg-slate-800 text-white px-4 py-1.5 rounded-xl font-bold shadow-sm hover:bg-black transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-print"></i> طباعة</button>
@@ -1133,11 +1653,11 @@
             </div>
             <div class="hidden print-header text-center">
                 <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="logo-print">
-                <h2 class="font-black text-xl text-gray-900 mb-1">التقرير التنفيذي الشامل لموقف التعاقدات والتوريدات</h2>
+                <h2 class="font-black text-xl text-gray-900 mb-1">التقرير التنفيذي الشامل لموقف التعاقدات الشامل لموقف التعاقدات والتوريدات</h2>
                 <h3 class="font-bold text-gray-600 text-xs">جامعة برج العرب التكنولوجية</h3>
             </div>
 
-            <!-- فلاتر التقرير التنفيذي -->
+            <!-- فلاتر التقرير التنفيذي الشامل لموقف التعاقدات -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 mb-3 no-print bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
                 <div class="flex flex-col">
                     <label class="text-[10px] font-bold text-slate-500 mb-1">من تاريخ</label>
@@ -1188,17 +1708,51 @@
             </div>
             <div class="print-footer">
                 <span id="print-datetime"></span>
-                <span>إدارة التعاقدات - جامعة برج العرب التكنولوجية</span>
+                <span>الإدارة العامة للتعاقدات والتوريدات — جامعة برج العرب التكنولوجية</span>
             </div>
         </div>
 
         <!-- SMART QUERY -->
+        <!-- ج) مهام اليوم -->
+        <div id="view-tasks" class="view-section p-3 md:p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                <div>
+                    <h2 class="text-lg font-black text-slate-800 dark:text-white">مهام اليوم — المتابعة التشغيلية</h2>
+                    <p class="text-[11px] text-slate-500 font-semibold">تنبيهات التوريد المتأخر والتأمين النهائي والضمانات</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" data-tasks-filter="all" onclick="setTasksFilter('all')" class="px-3 py-1.5 text-[11px] font-bold rounded-full border border-slate-200 dark:border-slate-600 bg-indigo-600 text-white">الكل</button>
+                    <button type="button" data-tasks-filter="delivery_late" onclick="setTasksFilter('delivery_late')" class="px-3 py-1.5 text-[11px] font-bold rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">توريد متأخر</button>
+                    <button type="button" data-tasks-filter="final_insurance" onclick="setTasksFilter('final_insurance')" class="px-3 py-1.5 text-[11px] font-bold rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">تأمين نهائي</button>
+                    <button type="button" data-tasks-filter="guarantee_expiring" onclick="setTasksFilter('guarantee_expiring')" class="px-3 py-1.5 text-[11px] font-bold rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">ضمانات</button>
+                </div>
+            </div>
+            <div class="excel-table-container surface">
+                <table class="excel-table">
+                    <thead>
+                        <tr>
+                            <th>الخطورة</th>
+                            <th>النوع</th>
+                            <th>العنوان</th>
+                            <th>التفاصيل</th>
+                            <th class="no-print">إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasks-table-body"></tbody>
+                </table>
+                <div id="tasks-empty" class="empty-state hidden">
+                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                    لا توجد مهام معلّقة — الوضع مستقر
+                </div>
+            </div>
+        </div>
+
         <div id="view-query" class="view-section p-3 md:p-6 overflow-y-auto">
             <div class="max-w-4xl mx-auto w-full bg-white dark:bg-slate-800 p-4 md:p-8 rounded-2xl shadow-soft border border-slate-100 dark:border-slate-700 print:shadow-none print:border-none print:p-0">
                 <div class="flex justify-between items-start mb-6 no-print flex-wrap gap-2">
                     <div>
-                        <h2 class="font-black text-xl text-slate-900 dark:text-white">استعلام تفصيلي (A4)</h2>
-                        <p class="font-semibold text-slate-500 dark:text-slate-400 text-xs mt-0.5">تقرير مجمع للعمليات</p>
+                        <h2 class="font-black text-xl text-slate-900 dark:text-white">استعلام حالة عملية تعاقدية</h2>
+                        <p class="font-semibold text-slate-500 dark:text-slate-400 text-xs mt-0.5">تقرير رسمي قابل للطباعة وفق نموذج موحد</p>
                     </div>
                     <button class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 px-4 py-1.5 rounded-xl font-bold flex items-center gap-1.5 text-xs transition" onclick="playSound('click'); window.print()"><i class="fa-solid fa-print"></i> طباعة</button>
                 </div>
@@ -1258,19 +1812,19 @@
             </div>
             <div class="print-footer">
                 <span id="print-datetime-q"></span>
-                <span>إدارة التعاقدات - جامعة برج العرب التكنولوجية</span>
+                <span>الإدارة العامة للتعاقدات والتوريدات — جامعة برج العرب التكنولوجية</span>
             </div>
         </div>
 
         <!-- MODALS -->
 
         <!-- Login Modal -->
-        <div id="modal-login" class="fixed inset-0 bg-slate-900/40 z-[200] flex items-center justify-center p-4 backdrop-blur-sm">
-            <div class="bg-white text-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-7 border border-slate-200">
+        <div id="modal-login" class="fixed inset-0 bg-slate-900/50 z-[200] flex items-center justify-center p-4 backdrop-blur-md">
+            <div class="bg-white text-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-8 border border-slate-200/90" style="box-shadow: 0 25px 50px -12px rgba(12,35,64,0.28); border-top: 3px solid #0c2340;">
                 <div class="text-center mb-6">
                     <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="mx-auto mb-3" style="height: 70px; object-fit: contain;">
-                    <h2 class="text-lg font-black text-slate-900">تسجيل الدخول للمنظومة</h2>
-                    <p class="text-xs text-slate-500 mt-1">أدخل بيانات الحساب للمتابعة</p>
+                    <h2 class="text-lg font-extrabold text-slate-900 tracking-tight">تسجيل الدخول</h2>
+                    <p class="text-xs text-slate-500 mt-1.5 font-semibold">نظام إدارة ومتابعة التعاقدات العامة</p>
                 </div>
                 <div class="space-y-4">
                     <div>
@@ -1288,7 +1842,7 @@
                         <div class="flex-grow border-t border-slate-200"></div>
                     </div>
                     <button onclick="handleGuestLogin()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 border border-slate-200">
-                        <i class="fa-solid fa-eye"></i> الدخول كضيف (مشاهدة الإحصائيات فقط)
+                        <i class="fa-solid fa-eye"></i> دخول للمشاهدة فقط (صلاحية محدودة)
                     </button>
                 </div>
             </div>
@@ -1298,11 +1852,11 @@
         <div id="modal-manage-users" class="fixed inset-0 bg-slate-950/80 z-[150] hidden items-center justify-center p-4 backdrop-blur-sm">
             <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-white rounded-2xl shadow-2xl w-full max-w-lg p-6 border border-slate-200 dark:border-slate-800 max-h-[85vh] flex flex-col">
                 <div class="flex justify-between items-center mb-4 pb-2 border-b dark:border-slate-800">
-                    <h3 class="font-black text-sm text-primary flex items-center gap-2"><i class="fa-solid fa-users-gear"></i> قائمة المستخدمين الحاليين</h3>
+                    <h3 class="font-black text-sm text-primary flex items-center gap-2"><i class="fa-solid fa-users-gear"></i> حسابات المستخدمين المسجلة</h3>
                     <button onclick="closeModal('modal-manage-users')" class="text-slate-400 hover:text-red-500 text-lg"><i class="fa-solid fa-times"></i></button>
                 </div>
                 <div class="mb-3 flex justify-between items-center">
-                    <span class="text-xs text-slate-500 font-bold">إمكانية إضافة يوزر جديد أو حذف مستخدم قديم:</span>
+                    <span class="text-xs text-slate-500 font-bold">إضافة حساب جديد أو حذف حساب قائم:</span>
                     <button onclick="closeModal('modal-manage-users'); openModal('modal-add-user')" class="bg-primary text-white px-3 py-1 rounded-xl text-xs font-bold hover:bg-primaryHover transition"><i class="fa-solid fa-plus"></i> إضافة مستخدم</button>
                 </div>
                 <div id="users-list-container" class="overflow-y-auto space-y-2 pr-1 flex-1"></div>
@@ -1313,7 +1867,7 @@
         <div id="modal-add-user" class="fixed inset-0 bg-slate-950/80 z-[160] hidden items-center justify-center p-4 backdrop-blur-sm">
             <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-slate-200 dark:border-slate-800">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-black text-sm text-primary">إضافة مستخدم جديد للمنظومة</h3>
+                    <h3 class="font-black text-sm text-primary">إضافة مستخدم جديد للنظام</h3>
                     <button onclick="closeModal('modal-add-user')" class="text-slate-400 hover:text-red-500 text-lg"><i class="fa-solid fa-times"></i></button>
                 </div>
                 <div class="space-y-3">
@@ -1336,22 +1890,12 @@
                             <option value="guest">ضيف (مشاهدة الإحصائيات فقط بدون تعديل)</option>
                         </select>
                     </div>
-                    <button onclick="saveNewUser()" class="w-full bg-success text-white py-2.5 rounded-xl font-bold text-xs shadow-sm hover:bg-green-700 transition mt-2">حفظ وإنشاء اليوزر</button>
+                    <button onclick="saveNewUser()" class="w-full bg-success text-white py-2.5 rounded-xl font-bold text-xs shadow-sm hover:bg-green-700 transition mt-2">حفظ وإنشاء الحساب</button>
                 </div>
             </div>
         </div>
 
-        <!-- Official Document Print / Preview Modal -->
-        <div id="modal-doc-preview" class="fixed inset-0 bg-slate-900/80 z-[120] hidden items-center justify-center p-4 backdrop-blur-sm">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700">
-                <div class="p-4 bg-slate-50 dark:bg-slate-900 flex justify-between items-center border-b dark:border-slate-700 no-print">
-                    <h3 class="font-black text-sm text-slate-800 dark:text-white">معاينة المستند الرسمي (قابل للتعديل والطباعة)</h3>
-                    <div class="flex gap-2">
-                        <button onclick="playSound('click'); window.print()" class="bg-primary hover:bg-primaryHover text-white px-4 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"><i class="fa-solid fa-print"></i> طباعة المستند</button>
-                        <button onclick="playSound('click'); closeModal('modal-doc-preview')" class="text-slate-400 hover:text-red-500 text-lg"><i class="fa-solid fa-times"></i></button>
-                    </div>
-                </div>
-                <div class="flex-1 bg-slate-100 dark:bg-slate-950 flex items-center justify-center p-4 overflow-auto doc-print-container" id="doc-preview-body"></div>
+<div class="flex-1 bg-slate-100 dark:bg-slate-950 flex items-center justify-center p-4 overflow-auto doc-print-container" id="doc-preview-body"></div>
             </div>
         </div>
 
@@ -1359,7 +1903,7 @@
         <div id="modal-drive" class="fixed inset-0 bg-slate-900/70 z-[90] hidden items-center justify-center p-3 backdrop-blur-sm">
             <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col border border-slate-200 dark:border-slate-700">
                 <div class="p-4 bg-slate-50 dark:bg-slate-900 flex justify-between items-center rounded-t-2xl border-b dark:border-slate-700">
-                    <h3 class="font-black text-sm"><i class="fa-brands fa-google-drive text-amber-500"></i> فولدر الإدارة </h3>
+                    <h3 class="font-black text-sm"><i class="fa-brands fa-google-drive text-amber-500"></i> أرشيف المستندات الإدارية </h3>
                     <button onclick="playSound('click'); closeModal('modal-drive')" class="text-slate-400 hover:text-red-500 text-lg"><i class="fa-solid fa-times"></i></button>
                 </div>
                 <div class="p-4 space-y-3" id="drive-modal-body"></div>
@@ -1404,14 +1948,14 @@
         <div id="modal-smart-staging" class="fixed inset-0 bg-slate-900/85 z-[100] hidden items-center justify-center p-3 backdrop-blur-md">
             <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl shadow-2xl w-full max-w-4xl flex flex-col max-h-[95vh] overflow-hidden border border-slate-200 dark:border-slate-700">
                 <div class="p-4 bg-indigo-600 text-white flex justify-between items-center">
-                    <h3 class="font-black text-sm"><i class="fa-solid fa-brain"></i> المسؤول الأول (قارئ AI الشامل للمحاضر والتواريخ والترسيات)</h3>
+                    <h3 class="font-black text-sm"><i class="fa-solid fa-brain"></i> وحدة الاستخراج الذكي للمستندات والمحاضر</h3>
                     <button onclick="closeModal('modal-smart-staging')" class="text-white hover:text-amber-300 text-lg"><i class="fa-solid fa-times"></i></button>
                 </div>
                 <div class="p-5 overflow-y-auto space-y-4">
                     <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center flex-wrap gap-2">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-key text-amber-500"></i>
-                            <span class="text-xs font-bold">مفتاح Gemini API:</span>
+                            <span class="text-xs font-bold">مفتاح خدمة التحليل الآلي:</span>
                         </div>
                         <div class="flex gap-2 flex-1 max-w-md">
                             <input type="text" id="ai-api-key-input" placeholder="أدخل مفتاح الـ API..." class="border dark:border-slate-600 rounded-xl px-3 py-1 bg-white dark:bg-slate-800 text-xs font-mono flex-1">
@@ -1422,7 +1966,7 @@
                     <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center flex-wrap gap-2">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-layer-group text-primary"></i>
-                            <span class="text-xs font-bold">طريقة عمل قارئ الـ AI:</span>
+                            <span class="text-xs font-bold">نمط عمل وحدة الاستخراج:</span>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
                             <label class="text-[10px] font-bold flex items-center gap-1"><input type="checkbox" id="ai-cautious-toggle" checked onchange="aiCautiousMode=this.checked; localStorage.setItem('ai_cautious_mode', this.checked ? '1' : '0')"> استخراج حذر</label>
@@ -1440,19 +1984,19 @@
                         <div class="bg-indigo-50 dark:bg-indigo-950/50 p-4 rounded-xl border border-indigo-200 dark:border-indigo-900 flex flex-col justify-between">
                             <label class="block text-xs font-bold text-indigo-900 dark:text-indigo-300 mb-2"><i class="fa-solid fa-file-arrow-up"></i> 1. اختيار عدة ملفات معاً:</label>
                             <input type="file" id="ai-staging-file-input" multiple accept=".pdf,image/*,.docx" class="text-xs text-slate-500 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white cursor-pointer mb-2">
-                            <button onclick="processFilesSource('files')" class="bg-success text-white py-2 rounded-xl font-bold text-xs hover:bg-green-700 transition shadow-sm"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الملفات المحددة</button>
+                            <button onclick="processFilesSource('files')" class="bg-success text-white py-2 rounded-xl font-bold text-xs hover:bg-green-700 transition shadow-sm"><i class="fa-solid fa-wand-magic-sparkles"></i> استخراج البيانات من الملفات</button>
                         </div>
                         
                         <div class="bg-amber-50 dark:bg-amber-950/50 p-4 rounded-xl border border-amber-200 dark:border-amber-900 flex flex-col justify-between">
-                            <label class="block text-xs font-bold text-amber-900 dark:text-amber-300 mb-2"><i class="fa-solid fa-folder-tree"></i> 2. اختيار فولدر كامل:</label>
+                            <label class="block text-xs font-bold text-amber-900 dark:text-amber-300 mb-2"><i class="fa-solid fa-folder-tree"></i> 2. اختيار مجلد كامل:</label>
                             <input type="file" id="ai-staging-folder-input" webkitdirectory directory multiple class="text-xs text-slate-500 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-amber-600 file:text-white cursor-pointer mb-2">
-                            <button onclick="processFilesSource('folder')" class="bg-amber-600 text-white py-2 rounded-xl font-bold text-xs hover:bg-amber-700 transition shadow-sm"><i class="fa-solid fa-folder-open"></i> تحليل الفولدر بالكامل</button>
+                            <button onclick="processFilesSource('folder')" class="bg-amber-600 text-white py-2 rounded-xl font-bold text-xs hover:bg-amber-700 transition shadow-sm"><i class="fa-solid fa-folder-open"></i> استخراج البيانات من المجلد</button>
                         </div>
                     </div>
 
                     <div id="ai-staging-results-container" class="space-y-4 hidden">
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-file-invoice"></i> البيانات الأساسية وتواريخ المحاضر المستخرجة:</h4>
+                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-file-invoice"></i> البيانات الأساسية وتواريخ المحاضر:</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">رقم العملية:</label><input type="number" id="st-op-id" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
                                 <div class="flex flex-col sm:col-span-2"><label class="text-[10px] font-bold mb-1">اسم العملية:</label><input type="text" id="st-op-name" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
@@ -1463,7 +2007,7 @@
                         </div>
 
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-list-check"></i> تفاصيل الترسيات والبنود وطبيعة الأمر:</h4>
+                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-list-check"></i> بيانات الترسية والبنود وطبيعة الأمر:</h4>
                             <div class="excel-table-container">
                                 <table class="excel-table w-full">
                                     <thead>
@@ -1480,9 +2024,9 @@
 
                     <div id="ai-supplier-results-container" class="space-y-4 hidden">
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-building"></i> بيانات الشركة المستخرجة:</h4>
+                            <h4 class="font-black text-xs text-primary mb-3"><i class="fa-solid fa-building"></i> بيانات المورد / المقاول المستخرجة:</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div class="flex flex-col sm:col-span-2"><label class="text-[10px] font-bold mb-1">اسم الشركة الكامل:</label><input type="text" id="st-sup-name" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
+                                <div class="flex flex-col sm:col-span-2"><label class="text-[10px] font-bold mb-1">الاسم التجاري الكامل:</label><input type="text" id="st-sup-name" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">السجل التجاري:</label><input type="text" id="st-sup-cr" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800"></div>
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">البطاقة الضريبية:</label><input type="text" id="st-sup-tax" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800"></div>
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">من له حق التوقيع:</label><input type="text" id="st-sup-sign" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800"></div>
@@ -1500,10 +2044,10 @@
                 <!-- شريط الاعتماد ثابت أسفل المودال — دائماً ظاهر -->
                 <div id="ai-commit-footer" class="p-3 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex flex-col gap-2">
                     <button id="btn-commit-operation" onclick="commitStagingDataToDB()" class="hidden w-full bg-emerald-600 text-white py-3.5 rounded-xl font-black text-sm shadow-lg hover:bg-emerald-700 transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> حفظ وترحيل البيانات المستخرجة إلى المنظومة
+                        <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد البيانات وترحيلها إلى النظام
                     </button>
                     <button id="btn-commit-supplier" onclick="commitSupplierStagingDataToDB()" class="hidden w-full bg-emerald-600 text-white py-3.5 rounded-xl font-black text-sm shadow-lg hover:bg-emerald-700 transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> حفظ وترحيل بيانات الشركة إلى سجل الموردين
+                        <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد بيانات المورد وترحيلها للسجل والمقاولين
                     </button>
                     <p class="text-[10px] text-center text-slate-400 font-bold" id="ai-commit-hint">بعد التحليل سيظهر زر الحفظ هنا</p>
                 </div>
@@ -1550,7 +2094,7 @@
         <div id="modal-aw" class="fixed inset-0 bg-slate-900/70 z-50 hidden items-center justify-center p-3 backdrop-blur-sm">
             <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] border border-slate-200 dark:border-slate-700">
                 <div class="p-4 bg-slate-50 dark:bg-slate-900 flex justify-between items-center rounded-t-2xl border-b dark:border-slate-700">
-                    <h3 class="font-black text-sm">إضافة / تعديل ترسية</h3>
+                    <h3 class="font-black text-sm">تسجيل / تعديل قرار ترسية</h3>
                     <button onclick="playSound('click'); closeModal('modal-aw')" class="text-slate-400 hover:text-red-500 text-lg"><i class="fa-solid fa-times"></i></button>
                 </div>
                 <div class="p-4 overflow-y-auto">
@@ -1663,7 +2207,20 @@
     </main>
 
     <script>
-        // تعريف المتغيرات العامة الأساسية
+        /* =============================================================================
+           نظام التعاقدات العامة — منظم حسب الأقسام (الوظائف كما هي)
+           1) Globals & Intro
+           2) Auth & Users
+           3) Firebase / DB sync
+           4) AI Staging
+           5) Archives & Documents
+           6) Status helpers + UI helpers
+           7) Dashboard / Operations / Awards / Suppliers / Executive / Query
+           8) Forms (Op / Award / Supplier)
+           9) Productivity & Governance
+           ============================================================================= */
+
+        // ===== 1) Globals =====
         let currentOpSubTab = 'tender';
         let currentAwardSubTab = 'tender';
         let currentUserRole = null;
@@ -1820,7 +2377,7 @@
             playSound('click');
             currentUserRole = 'guest';
             closeModal('modal-login');
-            alert('تم الدخول كضيف (مشاهدة الإحصائيات فقط).');
+            alert('تم دخول للمشاهدة فقط (صلاحية محدودة).');
             applyRolePermissions();
             switchTab('dashboard');
         }
@@ -1831,7 +2388,7 @@
             const loginBtn = document.getElementById('nav-login-btn');
             const logoutBtn = document.getElementById('nav-logout-btn');
 
-            // إدارة المستخدمين: للأدمن فقط (مش لأي حساب حتى لو صلاحيات كاملة)
+            // إدارة حسابات المستخدمين: للأدمن فقط (مش لأي حساب حتى لو صلاحيات كاملة)
             const isAdmin = currentUserRole === 'admin';
             if (adminBtnTop) adminBtnTop.style.display = isAdmin ? 'flex' : 'none';
             if (adminBtnHome) {
@@ -1913,7 +2470,7 @@
         function openManageUsersModal() {
             playSound('click');
             if (currentUserRole !== 'admin') {
-                alert('إدارة المستخدمين متاحة لمدير النظام فقط.');
+                alert('إدارة حسابات المستخدمين متاحة لمدير النظام فقط.');
                 return;
             }
             loadUsersList();
@@ -1972,7 +2529,7 @@
                 pass: password,
                 role: role
             }).then(() => {
-                alert(`تم إنشاء اليوزر (${username}) بنجاح!`);
+                alert(`تم إنشاء الحساب (${username}) بنجاح!`);
                 closeModal('modal-add-user');
                 document.getElementById('new-username').value = '';
                 document.getElementById('new-fullname').value = '';
@@ -2037,21 +2594,21 @@
                 dots.forEach(dot => {
                     if(dot) {
                         dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50';
-                        dot.title = 'بوابة التعاقدات الحكومية تعمل بشكل طبيعي';
+                        dot.title = 'بوابة التعاقدات العامة تعمل بشكل طبيعي';
                     }
                 });
                 links.forEach(link => {
-                    if(link) link.title = 'بوابة التعاقدات الحكومية (تعمل - انقر للفتح)';
+                    if(link) link.title = 'بوابة التعاقدات العامة (تعمل - انقر للفتح)';
                 });
             } catch (err) {
                 dots.forEach(dot => {
                     if(dot) {
                         dot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500 shadow-lg shadow-rose-500/50';
-                        dot.title = 'بوابة التعاقدات الحكومية متوقفة أو لا ترد حالياً';
+                        dot.title = 'بوابة التعاقدات العامة متوقفة أو لا ترد حالياً';
                     }
                 });
                 links.forEach(link => {
-                    if(link) link.title = 'بوابة التعاقدات الحكومية (متوقفة حالياً - انقر للمحاولة)';
+                    if(link) link.title = 'بوابة التعاقدات العامة (متوقفة حالياً - انقر للمحاولة)';
                 });
             }
         }
@@ -2115,9 +2672,9 @@
             body.innerHTML = `
                 <div class="text-center py-2">
                     <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/40 text-amber-600 rounded-full flex items-center justify-center text-xl mx-auto mb-2"><i class="fa-brands fa-google-drive"></i></div>
-                    <p class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-4">فولدر الإدارة المشترك جاهز وآمن .</p>
+                    <p class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-4">أرشيف المستندات الإدارية المشترك جاهز وآمن .</p>
                     <div class="space-y-2">
-                        <button onclick="openDriveFolderDirect()" class="w-full bg-primary hover:bg-primaryHover text-white py-2.5 rounded-xl font-bold text-xs shadow-sm transition flex items-center justify-center gap-2"><i class="fa-solid fa-external-link-alt"></i> فتح الفولدر الآن والتعامل عليه</button>
+                        <button onclick="openDriveFolderDirect()" class="w-full bg-primary hover:bg-primaryHover text-white py-2.5 rounded-xl font-bold text-xs shadow-sm transition flex items-center justify-center gap-2"><i class="fa-solid fa-external-link-alt"></i> فتح الأرشيف والتعامل عليه</button>
                         <button onclick="enableDriveLinkEdit()" class="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-300 py-1.5 rounded-xl font-semibold text-[11px] transition">تعديل الرابط (يحتاج كلمة السر)</button>
                     </div>
                 </div>
@@ -2134,9 +2691,9 @@
             let savedLink = localStorage.getItem('mgmt_drive_folder_url') || '';
             let body = document.getElementById('drive-modal-body');
             body.innerHTML = `
-                <p class="text-xs text-slate-500 dark:text-slate-400">تعديل رابط فولدر:</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">تعديل رابط الأرشيف:</p>
                 <div class="flex flex-col">
-                    <label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-300">رابط مشاركة فولدر الدرايف (URL):</label>
+                    <label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-300">رابط مشاركة مجلد المستندات (URL):</label>
                     <input type="text" id="drive-url-input" value="${savedLink}" class="border dark:border-slate-600 rounded-xl px-3 py-2 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold">
                 </div>
                 <div class="flex gap-2 pt-2">
@@ -2150,7 +2707,7 @@
             playSound('save');
             let link = document.getElementById('drive-url-input').value.trim();
             if(!link) {
-                alert('الرجاء إدخال رابط صحيح لفولدر الدرايف.');
+                alert('الرجاء إدخال رابط صحيح لمجلد المستندات.');
                 return;
             }
             localStorage.setItem('mgmt_drive_folder_url', link);
@@ -2349,7 +2906,7 @@
             let files = fileInput.files;
             
             if(!files || files.length === 0) {
-                alert('يرجى اختيار ملفات أو فولدر أولاً.');
+                alert('يرجى اختيار ملفات أو مجلد أولاً.');
                 return;
             }
 
@@ -2665,7 +3222,7 @@
                 DB.suppliers.unshift(newSup);
                 saveDB();
                 closeModal('modal-smart-staging');
-                alert('تم ترحيل بيانات الشركة المستقلة إلى سجل الموردين المركزي بنجاح تام!');
+                alert('تم ترحيل بيانات الشركة المستقلة إلى سجل الموردين والمقاولين المركزي بنجاح تام!');
             } catch(err) {
                 alert('خطأ أثناء الترحيل: ' + err.message);
             }
@@ -2806,7 +3363,7 @@
                     }
                 });
 
-                // 2. معالجة وتحديث كافة بيانات الشركات في سجل الموردين المركزي بدقة متناهية وشاملة (سجل، ضريبية، بنك، IBAN،نوان)
+                // 2. معالجة وتحديث كافة بيانات الشركات في سجل الموردين والمقاولين المركزي بدقة متناهية وشاملة (سجل، ضريبية، بنك، IBAN،نوان)
                 let parsedSuppliersList = globalParsedData.suppliersList || [];
                 parsedSuppliersList.forEach(supData => {
                     if (supData && supData.name) {
@@ -3003,89 +3560,6 @@
             }
         }
 
-        function openOfficialDoc(type, realIdx) {
-            playSound('click');
-            const aw = DB.awards[realIdx];
-            if(!aw) return alert('بيانات الترسية غير موجودة');
-            const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
-            const sup = (DB.suppliers || []).find(s => s.name === aw.supp) || { addr: 'مصر', phone: '-' };
-            const docTypeLabel = aw.docOrderType || 'أمر توريد';
-
-            let html = '';
-            if (type === 'award') {
-                html = `
-                <div class="bg-white p-8 text-slate-900 max-w-3xl mx-auto font-cairo text-right" dir="rtl">
-                    <div class="flex justify-between items-center border-b-2 border-slate-800 pb-4 mb-6">
-                        <div>
-                            <h2 class="text-base font-black">جامعة برج العرب التكنولوجية</h2>
-                            <p class="text-xs font-bold text-slate-600">إدارة التعاقدات والتوريدات</p>
-                        </div>
-                        <div class="text-left">
-                            <h1 class="text-lg font-black text-primary">أمر ترسية</h1>
-                            <p class="text-[11px] font-semibold text-slate-500">التاريخ: <span contenteditable="true">${new Date().toLocaleDateString('ar-EG')}</span></p>
-                        </div>
-                    </div>
-                    <div class="mb-6 space-y-1.5 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <p><strong>السادة شركة /</strong> <span contenteditable="true" class="font-bold text-primary">${aw.supp}</span></p>
-                        <p><strong>العنوان /</strong> <span contenteditable="true">${sup.addr || 'مصر'}</span></p>
-                        <p><strong>تليفون /</strong> <span contenteditable="true">${sup.phone || '-'}</span></p>
-                    </div>
-                    <div class="mb-6 overflow-x-auto">
-                        <table class="w-full border-collapse border border-slate-300 text-center text-xs">
-                            <thead>
-                                <tr class="bg-slate-100"><th class="border border-slate-300 p-2">م</th><th class="border border-slate-300 p-2 text-right">البند / اللوط</th><th class="border border-slate-300 p-2">طبيعة العملية</th><th class="border border-slate-300 p-2">الإجمالي (ج.م)</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="border border-slate-300 p-2">1</td>
-                                    <td class="border border-slate-300 p-2 text-right font-bold" contenteditable="true">${aw.item}</td>
-                                    <td class="border border-slate-300 p-2 font-bold text-primary" contenteditable="true">${docTypeLabel}</td>
-                                    <td class="border border-slate-300 p-2 font-black text-emerald-600" contenteditable="true">${fmt.format(aw.val)} جنيه</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>`;
-            } else {
-                const isAssignment = docTypeLabel === 'أمر إسناد';
-                const mainTitle = isAssignment ? `أمر إسناد أعمال / خدمات رقم (${aw.poNum || '-'})` : `أمر توريد أصناف رقم (${aw.poNum || '-'})`;
-                const introAction = isAssignment ? `تم إسناد تنفيذ أعمال/خدمات` : `تم ترسية توريد الأصناف التالية`;
-
-                html = `
-                <div class="bg-white p-8 text-slate-900 max-w-3xl mx-auto font-cairo text-right" dir="rtl">
-                    <div class="flex justify-between items-center border-b-2 border-slate-800 pb-4 mb-6">
-                        <div>
-                            <h2 class="text-base font-black">جامعة برج العرب التكنولوجية</h2>
-                            <p class="text-xs font-bold text-slate-600">إدارة التعاقدات والتوريدات</p>
-                        </div>
-                        <div class="text-left"><h1 class="text-lg font-black ${isAssignment ? 'text-purple-600' : 'text-primary'}">${mainTitle}</h1></div>
-                    </div>
-                    <div class="mb-4 text-xs space-y-2">
-                        <p><strong>السادة /</strong> <span contenteditable="true" class="font-bold text-primary">${aw.supp}</span></p>
-                        <p>تحية طيبة وبعد ،،،</p>
-                        <p>${introAction} الخاصة بعملية: <strong>(${op.name || aw.item})</strong> إلى شركتكم الموقرة طبقاً للشروط والمواصفات والقيمة المعتمدة أدناه:</p>
-                    </div>
-                    <div class="mb-6 overflow-x-auto">
-                        <table class="w-full border-collapse border border-slate-300 text-center text-xs">
-                            <thead>
-                                <tr class="bg-slate-100"><th class="border border-slate-300 p-2">م</th><th class="border border-slate-300 p-2 text-right">الوصف التفصيلي</th><th class="border border-slate-300 p-2">المهلة المقررة</th><th class="border border-slate-300 p-2">القيمة الإجمالية</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="border border-slate-300 p-2">1</td>
-                                    <td class="border border-slate-300 p-2 text-right font-bold" contenteditable="true">${aw.item}</td>
-                                    <td class="border border-slate-300 p-2 font-bold" contenteditable="true">${aw.days || 30} يوماً</td>
-                                    <td class="border border-slate-300 p-2 font-black text-emerald-600" contenteditable="true">${fmt.format(aw.val)} ج.م</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>`;
-            }
-            document.getElementById('doc-preview-body').innerHTML = html;
-            openModal('modal-doc-preview');
-        }
-
         function compressAndConvertFile(file, maxWidth = 800, quality = 0.5) {
             return new Promise((resolve) => {
                 if (!file.type.startsWith('image/')) {
@@ -3160,7 +3634,7 @@
             XLSX.writeFile(wb, `منظومة_تعاقدات_جامعة_برج_العرب_${new Date().toISOString().slice(0,10)}.xlsx`);
         }
 
-        // ===== نسخ احتياطي كامل (JSON) واستعادة =====
+        // ===== نسخة احتياطية كاملة (JSON) واستعادة =====
         function downloadFullBackup() {
             playSound('click');
             const payload = {
@@ -3308,6 +3782,69 @@
             const diff = Math.ceil((expected - new Date()) / 86400000);
             if (diff < 0) return { text: "متأخر!", class: "red", code: 2 };
             return { text: "جاري", class: "blue", code: 0 };
+        }
+
+        // ===================== UI Helpers (تقليل التكرار + أداء أوضح) =====================
+        function pill(text, colorClass) {
+            return `<span class="pill ${colorClass || 'blue'}">${text}</span>`;
+        }
+        function portalPill(val) {
+            return val === 'نعم' ? pill('نعم', 'green') : pill('تعذر', 'red');
+        }
+        function yesNoPill(val, yesClass, noClass) {
+            return val === 'نعم' ? pill('نعم', yesClass || 'green') : pill('لا', noClass || 'yellow');
+        }
+        function fmtMoney(v) {
+            if (v === null || v === undefined || v === '' || isNaN(parseFloat(v))) return '-';
+            return fmt.format(parseFloat(v));
+        }
+        function escHtml(s) {
+            if (s == null) return '';
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+        function shortText(str, maxLen) {
+            const s = str || '-';
+            return s.length > maxLen ? s.substring(0, maxLen - 3) + '...' : s;
+        }
+        function opEditDeleteBtns(opId) {
+            return `<td class="no-print">
+                <button onclick="playSound('click'); editOp(${opId})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="playSound('delete'); deleteOp(${opId})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+            </td>`;
+        }
+        function awardEditDeleteBtns(realIdx) {
+            return `<td class="no-print">
+                <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
+            </td>`;
+        }
+        function attachmentMenu(btnClass, items) {
+            // items: [{label, icon, onclick, itemClass}]
+            const menuItems = (items || []).map(it =>
+                `<button onclick="${it.onclick}" class="w-full text-right p-1.5 ${it.itemClass || 'hover:bg-slate-100'} rounded text-[11px] font-bold"><i class="fa-solid ${it.icon} w-4"></i> ${it.label}</button>`
+            ).join('');
+            return `<div class="attachment-dropdown-wrap">
+                <button onclick="playSound('click')" class="${btnClass} px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+                <div class="attachment-menu">${menuItems}</div>
+            </div>`;
+        }
+        function setTableBody(tb, rowsHtmlArr) {
+            // تعيين مرة واحدة بدل += المتكرر (أداء أفضل مع عدد صفوف أكبر)
+            tb.innerHTML = (rowsHtmlArr && rowsHtmlArr.length) ? rowsHtmlArr.join('') : '';
+        }
+        function awardStatusPill(aw, op) {
+            const isAwarded = (aw.awardStatus === 'تم الترسية');
+            if (isAwarded) return pill('تم الترسية', 'green');
+            if (aw.awardStatus === 'قيد البت المالي' || (op && op.status === 'جاري البت المالي')) return pill('قيد البت المالي', 'yellow');
+            if (aw.awardStatus === 'جاري الفحص الفني' || (op && op.status === 'جاري الدراسة الفنية')) return pill('جاري الفحص الفني', 'blue');
+            return pill(aw.awardStatus || 'قيد البت المالي', 'yellow');
+        }
+        function docOrderPill(aw) {
+            return (aw.docOrderType === 'أمر إسناد') ? pill('أمر إسناد', 'purple') : pill('أمر توريد', 'blue');
         }
 
         function animateCounter(id, target, isCurrency = false) {
@@ -3581,104 +4118,96 @@
                 trHead.innerHTML = `
                     <th>رقم</th><th>اسم العملية / التوريد</th><th>الجهة</th><th>اعتماد</th><th>النوع</th><th>هل مجزأة؟</th><th>تاريخ الموافقة</th><th>تأمين ابتدائي</th><th>البوابة</th><th>الطرح</th><th>فتح المظاريف</th><th>تقرير فني</th><th>بعد التظلمات</th><th>الفتح المالي</th><th>البت المالي</th><th>الموقف الحالي</th><th>إجمالي الترسية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
                 `;
-                filteredOps.forEach(op => {
-                    let portalBadge = op.portal === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill red">تعذر</span>';
-                    let initDep = getOperationInitialDepositStatus(op.id);
-                    let dividedBadge = `<span class="pill blue">${op.isDivided || 'لا - ترسية كلية'}</span>`;
-                    let cleanStatus = op.status || '-';
-                    let shortStatus = cleanStatus.length > 25 ? cleanStatus.substring(0, 22) + '...' : cleanStatus;
-
-                    tb.innerHTML += `<tr>
+                const tenderRows = filteredOps.map(op => {
+                    const initDep = getOperationInitialDepositStatus(op.id);
+                    const cleanStatus = op.status || '-';
+                    const shortStatus = shortText(cleanStatus, 25);
+                    const attach = attachmentMenu(
+                        'bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400',
+                        [
+                            { label: 'موافقة', icon: 'fa-check', onclick: `openDirectArchive('op_approval', ${op.id}, 'موافقة: ${escHtml(op.name)}')`, itemClass: 'bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700' },
+                            { label: 'البوابة', icon: 'fa-globe', onclick: `openDirectArchive('op_portal', ${op.id}, 'البوابة: ${escHtml(op.name)}')`, itemClass: 'bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-700' },
+                            { label: 'أخرى', icon: 'fa-folder-open', onclick: `openDirectArchive('op_other', ${op.id}, 'أخرى: ${escHtml(op.name)}')`, itemClass: 'bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700' }
+                        ]
+                    );
+                    return `<tr>
                         <td class="font-bold">${op.id}</td>
-                        <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${op.name}</td>
-                        <td class="wrap-text">${op.entity}</td>
-                        <td>${op.budget}</td>
-                        <td>${op.type}</td>
-                        <td>${dividedBadge}</td>
+                        <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${op.name || ''}</td>
+                        <td class="wrap-text">${op.entity || ''}</td>
+                        <td>${op.budget || ''}</td>
+                        <td>${op.type || ''}</td>
+                        <td>${pill(op.isDivided || 'لا - ترسية كلية', 'blue')}</td>
                         <td class="text-[11px]">${op.approvalDate || '-'}</td>
-                        <td><span class="pill ${initDep.class}">${initDep.text}</span></td>
-                        <td>${portalBadge}</td>
+                        <td>${pill(initDep.text, initDep.class)}</td>
+                        <td>${portalPill(op.portal)}</td>
                         <td class="text-[11px]">${op.date1 || '-'}</td>
                         <td class="text-[11px]">${op.date2 || '-'}</td>
                         <td class="text-[11px]">${op.date3 || '-'}</td>
                         <td class="text-[11px]">${op.date4 || '-'}</td>
                         <td class="text-[11px]">${op.date5 || '-'}</td>
                         <td class="text-[11px]">${op.date6 || '-'}</td>
-                        <td title="${cleanStatus}"><span class="pill blue truncate max-w-[150px] inline-block">${shortStatus}</span></td>
+                        <td title="${escHtml(cleanStatus)}"><span class="pill blue truncate max-w-[150px] inline-block">${shortStatus}</span></td>
                         <td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>
-                        <td>
-                            <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
-                                <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('op_approval', ${op.id}, 'موافقة: ${op.name}')" class="w-full text-right p-1.5 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 rounded text-[11px] font-bold"><i class="fa-solid fa-check w-4"></i> موافقة</button>
-                                    <button onclick="openDirectArchive('op_portal', ${op.id}, 'البوابة: ${op.name}')" class="w-full text-right p-1.5 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-700 rounded text-[11px] font-bold"><i class="fa-solid fa-globe w-4"></i> البوابة</button>
-                                    <button onclick="openDirectArchive('op_other', ${op.id}, 'أخرى: ${op.name}')" class="w-full text-right p-1.5 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 rounded text-[11px] font-bold"><i class="fa-solid fa-folder-open w-4"></i> أخرى</button>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="no-print">
-                            <button onclick="playSound('click'); editOp(${op.id})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
-                        </td></tr>`;
+                        <td>${attach}</td>
+                        ${opEditDeleteBtns(op.id)}
+                    </tr>`;
                 });
+                setTableBody(tb, tenderRows);
             } else if (currentOpSubTab === 'direct') {
                 trHead.innerHTML = `
                     <th>رقم</th><th>اسم عملية الأمر المباشر</th><th>الجهة</th><th>اعتماد الموازنة</th><th>تاريخ الطرح</th><th>القيمة الاسترشادية</th><th>النشر على البوابة</th><th>الموقف الحالي</th><th>إجمالي الترسية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
                 `;
-                filteredOps.forEach(op => {
-                    let portalVal = op.portal || 'نعم';
-                    let portalBadge = portalVal === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill red">تعذر</span>';
-                    tb.innerHTML += `<tr>
+                const directRows = filteredOps.map(op => {
+                    const attach = attachmentMenu(
+                        'bg-amber-50 dark:bg-amber-950/40 text-amber-600',
+                        [{ label: 'المذكرة', icon: 'fa-file-contract', onclick: `openDirectArchive('op_approval', ${op.id}, 'مذكرة الإسناد: ${escHtml(op.name)}')`, itemClass: 'bg-amber-50 hover:bg-amber-100 text-amber-700' }]
+                    );
+                    return `<tr>
                         <td class="font-bold">${op.id}</td>
-                        <td class="text-right font-bold wrap-text text-amber-600 dark:text-amber-400">${op.name}</td>
-                        <td class="wrap-text">${op.entity}</td>
-                        <td>${op.budget}</td>
+                        <td class="text-right font-bold wrap-text text-amber-600 dark:text-amber-400">${op.name || ''}</td>
+                        <td class="wrap-text">${op.entity || ''}</td>
+                        <td>${op.budget || ''}</td>
                         <td class="text-[11px]">${op.date1 || '-'}</td>
                         <td class="font-bold text-amber-600">${op.guideline ? fmt.format(op.guideline) : '-'}</td>
-                        <td>${portalBadge}</td>
-                        <td><span class="pill blue">${op.status}</span></td>
+                        <td>${portalPill(op.portal || 'نعم')}</td>
+                        <td>${pill(op.status || '-', 'blue')}</td>
                         <td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>
-                        <td>
-                            <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-amber-50 dark:bg-amber-950/40 text-amber-600 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
-                                <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('op_approval', ${op.id}, 'مذكرة الإسناد: ${op.name}')" class="w-full text-right p-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> المذكرة</button>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="no-print">
-                            <button onclick="playSound('click'); editOp(${op.id})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
-                        </td></tr>`;
+                        <td>${attach}</td>
+                        ${opEditDeleteBtns(op.id)}
+                    </tr>`;
                 });
+                setTableBody(tb, directRows);
             } else {
                 trHead.innerHTML = `
                     <th>رقم</th><th>اسم العقد / التجديد</th><th>الجهة</th><th>نوع التعديل (تجديد/تمديد)</th><th>تاريخ البدء</th><th>تاريخ الانتهاء الجديد</th><th>الموقف</th><th>مرفقات</th><th class="no-print">إجراءات</th>
                 `;
-                filteredOps.forEach(op => {
-                    tb.innerHTML += `<tr>
+                const renewalRows = filteredOps.map(op => {
+                    const attach = attachmentMenu(
+                        'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600',
+                        [{ label: 'الملحق', icon: 'fa-file-signature', onclick: `openDirectArchive('op_approval', ${op.id}, 'ملحق العقد: ${escHtml(op.name)}')`, itemClass: 'bg-cyan-50 hover:bg-cyan-100 text-cyan-700' }]
+                    );
+                    return `<tr>
                         <td class="font-bold">${op.id}</td>
-                        <td class="text-right font-bold wrap-text text-cyan-600 dark:text-cyan-400">${op.name}</td>
-                        <td class="wrap-text">${op.entity}</td>
-                        <td><span class="pill blue">${op.type}</span></td>
+                        <td class="text-right font-bold wrap-text text-cyan-600 dark:text-cyan-400">${op.name || ''}</td>
+                        <td class="wrap-text">${op.entity || ''}</td>
+                        <td>${pill(op.type || '-', 'blue')}</td>
                         <td class="text-[11px]">${op.date1 || '-'}</td>
                         <td class="text-[11px]">${op.date2 || '-'}</td>
-                        <td><span class="pill blue">${op.status}</span></td>
-                        <td>
-                            <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 px-2 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
-                                <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('op_approval', ${op.id}, 'ملحق العقد: ${op.name}')" class="w-full text-right p-1.5 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> الملحق</button>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="no-print">
-                            <button onclick="playSound('click'); editOp(${op.id})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteOp(${op.id})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
-                        </td></tr>`;
+                        <td>${pill(op.status || '-', 'blue')}</td>
+                        <td>${attach}</td>
+                        ${opEditDeleteBtns(op.id)}
+                    </tr>`;
                 });
+                setTableBody(tb, renewalRows);
             }
             applyRolePermissions();
+        }
+
+        function findAwardIndex(aw) {
+            return DB.awards.findIndex(a => String(a.opId) === String(aw.opId) && a.item === aw.item && a.supp === aw.supp);
+        }
+        function officialDocBtns(realIdx, labels) {
+            return '<span class="text-slate-400 text-[10px]">—</span>';
         }
 
         function renderAwards() {
@@ -3708,164 +4237,102 @@
                 trHead.innerHTML = `
                     <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>طبيعة الأمر</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>أمر التوريد / الإسناد</th><th>المهلة</th><th>التنفيذ</th><th>مستندات رسمية</th><th>مرفقات</th><th>العقد</th><th class="no-print">إجراءات</th>
                 `;
-                filteredAwards.forEach((aw) => {
-                    const realIdx = DB.awards.findIndex(a => String(a.opId) === String(aw.opId) && a.item === aw.item && a.supp === aw.supp);
+                const rows = filteredAwards.map((aw) => {
+                    const realIdx = findAwardIndex(aw);
                     const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
                     const isAwarded = (aw.awardStatus === 'تم الترسية');
                     const dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
-                    const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
-                    
-                    let statusPill = '';
-                    if (isAwarded) {
-                        statusPill = '<span class="pill green">تم الترسية</span>';
-                    } else if (aw.awardStatus === 'قيد البت المالي' || op.status === 'جاري البت المالي') {
-                        statusPill = '<span class="pill yellow">قيد البت المالي</span>';
-                    } else if (aw.awardStatus === 'جاري الفحص الفني' || op.status === 'جاري الدراسة الفنية') {
-                        statusPill = '<span class="pill blue">جاري الفحص الفني</span>';
-                    } else {
-                        statusPill = `<span class="pill yellow">${aw.awardStatus || 'قيد البت المالي'}</span>`;
-                    }
-
-                    const docTypePill = (aw.docOrderType === 'أمر إسناد') ? '<span class="pill purple">أمر إسناد</span>' : '<span class="pill blue">أمر توريد</span>';
-                    const displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : '-';
-                    const displayPo = (isAwarded && aw.poNum) ? aw.poNum : '-';
-
-                    tb.innerHTML += `<tr>
+                    const attach = attachmentMenu(
+                        'bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300',
+                        [{ label: 'الأمر', icon: 'fa-file-contract', onclick: `openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'المستند: ${escHtml(aw.item)}')`, itemClass: 'hover:bg-slate-100 text-blue-600' }]
+                    );
+                    return `<tr>
                         <td class="font-bold">${aw.opId}</td>
-                        <td><span class="pill blue">${op.type || 'أمر مباشر'}</span></td>
-                        <td class="text-right font-bold wrap-text">${aw.item}</td>
-                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
-                        <td>${docTypePill}</td>
+                        <td>${pill(op.type || 'أمر مباشر', 'blue')}</td>
+                        <td class="text-right font-bold wrap-text">${aw.item || ''}</td>
+                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${escHtml(aw.supp)}')">${aw.supp || ''}</td>
+                        <td>${docOrderPill(aw)}</td>
                         <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
-                        <td class="font-black">${displayVal}</td>
-                        <td>${statusPill}</td>
-                        <td class="font-bold">${displayPo}</td>
+                        <td class="font-black">${(isAwarded && aw.val) ? fmt.format(aw.val) : '-'}</td>
+                        <td>${awardStatusPill(aw, op)}</td>
+                        <td class="font-bold">${(isAwarded && aw.poNum) ? aw.poNum : '-'}</td>
                         <td>${aw.days || '-'}</td>
-                        <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
-                        <td>
-                            <div class="flex gap-1 justify-center">
-                                <button onclick="openOfficialDoc('award', ${realIdx})" class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر ترسية"><i class="fa-solid fa-award"></i> ترسية</button>
-                                <button onclick="openOfficialDoc('purchase', ${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر توريد أو إسناد"><i class="fa-solid fa-file-invoice"></i> أمر</button>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
-                                <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'المستند: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
-                                </div>
-                            </div>
-                        </td>
-                        <td>${contractPill}</td>
-                        <td class="no-print">
-                            <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
-                        </td></tr>`;
+                        <td>${pill(dSt.text, dSt.class)}</td>
+                        <td>${officialDocBtns(realIdx)}</td>
+                        <td>${attach}</td>
+                        <td>${yesNoPill(aw.contract, 'green', 'yellow')}</td>
+                        ${awardEditDeleteBtns(realIdx)}
+                    </tr>`;
                 });
+                setTableBody(tb, rows.length ? rows : ['<tr><td colspan="15" class="empty-state"><i class="fa-solid fa-inbox"></i>لا توجد ترسيات في هذا القسم</td></tr>']);
             } else if (currentAwardSubTab === 'renewal') {
                 trHead.innerHTML = `
                     <th>العملية</th><th>نوع التجديد</th><th>وصف البند / العقد</th><th>الشركة</th><th>القيمة</th><th>حالة العقد</th><th>تاريخ البدء</th><th>تاريخ الانتهاء</th><th>مستندات رسمية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
                 `;
-                filteredAwards.forEach((aw) => {
-                    const realIdx = DB.awards.findIndex(a => String(a.opId) === String(aw.opId) && a.item === aw.item && a.supp === aw.supp);
+                const rows = filteredAwards.map((aw) => {
+                    const realIdx = findAwardIndex(aw);
                     const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
-                    tb.innerHTML += `<tr>
+                    const attach = attachmentMenu(
+                        'bg-cyan-50 dark:bg-cyan-950 text-cyan-700',
+                        [{ label: 'العقد', icon: 'fa-file-signature', onclick: `openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'الملحق: ${escHtml(aw.item)}')`, itemClass: 'hover:bg-slate-100 text-cyan-600' }]
+                    );
+                    return `<tr>
                         <td class="font-bold">${aw.opId}</td>
-                        <td><span class="pill blue">${op.type || 'تجديد'}</span></td>
-                        <td class="text-right font-bold wrap-text">${aw.item}</td>
-                        <td class="text-right text-primary dark:text-indigo-400 font-bold wrap-text">${aw.supp}</td>
+                        <td>${pill(op.type || 'تجديد', 'blue')}</td>
+                        <td class="text-right font-bold wrap-text">${aw.item || ''}</td>
+                        <td class="text-right text-primary dark:text-indigo-400 font-bold wrap-text">${aw.supp || ''}</td>
                         <td class="font-black">${aw.val ? fmt.format(aw.val) : '-'}</td>
-                        <td><span class="pill green">ساري</span></td>
+                        <td>${pill('ساري', 'green')}</td>
                         <td class="text-[11px]">${aw.poDate || '-'}</td>
                         <td class="text-[11px]">${aw.gIssuance || '-'}</td>
-                        <td>
-                            <div class="flex gap-1 justify-center">
-                                <button onclick="openOfficialDoc('award', ${realIdx})" class="bg-purple-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm"><i class="fa-solid fa-award"></i> ملحق</button>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-cyan-50 dark:bg-cyan-950 text-cyan-700 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
-                                <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'الملحق: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-cyan-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-signature w-4"></i> العقد</button>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="no-print">
-                            <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
-                        </td></tr>`;
+                        <td>${officialDocBtns(realIdx, { award: 'ملحق', hidePurchase: true })}</td>
+                        <td>${attach}</td>
+                        ${awardEditDeleteBtns(realIdx)}
+                    </tr>`;
                 });
+                setTableBody(tb, rows.length ? rows : ['<tr><td colspan="11" class="empty-state"><i class="fa-solid fa-inbox"></i>لا توجد تجديدات مسجلة</td></tr>']);
             } else {
                 trHead.innerHTML = `
                     <th>العملية</th><th>نوع العملية</th><th>وصف البند / اللوط</th><th>الشركة الفائزة</th><th>طبيعة الأمر</th><th>القيمة التقديرية</th><th>قيمة الترسية</th><th>حالة الترسية</th><th>التأمين النهائي</th><th>موقف الضمان</th><th>رقم الضمان</th><th>البنك المصدر</th><th>أمر التوريد / الإسناد</th><th>المهلة</th><th>التنفيذ</th><th>مستندات رسمية</th><th>مرفقات</th><th>رد التأمين الابتدائي</th><th>العقد</th><th class="no-print">إجراءات</th>
                 `;
-                filteredAwards.forEach((aw) => {
-                    const realIdx = DB.awards.findIndex(a => String(a.opId) === String(aw.opId) && a.item === aw.item && a.supp === aw.supp);
+                const rows = filteredAwards.map((aw) => {
+                    const realIdx = findAwardIndex(aw);
                     const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
                     const isAwarded = (aw.awardStatus === 'تم الترسية');
                     const gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: "قيد البت", class: "yellow", code: 0 };
                     const dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: "قيد الإجراء", class: "blue", code: 0 };
-                    const retPill = aw.ret === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill blue">لا</span>';
-                    const contractPill = aw.contract === 'نعم' ? '<span class="pill green">نعم</span>' : '<span class="pill yellow">لا</span>';
-                    
-                    let statusPill = '';
-                    if (isAwarded) {
-                        statusPill = '<span class="pill green">تم الترسية</span>';
-                    } else if (aw.awardStatus === 'قيد البت المالي' || op.status === 'جاري البت المالي') {
-                        statusPill = '<span class="pill yellow">قيد البت المالي</span>';
-                    } else if (aw.awardStatus === 'جاري الفحص الفني' || op.status === 'جاري الدراسة الفنية') {
-                        statusPill = '<span class="pill blue">جاري الفحص الفني</span>';
-                    } else {
-                        statusPill = `<span class="pill yellow">${aw.awardStatus || 'قيد البت المالي'}</span>`;
-                    }
-
                     const finalGVal = isAwarded ? (aw.gVal !== undefined ? aw.gVal : (aw.val * 0.05)) : 0;
-                    const docTypePill = (aw.docOrderType === 'أمر إسناد') ? '<span class="pill purple">أمر إسناد</span>' : '<span class="pill blue">أمر توريد</span>';
-                    const displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : '-';
-                    const displayPo = (isAwarded && aw.poNum) ? aw.poNum : '-';
-                    const displayGVal = isAwarded ? `${fmt.format(finalGVal)} (${aw.gType || 'خطاب ضمان'})` : '-';
-                    const displayGBank = isAwarded ? (aw.gBank || '-') : '-';
-                    const displayGNum = isAwarded ? (aw.gNum || '-') : '-';
-
-                    tb.innerHTML += `<tr>
+                    const attach = attachmentMenu(
+                        'bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400',
+                        [
+                            { label: 'الضمان', icon: 'fa-shield', onclick: `openDirectArchive('aw_guarantee', '${aw.opId}_${realIdx}', 'الضمان: ${escHtml(aw.item)}')`, itemClass: 'hover:bg-slate-100 text-purple-600' },
+                            { label: 'الأمر', icon: 'fa-file-contract', onclick: `openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'المستند: ${escHtml(aw.item)}')`, itemClass: 'hover:bg-slate-100 text-blue-600' }
+                        ]
+                    );
+                    return `<tr>
                         <td class="font-bold">${aw.opId}</td>
-                        <td><span class="pill blue">${op.type || 'مناقصة'}</span></td>
-                        <td class="text-right font-bold wrap-text">${aw.item}</td>
-                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${aw.supp}')">${aw.supp}</td>
-                        <td>${docTypePill}</td>
+                        <td>${pill(op.type || 'مناقصة', 'blue')}</td>
+                        <td class="text-right font-bold wrap-text">${aw.item || ''}</td>
+                        <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${escHtml(aw.supp)}')">${aw.supp || ''}</td>
+                        <td>${docOrderPill(aw)}</td>
                         <td class="font-bold text-xs">${aw.estVal ? fmt.format(aw.estVal) : '-'}</td>
-                        <td class="font-black">${displayVal}</td>
-                        <td>${statusPill}</td>
-                        <td class="font-bold text-xs">${displayGVal}</td>
-                        <td><span class="pill ${gSt.class}">${gSt.text}</span></td>
-                        <td class="text-xs font-mono font-bold">${displayGNum}</td>
-                        <td class="text-xs">${displayGBank}</td>
-                        <td class="font-bold">${displayPo}</td>
+                        <td class="font-black">${(isAwarded && aw.val) ? fmt.format(aw.val) : '-'}</td>
+                        <td>${awardStatusPill(aw, op)}</td>
+                        <td class="font-bold text-xs">${isAwarded ? `${fmt.format(finalGVal)} (${aw.gType || 'خطاب ضمان'})` : '-'}</td>
+                        <td>${pill(gSt.text, gSt.class)}</td>
+                        <td class="text-xs font-mono font-bold">${isAwarded ? (aw.gNum || '-') : '-'}</td>
+                        <td class="text-xs">${isAwarded ? (aw.gBank || '-') : '-'}</td>
+                        <td class="font-bold">${(isAwarded && aw.poNum) ? aw.poNum : '-'}</td>
                         <td>${aw.days || '-'}</td>
-                        <td><span class="pill ${dSt.class}">${dSt.text}</span></td>
-                        <td>
-                            <div class="flex gap-1 justify-center">
-                                <button onclick="openOfficialDoc('award', ${realIdx})" class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر ترسية"><i class="fa-solid fa-award"></i> ترسية</button>
-                                <button onclick="openOfficialDoc('purchase', ${realIdx})" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm" title="طباعة أمر توريد أو إسناد"><i class="fa-solid fa-file-invoice"></i> أمر</button>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="attachment-dropdown-wrap">
-                                <button onclick="playSound('click')" class="bg-indigo-50 dark:bg-indigo-950/40 text-primary dark:text-indigo-400 px-2.5 py-0.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition shadow-sm"><i class="fa-solid fa-paperclip"></i> مرفقات</button>
-                                <div class="attachment-menu">
-                                    <button onclick="openDirectArchive('aw_guarantee', '${aw.opId}_${realIdx}', 'الضمان: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-purple-600 rounded text-[11px] font-bold"><i class="fa-solid fa-shield w-4"></i> الضمان</button>
-                                    <button onclick="openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'المستند: ${aw.item}')" class="w-full text-right p-1.5 hover:bg-slate-100 text-blue-600 rounded text-[11px] font-bold"><i class="fa-solid fa-file-contract w-4"></i> الأمر</button>
-                                </div>
-                            </div>
-                        </td>
-                        <td>${retPill}</td>
-                        <td>${contractPill}</td>
-                        <td class="no-print">
-                            <button onclick="playSound('click'); editAward(${realIdx})" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="playSound('delete'); deleteAward(${realIdx})" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
-                        </td></tr>`;
+                        <td>${pill(dSt.text, dSt.class)}</td>
+                        <td>${officialDocBtns(realIdx)}</td>
+                        <td>${attach}</td>
+                        <td>${yesNoPill(aw.ret, 'green', 'blue')}</td>
+                        <td>${yesNoPill(aw.contract, 'green', 'yellow')}</td>
+                        ${awardEditDeleteBtns(realIdx)}
+                    </tr>`;
                 });
+                setTableBody(tb, rows.length ? rows : ['<tr><td colspan="20" class="empty-state"><i class="fa-solid fa-inbox"></i>لا توجد ترسيات مسجلة</td></tr>']);
             }
         }
 
@@ -3873,15 +4340,23 @@
             if(!DB.suppliers) DB.suppliers = [];
             const tb = document.getElementById('suppliers-tbody'); 
             if(!tb) return;
-            tb.innerHTML = '';
             const searchVal = (suppliersSearchQ || document.getElementById('sup-search-input')?.value || '').toLowerCase();
             let filtered = DB.suppliers.filter(s => s.name && (s.name.toLowerCase().includes(searchVal) || (s.id || '').toLowerCase().includes(searchVal)));
             renderPaginationBar('suppliers-pagination', suppliersPage, filtered.length, 'goSuppliersPage');
             const startSup = (suppliersPage - 1) * PAGE_SIZE;
             filtered = filtered.slice(startSup, startSup + PAGE_SIZE);
-            
-            filtered.forEach(s => {
-                tb.innerHTML += `<tr>
+
+            const rows = filtered.map(s => {
+                const attach = attachmentMenu(
+                    'bg-orange-50 dark:bg-orange-950/40 text-orange-600',
+                    [
+                        { label: 'سجل', icon: 'fa-book', onclick: `openDirectArchive('sup_cr', '${s.id}', 'سجل: ${escHtml(s.name)}')`, itemClass: 'hover:bg-slate-100' },
+                        { label: 'ضريبة', icon: 'fa-file-invoice', onclick: `openDirectArchive('sup_tax', '${s.id}', 'ضريبة: ${escHtml(s.name)}')`, itemClass: 'hover:bg-slate-100' },
+                        { label: 'مضافة', icon: 'fa-percent', onclick: `openDirectArchive('sup_vat', '${s.id}', 'مضافة: ${escHtml(s.name)}')`, itemClass: 'hover:bg-slate-100' },
+                        { label: 'بنك', icon: 'fa-building-columns', onclick: `openDirectArchive('sup_bank', '${s.id}', 'بنك: ${escHtml(s.name)}')`, itemClass: 'hover:bg-slate-100' }
+                    ]
+                );
+                return `<tr>
                     <td class="font-bold text-slate-500">${s.id}</td>
                     <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${s.name}</td>
                     <td>${s.cr || '-'}</td>
@@ -3891,24 +4366,13 @@
                     <td class="font-bold text-slate-700 dark:text-slate-300">${s.signAuth || '-'}</td>
                     <td class="text-xs font-bold tracking-widest">${s.bankAcc || '-'}</td>
                     <td class="text-xs wrap-text">${s.bankName||'-'} - ${s.bankBranch||'-'}</td>
-                    <td>
-                        <div class="attachment-dropdown-wrap">
-                            <button onclick="playSound('click')" class="bg-orange-50 dark:bg-orange-950/40 text-orange-600 px-2.5 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1 transition shadow-sm">
-                                <i class="fa-solid fa-folder-tree"></i> مرفقات <i class="fa-solid fa-chevron-down text-[9px]"></i>
-                            </button>
-                            <div class="attachment-menu">
-                                <button onclick="openDirectArchive('sup_cr', '${s.id}', 'سجل: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-book w-4"></i> سجل</button>
-                                <button onclick="openDirectArchive('sup_tax', '${s.id}', 'ضريبة: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-file-invoice w-4"></i> ضريبة</button>
-                                <button onclick="openDirectArchive('sup_vat', '${s.id}', 'مضافة: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-percent w-4"></i> مضافة</button>
-                                <button onclick="openDirectArchive('sup_bank', '${s.id}', 'بنك: ${s.name}')" class="w-full text-right p-1.5 hover:bg-slate-100 rounded text-[11px] font-bold"><i class="fa-solid fa-building-columns w-4"></i> بنك</button>
-                            </div>
-                        </div>
-                    </td>
+                    <td>${attach}</td>
                     <td class="no-print">
                         <button onclick="playSound('click'); editSup('${s.id}')" class="text-slate-400 hover:text-primary mx-1"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="playSound('delete'); deleteSup('${s.id}')" class="text-slate-400 hover:text-red-500 mx-1"><i class="fa-solid fa-trash"></i></button>
                     </td></tr>`;
             });
+            setTableBody(tb, rows.length ? rows : ['<tr><td colspan="11" class="empty-state"><i class="fa-solid fa-building"></i>لا يوجد موردون مسجلون</td></tr>']);
             applyRolePermissions();
         }
 
@@ -4043,70 +4507,212 @@
             }
         }
 
-        function updateNotifications() {
-            if(!DB.awards) DB.awards = [];
-            const list = document.getElementById('notif-list'); 
-            const homeList = document.getElementById('home-notif-list');
-            if(list) list.innerHTML = '';
-            if(homeList) homeList.innerHTML = '';
-            
-            let count = 0;
-            
-            DB.awards.forEach((aw) => {
-                if (aw.awardStatus === 'تم الترسية') {
-                    const g = getGuaranteeStatus(aw.gType, aw.gIssuance);
-                    const d = getDeliveryStatus(aw.del, aw.poDate, aw.days);
-                    
-                    if (g.code > 0 && aw.gType === 'خطاب ضمان') {
-                        count++;
-                        let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-                            <p class="font-bold text-red-600">ضمان ${g.code === 2 ? 'منتهي!' : 'ينتهي قريباً'} (${aw.item})</p>
-                            <p class="text-[10px] text-slate-500">الشركة: ${aw.supp} - عملية: ${aw.opId}</p>
-                        </div>`;
-                        if(list) list.innerHTML += itemHtml;
-                        if(homeList) homeList.innerHTML += itemHtml;
-                    }
-                    
-                    if (d.code === 2) {
-                        count++;
-                        let itemHtml = `<div onclick="switchTab('awards')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-                            <p class="font-bold text-red-600">تأخير في التنفيذ/التوريد (${aw.item})</p>
-                            <p class="text-[10px] text-slate-500">الشركة: ${aw.supp} - عملية: ${aw.opId}</p>
-                        </div>`;
-                        if(list) list.innerHTML += itemHtml;
-                        if(homeList) homeList.innerHTML += itemHtml;
+        // ===== Smart Alerts (A–C): توريد متأخر + تأمين نهائي + ضمانات + مهام اليوم =====
+        let _smartAlertsCache = [];
+        let _tasksFilter = 'all';
+
+        function buildSmartAlerts() {
+            if (!DB.awards) DB.awards = [];
+            const alerts = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            DB.awards.forEach((aw, idx) => {
+                if ((aw.awardStatus || '').trim() !== 'تم الترسية') return;
+                const item = aw.item || '—';
+                const supp = aw.supp || '—';
+                const opId = aw.opId != null ? aw.opId : '—';
+
+                // أ) توريد متأخر
+                const d = getDeliveryStatus(aw.del, aw.poDate, aw.days);
+                if (d.code === 2) {
+                    let lateDays = '';
+                    try {
+                        const expected = new Date(aw.poDate);
+                        expected.setDate(expected.getDate() + parseInt(aw.days, 10));
+                        lateDays = Math.ceil((today - expected) / 86400000);
+                    } catch (e) {}
+                    alerts.push({
+                        id: 'del-' + idx,
+                        level: 'critical',
+                        type: 'delivery_late',
+                        title: 'توريد / تنفيذ متأخر',
+                        detail: (item + ' — ' + supp + (lateDays ? (' — متأخر ' + lateDays + ' يوم') : '') + ' — عملية ' + opId),
+                        awardIndex: idx
+                    });
+                }
+
+                // أ) تأمين نهائي ناقص (غير معفى)
+                const gType = (aw.gType || '').trim();
+                const isExempt = gType.indexOf('إعفاء') !== -1;
+                if (!isExempt) {
+                    const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance);
+                    const missingInsurance = (gSt.code === 2 && gSt.text === 'لا يوجد') ||
+                        (!aw.gIssuance && gType !== 'نقدي' && !aw.gNum) ||
+                        (aw.gVal === undefined || aw.gVal === null || aw.gVal === '') && !aw.gNum && gType !== 'نقدي';
+                    // أوضح: لا يوجد خطاب/إصدار ضمان
+                    if (gSt.text === 'لا يوجد' || (!aw.gIssuance && !aw.gNum && gType !== 'نقدي' && gType !== '')) {
+                        alerts.push({
+                            id: 'ins-' + idx,
+                            level: 'critical',
+                            type: 'final_insurance',
+                            title: 'تأمين نهائي / ضمان ناقص',
+                            detail: (item + ' — ' + supp + ' — عملية ' + opId),
+                            awardIndex: idx
+                        });
                     }
                 }
+
+                // ب) ضمانات قاربت على الانتهاء أو منتهية
+                if (gType === 'خطاب ضمان' || (gType && gType.indexOf('ضمان') !== -1)) {
+                    const g = getGuaranteeStatus(aw.gType, aw.gIssuance);
+                    if (g.code === 2 && g.text === 'منتهي!') {
+                        alerts.push({
+                            id: 'gexp-' + idx,
+                            level: 'critical',
+                            type: 'guarantee_expiring',
+                            title: 'خطاب ضمان منتهي',
+                            detail: (item + ' — ' + supp + ' — عملية ' + opId),
+                            awardIndex: idx
+                        });
+                    } else if (g.code === 1) {
+                        alerts.push({
+                            id: 'gsoon-' + idx,
+                            level: 'warn',
+                            type: 'guarantee_expiring',
+                            title: 'ضمان ينتهي قريباً (' + g.text + ')',
+                            detail: (item + ' — ' + supp + ' — عملية ' + opId),
+                            awardIndex: idx
+                        });
+                    }
+                }
+            });
+
+            // ترتيب: critical أولاً
+            alerts.sort((a, b) => (a.level === 'critical' ? 0 : 1) - (b.level === 'critical' ? 0 : 1));
+            _smartAlertsCache = alerts;
+            return alerts;
+        }
+
+        function updateNotifications() {
+            const alerts = buildSmartAlerts();
+            const list = document.getElementById('notif-list');
+            const homeList = document.getElementById('home-notif-list');
+            if (list) list.innerHTML = '';
+            if (homeList) homeList.innerHTML = '';
+
+            const count = alerts.length;
+            alerts.forEach(a => {
+                const color = a.level === 'critical' ? 'text-red-600' : 'text-amber-600';
+                const icon = a.type === 'delivery_late' ? 'fa-truck' :
+                    (a.type === 'final_insurance' ? 'fa-file-invoice-dollar' : 'fa-shield-halved');
+                const itemHtml = `<div onclick="switchTab('tasks')" class="p-2.5 border-b dark:border-slate-700 text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <p class="font-bold ${color}"><i class="fa-solid ${icon} ml-1"></i>${escHtml(a.title)}</p>
+                    <p class="text-[10px] text-slate-500">${escHtml(a.detail)}</p>
+                </div>`;
+                if (list) list.innerHTML += itemHtml;
+                if (homeList) homeList.innerHTML += itemHtml;
             });
 
             const badge = document.getElementById('notif-badge');
             const homeBadge = document.getElementById('home-notif-badge');
             const bellIcon = document.getElementById('bell-icon');
             const homeBellIcon = document.getElementById('home-bell-icon');
-            
-            const countText = count > 0 ? `${count} تنبيهات` : `لا توجد`;
-            if(document.getElementById('notif-count-text')) document.getElementById('notif-count-text').innerText = countText;
-            if(document.getElementById('home-notif-count-text')) document.getElementById('home-notif-count-text').innerText = countText;
-            
-            if(count > 0) { 
-                 if(badge) { badge.innerText = count; badge.classList.remove('hidden'); }
-                 if(homeBadge) { homeBadge.innerText = count; homeBadge.classList.remove('hidden'); }
-                 if(bellIcon) bellIcon.classList.add('pulse-bell', 'text-accent');
-                 if(homeBellIcon) homeBellIcon.classList.add('pulse-bell', 'text-accent');
-                 document.getElementById('app-title').innerText = `🔴 (${count}) منظومة التعاقدات والتوريدات الذكية`;
-            } else { 
-                 if(badge) badge.classList.add('hidden');
-                 if(homeBadge) homeBadge.classList.add('hidden');
-                 if(bellIcon) bellIcon.classList.remove('pulse-bell', 'text-accent');
-                 if(homeBellIcon) homeBellIcon.classList.remove('pulse-bell', 'text-accent');
-                 document.getElementById('app-title').innerText = `منظومة التعاقدات والتوريدات الذكية (Smart V1.Pro)`;
+            const countText = count > 0 ? (count + ' تنبيهات') : 'لا توجد';
+            if (document.getElementById('notif-count-text')) document.getElementById('notif-count-text').innerText = countText;
+            if (document.getElementById('home-notif-count-text')) document.getElementById('home-notif-count-text').innerText = countText;
+
+            if (count > 0) {
+                if (badge) { badge.innerText = count; badge.classList.remove('hidden'); }
+                if (homeBadge) { homeBadge.innerText = count; homeBadge.classList.remove('hidden'); }
+                if (bellIcon) bellIcon.classList.add('pulse-bell', 'text-accent');
+                if (homeBellIcon) homeBellIcon.classList.add('pulse-bell', 'text-accent');
+                const titleEl = document.getElementById('app-title');
+                if (titleEl) titleEl.innerText = '🔴 (' + count + ') نظام إدارة ومتابعة التعاقدات العامة';
+            } else {
+                if (badge) badge.classList.add('hidden');
+                if (homeBadge) homeBadge.classList.add('hidden');
+                if (bellIcon) bellIcon.classList.remove('pulse-bell', 'text-accent');
+                if (homeBellIcon) homeBellIcon.classList.remove('pulse-bell', 'text-accent');
+                const titleEl = document.getElementById('app-title');
+                if (titleEl) titleEl.innerText = 'نظام إدارة ومتابعة التعاقدات العامة';
+                const emptyHtml = '<div class="p-3 text-center text-slate-400 text-xs">الأمور مستقرة — لا توجد تنبيهات</div>';
+                if (list) list.innerHTML = emptyHtml;
+                if (homeList) homeList.innerHTML = emptyHtml;
             }
-            if(count === 0) {
-                let emptyHtml = `<div class="p-3 text-center text-slate-400 text-xs">الأمور مستقرة تماماً ولا توجد تنبيهات</div>`;
-                if(list) list.innerHTML = emptyHtml;
-                if(homeList) homeList.innerHTML = emptyHtml;
+
+            // ب) عدّادات الرئيسية
+            updateHomeAlertCounters(alerts);
+            // ج) إن كانت شاشة المهام مفتوحة
+            if (document.getElementById('view-tasks') && document.getElementById('view-tasks').classList.contains('active')) {
+                renderTodayTasks(_tasksFilter);
             }
         }
+
+        function updateHomeAlertCounters(alerts) {
+            alerts = alerts || _smartAlertsCache || [];
+            const late = alerts.filter(a => a.type === 'delivery_late').length;
+            const ins = alerts.filter(a => a.type === 'final_insurance').length;
+            const guar = alerts.filter(a => a.type === 'guarantee_expiring').length;
+            const total = alerts.length;
+            const set = (id, n) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = String(n);
+            };
+            set('home-cnt-late', late);
+            set('home-cnt-insurance', ins);
+            set('home-cnt-guarantee', guar);
+            set('home-cnt-tasks', total);
+            const bar = document.getElementById('home-alerts-bar');
+            if (bar) bar.style.display = 'grid';
+        }
+
+        function renderTodayTasks(filterType) {
+            _tasksFilter = filterType || 'all';
+            const alerts = (_smartAlertsCache && _smartAlertsCache.length) ? _smartAlertsCache : buildSmartAlerts();
+            const filtered = _tasksFilter === 'all' ? alerts : alerts.filter(a => a.type === _tasksFilter);
+            const body = document.getElementById('tasks-table-body');
+            const empty = document.getElementById('tasks-empty');
+            // تفعيل شكل الفلتر
+            document.querySelectorAll('[data-tasks-filter]').forEach(btn => {
+                const on = btn.getAttribute('data-tasks-filter') === _tasksFilter;
+                btn.classList.toggle('bg-indigo-600', on);
+                btn.classList.toggle('text-white', on);
+                btn.classList.toggle('bg-white', !on);
+                btn.classList.toggle('dark:bg-slate-800', !on);
+                btn.classList.toggle('text-slate-700', !on);
+                btn.classList.toggle('dark:text-slate-200', !on);
+            });
+            if (!body) return;
+            if (!filtered.length) {
+                body.innerHTML = '';
+                if (empty) empty.classList.remove('hidden');
+                return;
+            }
+            if (empty) empty.classList.add('hidden');
+            body.innerHTML = filtered.map(a => {
+                const levelPill = a.level === 'critical'
+                    ? '<span class="pill red">حرج</span>'
+                    : '<span class="pill yellow">متابعة</span>';
+                const typeLabel = a.type === 'delivery_late' ? 'توريد متأخر'
+                    : (a.type === 'final_insurance' ? 'تأمين نهائي ناقص' : 'ضمان');
+                return `<tr>
+                    <td>${levelPill}</td>
+                    <td class="font-bold text-[11px]">${escHtml(typeLabel)}</td>
+                    <td class="text-right text-[11px] wrap-text">${escHtml(a.title)}</td>
+                    <td class="text-right text-[10px] text-slate-500 wrap-text">${escHtml(a.detail)}</td>
+                    <td class="no-print">
+                        <button type="button" onclick="switchTab('awards')" class="bg-indigo-600 text-white px-2.5 py-1 text-[10px] font-bold">عرض الترسيات</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function setTasksFilter(type) {
+            playSound('click');
+            renderTodayTasks(type);
+        }
+
 
         function toggleNotif() { 
             playSound('click');
@@ -4520,8 +5126,8 @@
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
 
         function switchTab(id) {
-            if (currentUserRole === 'guest' && id !== 'dashboard' && id !== 'query' && id !== 'home') {
-                alert('عذراً، حساب الضيف مخصص لمشاهدة لوحة القيادة والإحصائيات فقط.');
+            if (currentUserRole === 'guest' && id !== 'dashboard' && id !== 'query' && id !== 'home' && id !== 'tasks') {
+                alert('عذراً، حساب الضيف مخصص لمشاهدة المؤشرات التنفيذية والإحصائيات فقط.');
                 return;
             }
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -4537,10 +5143,11 @@
             if(id === 'awards') setAwardSubTab(currentAwardSubTab);
             if(id === 'executive') renderExecutive();
             if(id === 'query') runQuery();
+            if(id === 'tasks') { buildSmartAlerts(); renderTodayTasks(_tasksFilter || 'all'); }
         }
 
 
-        // ===================== Productivity & Governance Module =====================
+        // ===== 9) Productivity & Governance Module =====
         function normalizeSupplierName(name) {
             if (!name) return '';
             return String(name)
@@ -4756,6 +5363,9 @@
             if (newStatus !== (op.status || '')) {
                 op.status = newStatus;
                 if (!DB.opMeta[String(opId)]) DB.opMeta[String(opId)] = {};
+                // السبب اختياري — لو عنصر qr-reason غير موجود نستخدم نص افتراضي
+                const reasonEl = document.getElementById('qr-reason');
+                const reason = (reasonEl && reasonEl.value) ? reasonEl.value.trim() : 'تحديث حالة';
                 DB.opMeta[String(opId)].lastStatusReason = reason;
                 pushAudit('status_change', opId + ': ' + reason);
             }
@@ -4948,7 +5558,7 @@
         });
 
 
-        function renderAll() { renderDashboard(); renderOperations(); renderAwards(); renderSuppliers(); renderExecutive(); }
+        function renderAll() { renderDashboard(); renderOperations(); renderAwards(); renderSuppliers(); renderExecutive(); updateNotifications(); }
     </script>
 </body>
 </html>
