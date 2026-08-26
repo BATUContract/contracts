@@ -2425,7 +2425,7 @@
                             <input type="number" step="0.01" id="f-aw-gval" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-amber-50 dark:bg-slate-900 text-amber-700 dark:text-amber-400 font-black text-center text-xs outline-none focus:ring-2 focus:ring-amber-500 transition">
                         </div>
                         
-                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">نوع التأمين النهائي</label><select id="f-aw-gtype" onchange="calcGuarantee()" class="border dark:border-slate-600 rounded-xl px-1.5 py-1 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"><option>خطاب ضمان</option><option>نقدي</option><option>إعفاء (توريد خلال 10 أيام)</option></select></div>
+                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">نوع التأمين النهائي</label><select id="f-aw-gtype" onchange="calcGuarantee()" class="border dark:border-slate-600 rounded-xl px-1.5 py-1 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"><option>خطاب ضمان</option><option>نقدي</option><option>إعفاء (توريد خلال 10 أيام)</option><option>إعفاء (أمر مباشر)</option></select></div>
 
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">رقم خطاب الضمان النهائي</label><input type="text" id="f-aw-gnumber" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold" placeholder="أدخل رقم الخطاب..."></div>
 
@@ -2689,7 +2689,7 @@
         }
 
         function applyRolePermissions() {
-            try { resetIdleTimer(); checkWeeklyBackupReminder(); } catch (e) {}
+            try { resetIdleTimer(); checkWeeklyBackupReminder(); normalizeDirectOrderGuarantees(); if (typeof buildSmartAlerts === 'function') buildSmartAlerts(); if (typeof updateNotifications === 'function') updateNotifications(); } catch (e) {}
 
             const adminBtnTop = document.getElementById('nav-manage-users-btn');
             const adminBtnHome = document.getElementById('home-admin-controls');
@@ -3802,6 +3802,19 @@
                     if (!DB.syncErrors) DB.syncErrors = [];
                     if (!DB.auditLog) DB.auditLog = [];
                 }
+                // دمج الموردين المكررين بعد كل مزامنة (ة/ه، نفس التليفون/السجل)
+                try {
+                    const n = (typeof dedupeSuppliersInDB === 'function') ? dedupeSuppliersInDB() : 0;
+                    if (n > 0 && !window._supDedupePersisted) {
+                        window._supDedupePersisted = true;
+                        setTimeout(function () {
+                            try {
+                                if (typeof saveDB === 'function') saveDB();
+                                console.log('[suppliers] merged duplicates:', n);
+                            } catch (e) {}
+                        }, 800);
+                    }
+                } catch (eDed) {}
                 if (DB.meta && DB.meta.updatedAt) _lastRemoteStamp = Number(DB.meta.updatedAt) || _lastRemoteStamp;
                 try { localStorage.setItem('smart_v1_offline_cache', JSON.stringify(DB)); } catch (e) {}
                 if (typeof updateNotifications === 'function') updateNotifications();
@@ -3958,7 +3971,10 @@
             });
             DB.operations = DB.operations.filter(function (o) { return String(o.id) !== String(id); });
             DB.awards = DB.awards.filter(function (a) { return String(a.opId) !== String(id); });
-            try { pushAudit('soft_delete_op', String(id)); } catch (e) {}
+            try { pushAudit('soft_delete_op', 'حذف عملية ' + id + ' — ' + ((op && op.name) || '') + ' | ترسيات مرتبطة: ' + linkedAwards.length, {
+                entityType: 'operation', entityId: id, entityLabel: (op && op.name) || ('#' + id),
+                changes: [{ field: 'الحالة', from: 'نشطة', to: 'في السلة' }]
+            }); } catch (e) {}
             saveDB();
             alert('تم الأرشفة في سلة المحذوفات (استعادة متاحة 7 أيام).');
         }
@@ -3975,7 +3991,10 @@
             (item.awards || []).forEach(function (a) { DB.awards.push(a); });
             DB.trash.splice(idx, 1);
             DB.operations.sort(function (a, b) { return (Number(a.id) || 0) - (Number(b.id) || 0); });
-            try { pushAudit('restore_op', String(id)); } catch (e) {}
+            try { pushAudit('restore_op', 'استعادة عملية ' + id + ' — ' + ((item.op && item.op.name) || ''), {
+                entityType: 'operation', entityId: id, entityLabel: (item.op && item.op.name) || ('#' + id),
+                changes: [{ field: 'الحالة', from: 'سلة', to: 'نشطة' }]
+            }); } catch (e) {}
             saveDB();
             alert('تمت استعادة العملية ' + id);
             if (typeof openTrashModal === 'function') openTrashModal();
@@ -4062,7 +4081,7 @@
             if (!currentPreviewData) return;
             const { data, type, name } = currentPreviewData;
             const win = window.open('', '_blank');
-            win.document.write(`<html><head><title>${name}</title></head><body><iframe src="${data}" style="width:100%;height:100%;border:none;" onload="window.print();"></iframe></body></html>`);
+            win.document.write(`<html><head><title>منظومة التعاقدات [v30-direct-exempt]</title></head><body><iframe src="${data}" style="width:100%;height:100%;border:none;" onload="window.print();"></iframe></body></html>`);
             win.document.close();
         }
 
@@ -4217,7 +4236,10 @@
         }
 
         function getGuaranteeStatus(type, issuanceDateStr) {
-            if (type === 'إعفاء (توريد خلال 10 أيام)') return { text: "معفى", class: "green", code: 0 };
+            const tt = String(type || '').trim();
+            if (!tt || tt === '-' || tt === 'لا') return { text: "غير مطلوب", class: "green", code: 0 };
+            if (tt.indexOf('إعفاء') !== -1) return { text: "معفى", class: "green", code: 0 };
+            if (tt.indexOf('أمر مباشر') !== -1) return { text: "معفى", class: "green", code: 0 };
             if (!issuanceDateStr) return { text: "لا يوجد", class: "red", code: 2 };
             const expDate = new Date(issuanceDateStr);
             expDate.setFullYear(expDate.getFullYear() + 1);
@@ -4796,6 +4818,7 @@
 
         function renderSuppliers() {
             if(!DB.suppliers) DB.suppliers = [];
+            try { if (typeof dedupeSuppliersInDB === 'function') dedupeSuppliersInDB(); } catch (e) {}
             const tb = document.getElementById('suppliers-tbody'); 
             if(!tb) return;
             const searchVal = (suppliersSearchQ || document.getElementById('sup-search-input')?.value || '').toLowerCase();
@@ -4975,13 +4998,54 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
+            function isDirectOrderOp(opId) {
+                const op = (DB.operations || []).find(function (o) {
+                    return String(o.id) === String(opId) || Number(o.id) === Number(opId);
+                });
+                if (!op) return false;
+                const t = String(op.type || '');
+                const c = String(op.category || '').toLowerCase().trim();
+                // ق. 182 لسنة 2018 — الأمر المباشر لا يُلزم بتأمين ابتدائي/نهائي كالمناقصة
+                if (c === 'direct' || c === 'directorder') return true;
+                if (c.indexOf('direct') !== -1) return true;
+                if (t.indexOf('أمر مباشر') !== -1 || t.indexOf('اتفاق مباشر') !== -1) return true;
+                if (t.indexOf('أمر عاجل') !== -1) return true;
+                // أي نوع يحتوي «مباشر» وليس مناقصة/ممارسة
+                if (t.indexOf('مباشر') !== -1 && t.indexOf('مناقصة') === -1 && t.indexOf('ممارسة') === -1) return true;
+                return false;
+            }
+
+            function awardRequiresFinalGuarantee(aw, directOrder) {
+                if (directOrder) return false;
+                const gType = (aw.gType || '').trim();
+                if (!gType || gType === '-' || gType === 'لا') return false;
+                if (gType.indexOf('إعفاء') !== -1) return false;
+                if (gType.indexOf('أمر مباشر') !== -1) return false;
+                if (gType.indexOf('خطاب ضمان') !== -1 || gType.indexOf('تأمين') !== -1 || gType === 'نقدي' || gType.indexOf('ضمان') !== -1)
+                    return true;
+                return false;
+            }
+
+            // تطبيع: ترسيات الأمر المباشر لا تُعامل كضمان ناقص
+            try {
+                (DB.awards || []).forEach(function (aw) {
+                    if (isDirectOrderOp(aw.opId)) {
+                        const g = String(aw.gType || '').trim();
+                        if (!g || g === 'خطاب ضمان' || (g.indexOf('ضمان') !== -1 && g.indexOf('إعفاء') === -1 && !aw.gIssuance && !aw.gNum)) {
+                            aw.gType = 'إعفاء (أمر مباشر)';
+                        }
+                    }
+                });
+            } catch (eNorm) {}
+
             DB.awards.forEach((aw, idx) => {
                 if ((aw.awardStatus || '').trim() !== 'تم الترسية') return;
                 const item = aw.item || '—';
                 const supp = aw.supp || '—';
                 const opId = aw.opId != null ? aw.opId : '—';
+                const directOrder = isDirectOrderOp(opId);
 
-                // أ) توريد متأخر
+                // أ) توريد متأخر (ينطبق على الأمر المباشر أيضاً)
                 const d = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                 if (d.code === 2) {
                     let lateDays = '';
@@ -5000,16 +5064,11 @@
                     });
                 }
 
-                // أ) تأمين نهائي ناقص (غير معفى)
+                // تأمين نهائي — للمناقصات فقط وعند وجود التزام ضمان فعلي
                 const gType = (aw.gType || '').trim();
-                const isExempt = gType.indexOf('إعفاء') !== -1;
-                if (!isExempt) {
-                    const gSt = getGuaranteeStatus(aw.gType, aw.gIssuance);
-                    const missingInsurance = (gSt.code === 2 && gSt.text === 'لا يوجد') ||
-                        (!aw.gIssuance && gType !== 'نقدي' && !aw.gNum) ||
-                        (aw.gVal === undefined || aw.gVal === null || aw.gVal === '') && !aw.gNum && gType !== 'نقدي';
-                    // أوضح: لا يوجد خطاب/إصدار ضمان
-                    if (gSt.text === 'لا يوجد' || (!aw.gIssuance && !aw.gNum && gType !== 'نقدي' && gType !== '')) {
+                if (awardRequiresFinalGuarantee(aw, directOrder)) {
+                    const hasProof = !!(aw.gIssuance || aw.gNum || (gType === 'نقدي' && parseFloat(aw.gVal) > 0));
+                    if (!hasProof) {
                         alerts.push({
                             id: 'ins-' + idx,
                             level: 'critical',
@@ -5021,8 +5080,8 @@
                     }
                 }
 
-                // ب) ضمانات قاربت على الانتهاء أو منتهية
-                if (gType === 'خطاب ضمان' || (gType && gType.indexOf('ضمان') !== -1)) {
+                // ب) انتهاء الضمان — فقط إن وُجد خطاب ضمان صادر فعلاً (ليس أمر مباشر)
+                if (!directOrder && aw.gIssuance && (gType === 'خطاب ضمان' || (gType.indexOf('ضمان') !== -1 && gType.indexOf('إعفاء') === -1))) {
                     const g = getGuaranteeStatus(aw.gType, aw.gIssuance);
                     if (g.code === 2 && g.text === 'منتهي!') {
                         alerts.push({
@@ -5490,8 +5549,10 @@
                     }
                 }
 
+                let _auditBefore = null;
                 if (idx >= 0) {
                     const prev = DB.operations[idx];
+                    _auditBefore = JSON.parse(JSON.stringify(prev));
                     newOp.total = prev.total || 0;
                     if (prev.locked != null) newOp.locked = prev.locked;
                     DB.operations[idx] = Object.assign({}, prev, newOp);
@@ -5500,7 +5561,39 @@
                 }
                 DB.operations.sort(function (a, b) { return (Number(a.id) || 0) - (Number(b.id) || 0); });
 
-                try { pushAudit('save_operation', 'عملية ' + id + ' | ' + (newOp.name || '') + ' | موقف: ' + (newOp.status || '') + ' | طرح: ' + (newOp.date1 || '-')); } catch (ae) {}
+                try {
+                    const fields = [
+                        { key: 'name', label: 'اسم العملية' },
+                        { key: 'entity', label: 'الجهة' },
+                        { key: 'type', label: 'النوع' },
+                        { key: 'status', label: 'الموقف / المرحلة' },
+                        { key: 'approvalDate', label: 'تاريخ الموافقة' },
+                        { key: 'date1', label: 'تاريخ الطرح' },
+                        { key: 'date2', label: 'فتح المظاريف' },
+                        { key: 'date3', label: 'تقرير فني' },
+                        { key: 'date4', label: 'بعد التظلمات' },
+                        { key: 'date5', label: 'الفتح المالي' },
+                        { key: 'date6', label: 'البت المالي' },
+                        { key: 'portal', label: 'البوابة' },
+                        { key: 'budget', label: 'اعتماد الموازنة' },
+                        { key: 'total', label: 'إجمالي الترسية' },
+                        { key: 'guideline', label: 'القيمة الاسترشادية' },
+                        { key: 'initDeposit', label: 'تأمين ابتدائي' },
+                        { key: 'category', label: 'التصنيف' }
+                    ];
+                    const ch = _auditBefore ? diffFields(_auditBefore, newOp, fields) : [
+                        { field: 'الحالة', from: '—', to: 'عملية جديدة' }
+                    ];
+                    const summary = 'عملية ' + id + ' — ' + (newOp.name || '') +
+                        (ch.length ? (' | عدد التغييرات: ' + ch.length) : '') +
+                        ' | موقف: ' + (newOp.status || '—');
+                    pushAudit('save_operation', summary, {
+                        entityType: 'operation',
+                        entityId: id,
+                        entityLabel: newOp.name || ('#' + id),
+                        changes: ch
+                    });
+                } catch (ae) { console.warn(ae); }
 
                 if (idInput) idInput.disabled = false;
 
@@ -5530,10 +5623,32 @@
         }
 
         function fetchOpDetails() {
-            if(!DB.operations) DB.operations = [];
-            const opId = parseInt(document.getElementById('f-aw-opid').value), div = document.getElementById('aw-op-details');
-            const op = DB.operations.find(o => o.id === opId);
-            div.innerHTML = op ? `<b class="text-primary dark:text-indigo-400">نوع العملية: [${op.type}] - ${op.name} (${op.entity})</b>` : 'أدخل رقم العملية...';
+            if (!DB.operations) DB.operations = [];
+            const opId = parseInt(document.getElementById('f-aw-opid').value, 10);
+            const div = document.getElementById('aw-op-details');
+            const op = DB.operations.find(function (o) { return Number(o.id) === Number(opId); });
+            if (div) {
+                div.innerHTML = op
+                    ? ('<b class="text-primary dark:text-indigo-400">نوع العملية: [' + (op.type || '') + '] - ' + (op.name || '') + ' (' + (op.entity || '') + ')</b>')
+                    : 'أدخل رقم العملية...';
+            }
+            // أمر مباشر: افتراض إعفاء من التأمين النهائي
+            try {
+                const gSel = document.getElementById('f-aw-gtype');
+                if (op && gSel) {
+                    const c = String(op.category || '').toLowerCase();
+                    const t = String(op.type || '');
+                    const isDirect = c === 'direct' || t.indexOf('أمر مباشر') !== -1 || t.indexOf('مباشر') !== -1;
+                    if (isDirect) {
+                        const exempt = 'إعفاء (توريد خلال 10 أيام)';
+                        // عيّن الإعفاء إن لم يُختر ضمان يدوياً بعد
+                        if (!gSel.value || gSel.value.indexOf('خطاب') !== -1) {
+                            gSel.value = exempt;
+                            if (typeof calcGuarantee === 'function') calcGuarantee();
+                        }
+                    }
+                }
+            } catch (e) {}
         }
 
         function openAwardModal() { 
@@ -5654,6 +5769,16 @@
             const opIdx = DB.operations.findIndex(o => o.id === opId);
             if(opIdx >= 0) DB.operations[opIdx].total = DB.awards.filter(a=>a.opId===opId && a.awardStatus==='تم الترسية').reduce((s,a)=>s+a.val,0);
 
+            try {
+                pushAudit('save_award', 'ترسية عملية ' + opId + ' — ' + (document.getElementById('f-aw-item') ? document.getElementById('f-aw-item').value : '') + ' — ' + supp +
+                    ' | ضمان: ' + (document.getElementById('f-aw-gtype') ? document.getElementById('f-aw-gtype').value : '') +
+                    ' | قيمة: ' + (document.getElementById('f-aw-val') ? document.getElementById('f-aw-val').value : ''), {
+                    entityType: 'operation',
+                    entityId: opId,
+                    entityLabel: 'عملية ' + opId,
+                    changes: []
+                });
+            } catch (eAw) {}
             closeModal('modal-aw');
             try {
                 if (typeof renderAwards === 'function') renderAwards();
@@ -5701,7 +5826,10 @@
             };
             if(id) { const idx = DB.suppliers.findIndex(x=>x.id===id); if(idx>=0) DB.suppliers[idx]=s; } else DB.suppliers.unshift(s);
             if (typeof dedupeSuppliersInDB === 'function') dedupeSuppliersInDB();
-            try { pushAudit('save_sup', name); } catch (e) {}
+            try { pushAudit('save_sup', 'مورد: ' + name + (id ? ' (تعديل)' : ' (جديد)'), {
+                entityType: 'supplier', entityId: name, entityLabel: name,
+                changes: []
+            }); } catch (e) {}
             closeModal('modal-sup');
             try {
                 if (typeof renderSuppliers === 'function') renderSuppliers();
@@ -5777,13 +5905,22 @@
         function normalizeSupplierName(name) {
             if (!name) return '';
             return String(name)
-                .replace(/[أإآ]/g, 'ا')
+                .replace(/[ً-ٰٟ]/g, '')
+                .replace(/[أإآٱ]/g, 'ا')
                 .replace(/ة/g, 'ه')
                 .replace(/ى/g, 'ي')
-                .replace(/[^\w\u0600-\u06FF\s]/g, ' ')
+                .replace(/ؤ/g, 'و')
+                .replace(/ئ/g, 'ي')
+                .replace(/[^؀-ۿa-zA-Z0-9\s]/g, ' ')
                 .replace(/\s+/g, ' ')
                 .trim()
                 .toLowerCase();
+        }
+        function normalizeDigits(v) {
+            if (v == null || v === '') return '';
+            return String(v).replace(/[٠-٩]/g, function (d) {
+                return String('0123456789'.charAt('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+            }).replace(/\D/g, '');
         }
 
         function similarityScore(a, b) {
@@ -5817,11 +5954,65 @@
             alert('تم توحيد اسم الشركة في الترسيات والموردين.');
         }
 
-        function pushAudit(action, detail) {
+        function pushAudit(action, detail, meta) {
             ensureDBShape();
-            DB.auditLog.unshift({ at: new Date().toISOString(), user: currentUsername || 'guest', action, detail: detail || '' });
+            const entry = {
+                at: new Date().toISOString(),
+                user: currentUsername || currentUserDisplayName || 'guest',
+                action: action,
+                detail: detail || '',
+                entityType: (meta && meta.entityType) || null,
+                entityId: (meta && meta.entityId) != null ? meta.entityId : null,
+                entityLabel: (meta && meta.entityLabel) || '',
+                changes: (meta && meta.changes) || []
+            };
+            DB.auditLog.unshift(entry);
             if (DB.auditLog.length > 300) DB.auditLog.length = 300;
         }
+
+        function diffFields(oldObj, newObj, fields) {
+            const changes = [];
+            (fields || []).forEach(function (f) {
+                const label = f.label || f.key;
+                const a = oldObj ? (oldObj[f.key] != null ? String(oldObj[f.key]) : '') : '';
+                const b = newObj ? (newObj[f.key] != null ? String(newObj[f.key]) : '') : '';
+                if (a !== b) {
+                    changes.push({ field: label, from: a || '—', to: b || '—' });
+                }
+            });
+            return changes;
+        }
+
+        function jumpFromAudit(entityType, entityId) {
+            closeModal('modal-audit');
+            const id = entityId;
+            if (entityType === 'operation' || entityType === 'op') {
+                switchTab('operations');
+                setTimeout(function () {
+                    try {
+                        if (typeof openOpTimeline === 'function') openOpTimeline(id);
+                        else if (typeof editOp === 'function') editOp(id);
+                    } catch (e) {}
+                }, 250);
+            } else if (entityType === 'award' || entityType === 'aw') {
+                switchTab('awards');
+                setTimeout(function () {
+                    try {
+                        if (typeof editAw === 'function') editAw(Number(id));
+                    } catch (e) {}
+                }, 250);
+            } else if (entityType === 'supplier' || entityType === 'sup') {
+                switchTab('suppliers');
+                setTimeout(function () {
+                    const q = document.getElementById('sup-search-input') || document.querySelector('#view-suppliers input[type="search"], #view-suppliers input[type="text"]');
+                    if (q) {
+                        q.value = String(id);
+                        q.dispatchEvent(new Event('input'));
+                    }
+                }, 250);
+            }
+        }
+
 
         function isOpLocked(opId) {
             ensureDBShape();
@@ -5993,7 +6184,10 @@
                 const reasonEl = document.getElementById('qr-reason');
                 const reason = (reasonEl && reasonEl.value) ? reasonEl.value.trim() : 'تحديث حالة';
                 DB.opMeta[String(opId)].lastStatusReason = reason;
-                pushAudit('status_change', opId + ': ' + reason);
+                pushAudit('status_change', 'عملية ' + opId + ' — ' + reason, {
+                entityType: 'operation', entityId: opId, entityLabel: 'عملية ' + opId,
+                changes: [{ field: 'الموقف', from: '—', to: reason }]
+            });
             }
             setOpNote(opId, document.getElementById('qr-note').value, document.getElementById('qr-follow').value);
             const chk = {
@@ -6343,8 +6537,9 @@
                 normalize_supplier: 'توحيد اسم مورد',
                 import_xlsx: 'استيراد بيانات',
                 full_backup: 'تنزيل نسخة احتياطية',
-                save_award: 'حفظ ترسية',
-                save_sup: 'حفظ مورد'
+                save_award: 'حفظ / تعديل ترسية',
+                save_sup: 'حفظ / تعديل مورد',
+                delete_award: 'حذف ترسية'
             };
             return map[action] || action || 'إجراء';
         }
@@ -6361,18 +6556,42 @@
                     const when = d && !isNaN(d.getTime()) ? d.toLocaleString('ar-EG') : (l.at || '');
                     const label = auditActionLabel(l.action);
                     const detail = l.detail ? String(l.detail) : '';
+                    const changes = Array.isArray(l.changes) ? l.changes : [];
+                    let changesHtml = '';
+                    if (changes.length) {
+                        changesHtml = '<ul class="mt-1 mr-3 list-disc text-[11px] text-slate-600 dark:text-slate-300 space-y-0.5">' +
+                            changes.map(function (c) {
+                                return '<li><b>' + escHtml(c.field || '') + ':</b> ' +
+                                    '<span class="text-red-500/80 line-through">' + escHtml(String(c.from || '—')) + '</span>' +
+                                    ' ← <span class="text-emerald-600 font-bold">' + escHtml(String(c.to || '—')) + '</span></li>';
+                            }).join('') + '</ul>';
+                    }
+                    let jumpBtn = '';
+                    if (l.entityType && l.entityId != null && l.entityId !== '') {
+                        const et = String(l.entityType);
+                        const eid = String(l.entityId).replace(/'/g, '');
+                        const btnLabel = et === 'supplier' || et === 'sup' ? 'فتح المورد' :
+                            (et === 'award' || et === 'aw' ? 'فتح الترسية' : 'فتح العملية');
+                        jumpBtn = '<button type="button" class="mt-1.5 px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[10px] font-bold hover:bg-indigo-700" ' +
+                            'onclick="jumpFromAudit(\'' + et + '\',\'' + eid + '\')">' +
+                            '<i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>' + btnLabel +
+                            (l.entityLabel ? ' — ' + escHtml(String(l.entityLabel).slice(0, 40)) : ' #' + escHtml(eid)) +
+                            '</button>';
+                    }
                     return '<div class="border-b dark:border-slate-700 py-2.5 px-1 text-xs">' +
                         '<div class="flex justify-between gap-2 items-start">' +
                         '<b class="text-indigo-600 dark:text-indigo-300">' + escHtml(label) + '</b>' +
                         '<span class="text-slate-400 whitespace-nowrap text-[10px]">' + escHtml(when) + '</span></div>' +
                         '<div class="text-slate-600 dark:text-slate-300 mt-1">' +
                         '<span class="font-bold">المستخدم:</span> ' + escHtml(l.user || '—') +
-                        (detail ? '<br><span class="font-bold">التفاصيل:</span> ' + escHtml(detail) : '') +
+                        (detail ? '<br><span class="font-bold">الملخص:</span> ' + escHtml(detail) : '') +
+                        changesHtml + jumpBtn +
                         '</div></div>';
                 }).join('');
             }
             openModal('modal-audit');
         }
+
 
         // --- نسخة احتياطية كاملة ---
         function exportFullBackup() {
@@ -6870,25 +7089,117 @@
         
         function dedupeSuppliersInDB() {
             ensureDBShape();
-            const seen = {};
-            const keep = [];
-            (DB.suppliers || []).forEach(function (s) {
-                const key = normalizeSupplierName(s.name);
-                if (!key) return;
-                if (seen[key]) {
-                    const base = seen[key];
+            if (!DB.suppliers || !DB.suppliers.length) return 0;
+            const groups = {}; // key -> master supplier
+
+            function groupKey(s) {
+                const nameKey = normalizeSupplierName(s.name);
+                const phone = normalizeDigits(s.phone);
+                const tax = normalizeDigits(s.tax);
+                const cr = normalizeDigits(s.cr);
+                // مفتاح قوي: اسم موحّد، أو تليفون، أو سجل/ضريبي
+                if (nameKey) return 'n:' + nameKey;
+                if (phone && phone.length >= 8) return 'p:' + phone;
+                if (tax && tax.length >= 5) return 't:' + tax;
+                if (cr && cr.length >= 4) return 'c:' + cr;
+                return 'id:' + (s.id || Math.random());
+            }
+
+            function richer(a, b) {
+                // اختر السجل الأكمل بياناتاً
+                function score(x) {
+                    let n = 0;
                     ['cr', 'tax', 'phone', 'addr', 'bankAcc', 'bankName', 'bankBranch', 'signAuth'].forEach(function (f) {
-                        if ((!base[f] || base[f] === '-') && s[f]) base[f] = s[f];
+                        if (x[f] && String(x[f]).trim() && String(x[f]).trim() !== '-') n++;
                     });
+                    return n;
+                }
+                return score(a) >= score(b) ? a : b;
+            }
+
+            // أولاً بالمفتاح الاسمي
+            const byName = {};
+            (DB.suppliers || []).forEach(function (s) {
+                const nk = normalizeSupplierName(s.name);
+                if (!nk) return;
+                if (!byName[nk]) byName[nk] = [];
+                byName[nk].push(s);
+            });
+
+            // ربط إضافي: نفس التليفون أو السجل حتى لو الاسم اختلف قليلاً
+            const used = new Set();
+            const keep = [];
+            let removed = 0;
+
+            function mergeList(list) {
+                if (!list.length) return;
+                let master = list[0];
+                for (let i = 1; i < list.length; i++) master = richer(master, list[i]);
+                list.forEach(function (s) {
+                    if (s === master) return;
+                    ['cr', 'tax', 'phone', 'addr', 'bankAcc', 'bankName', 'bankBranch', 'signAuth'].forEach(function (f) {
+                        if ((!master[f] || master[f] === '-') && s[f]) master[f] = s[f];
+                    });
+                    used.add(s);
+                    removed++;
+                    // حدّث الترسيات لاسم الماستر
                     (DB.awards || []).forEach(function (aw) {
-                        if (normalizeSupplierName(aw.supp) === key) aw.supp = base.name;
+                        if (normalizeSupplierName(aw.supp) === normalizeSupplierName(s.name) ||
+                            (normalizeDigits(s.phone) && normalizeDigits(aw.supp) === normalizeDigits(s.phone))) {
+                            // aw.supp is company name not phone - only name match
+                        }
+                        if (normalizeSupplierName(aw.supp) === normalizeSupplierName(s.name)) {
+                            aw.supp = master.name;
+                        }
                     });
-                } else {
-                    seen[key] = s;
-                    keep.push(s);
+                });
+                if (!used.has(master) && !keep.includes(master)) {
+                    keep.push(master);
+                    used.add(master);
+                }
+            }
+
+            Object.keys(byName).forEach(function (k) { mergeList(byName[k]); });
+
+            // بقايا لم تُجمع بالاسم: دمج بنفس التليفون/الضريبي
+            const rest = (DB.suppliers || []).filter(function (s) { return !used.has(s); });
+            const byPhone = {}, byTax = {};
+            rest.forEach(function (s) {
+                const p = normalizeDigits(s.phone);
+                const t = normalizeDigits(s.tax);
+                if (p && p.length >= 8) {
+                    if (!byPhone[p]) byPhone[p] = [];
+                    byPhone[p].push(s);
+                }
+                if (t && t.length >= 5) {
+                    if (!byTax[t]) byTax[t] = [];
+                    byTax[t].push(s);
                 }
             });
-            DB.suppliers = keep;
+            Object.keys(byPhone).forEach(function (k) {
+                if (byPhone[k].length > 1) mergeList(byPhone[k]);
+            });
+            Object.keys(byTax).forEach(function (k) {
+                const list = (byTax[k] || []).filter(function (s) { return !used.has(s) || keep.indexOf(s) >= 0; });
+                // only merge unused pairs
+                const uniq = [];
+                byTax[k].forEach(function (s) {
+                    if (!used.has(s) || keep.indexOf(s) >= 0) {
+                        if (uniq.indexOf(s) < 0) uniq.push(s);
+                    }
+                });
+                if (uniq.length > 1) mergeList(uniq);
+            });
+
+            // أضف من لم يُمس
+            (DB.suppliers || []).forEach(function (s) {
+                if (!used.has(s) && keep.indexOf(s) < 0) keep.push(s);
+            });
+
+            if (removed > 0) {
+                DB.suppliers = keep;
+            }
+            return removed;
         }
         function assertUniqueSupplierName(name, exceptId) {
             const key = normalizeSupplierName(name);
@@ -6916,6 +7227,33 @@
                 d.classList.add('hidden');
                 document.body.style.overflow = '';
             }
+        }
+
+        
+        function normalizeDirectOrderGuarantees() {
+            try {
+                ensureDBShape();
+                let n = 0;
+                (DB.awards || []).forEach(function (aw) {
+                    const op = (DB.operations || []).find(function (o) {
+                        return String(o.id) === String(aw.opId) || Number(o.id) === Number(aw.opId);
+                    });
+                    if (!op) return;
+                    const c = String(op.category || '').toLowerCase();
+                    const t = String(op.type || '');
+                    const isDirect = c === 'direct' || t.indexOf('أمر مباشر') !== -1 || (t.indexOf('مباشر') !== -1 && t.indexOf('مناقصة') === -1);
+                    if (!isDirect) return;
+                    if (aw.gNum || aw.gIssuance) return; // ضمان مسجّل فعلاً — لا تلمس
+                    if ((aw.gType || '').indexOf('إعفاء') !== -1) return;
+                    aw.gType = 'إعفاء (توريد خلال 10 أيام)';
+                    aw.gVal = 0;
+                    n++;
+                });
+                if (n > 0) {
+                    console.info('normalizeDirectOrderGuarantees:', n);
+                    try { saveDB(); } catch (e) {}
+                }
+            } catch (e) { console.warn(e); }
         }
 
         // ===== المسار الزمني للعملية (Timeline) =====
