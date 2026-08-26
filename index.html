@@ -1801,6 +1801,7 @@
                     <input type="text" id="sup-search-input" oninput="suppliersSearchQ=this.value; suppliersPage=1; renderSuppliers();" placeholder="بحث باسم الشركة أو الكود..." class="border dark:border-slate-600 rounded-xl px-3 py-1.5 bg-white dark:bg-slate-900 dark:text-white text-xs font-bold outline-none">
                     <button onclick="playSound('click'); exportExcel('tbl-suppliers', 'بيانات_الموردين')" class="bg-success text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-green-700 transition flex items-center gap-1.5 text-xs justify-center"><i class="fa-solid fa-file-excel"></i> Excel</button>
                     <button onclick="playSound('click'); openSupModal()" class="bg-primary text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-primaryHover transition flex items-center gap-1.5 text-xs justify-center"><i class="fa-solid fa-plus"></i> تسجيل مورد / مقاول</button>
+                    <button type="button" id="btn-sup-bulk-del" onclick="bulkDeleteSuppliers()" class="hidden bg-red-600 text-white px-3 py-1.5 rounded-xl font-bold text-xs shadow-sm"><i class="fa-solid fa-trash"></i> حذف المحدد</button>
                 </div>
             </div>
             <div id="suppliers-pagination" class="flex items-center justify-end gap-2 text-xs font-bold mb-2 no-print"></div>
@@ -1808,6 +1809,7 @@
                 <table class="excel-table" id="tbl-suppliers">
                     <thead>
                         <tr>
+                            <th class="no-print admin-only-sup" style="display:none"><input type="checkbox" id="sup-select-all" title="تحديد الكل" onclick="toggleSelectAllSuppliers(this.checked)"></th>
                             <th>كود</th>
                             <th>اسم الشركة</th>
                             <th>س.ت</th>
@@ -2348,9 +2350,12 @@
         <!-- Audit Log -->
         <div id="modal-audit" class="fixed inset-0 bg-slate-900/70 z-50 hidden items-center justify-center p-3 backdrop-blur-sm">
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-700">
-                <div class="p-4 border-b dark:border-slate-700 flex justify-between items-center">
+                <div class="p-4 border-b dark:border-slate-700 flex justify-between items-center gap-2 flex-wrap">
                     <h3 class="font-black text-sm"><i class="fa-solid fa-clock-rotate-left ml-1"></i> سجل التدقيق</h3>
-                    <button type="button" onclick="closeModal('modal-audit')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="audit-admin-tools" class="hidden px-2.5 py-1 rounded-lg bg-red-600 text-white text-[10px] font-bold" onclick="clearAllAuditLog()">مسح السجل بالكامل</button>
+                        <button type="button" onclick="closeModal('modal-audit')" class="text-slate-400 hover:text-red-500 p-1"><i class="fa-solid fa-times"></i></button>
+                    </div>
                 </div>
                 <div class="p-3 overflow-y-auto flex-1" id="audit-log-body"></div>
             </div>
@@ -4827,6 +4832,15 @@
             const startSup = (suppliersPage - 1) * PAGE_SIZE;
             filtered = filtered.slice(startSup, startSup + PAGE_SIZE);
 
+            const isAdmin = currentUserRole === 'admin' || currentUsername === 'admin';
+            document.querySelectorAll('.admin-only-sup').forEach(function (el) {
+                el.style.display = isAdmin ? '' : 'none';
+            });
+            const bulkBtn = document.getElementById('btn-sup-bulk-del');
+            if (bulkBtn) bulkBtn.classList.toggle('hidden', !isAdmin);
+            const selAll = document.getElementById('sup-select-all');
+            if (selAll && !isAdmin) selAll.checked = false;
+
             const rows = filtered.map(s => {
                 const attach = attachmentMenu(
                     'bg-orange-50 dark:bg-orange-950/40 text-orange-600',
@@ -4837,7 +4851,11 @@
                         { label: 'بنك', icon: 'fa-building-columns', onclick: `openDirectArchive('sup_bank', '${s.id}', 'بنك: ${escHtml(s.name)}')`, itemClass: 'hover:bg-slate-100' }
                     ]
                 );
+                const cb = isAdmin
+                    ? `<td class="no-print admin-only-sup"><input type="checkbox" class="sup-row-cb" data-sup-id="${escHtml(s.id)}"></td>`
+                    : `<td class="no-print admin-only-sup" style="display:none"></td>`;
                 return `<tr>
+                    ${cb}
                     <td class="font-bold text-slate-500">${s.id}</td>
                     <td class="text-right font-bold wrap-text text-primary dark:text-indigo-400">${s.name}</td>
                     <td>${s.cr || '-'}</td>
@@ -4857,11 +4875,45 @@
             applyRolePermissions();
         }
 
+        function toggleSelectAllSuppliers(checked) {
+            document.querySelectorAll('.sup-row-cb').forEach(function (cb) {
+                cb.checked = !!checked;
+            });
+        }
+
+        function bulkDeleteSuppliers() {
+            if (currentUserRole !== 'admin' && currentUsername !== 'admin') {
+                alert('الحذف الجماعي متاح لحساب admin فقط.');
+                return;
+            }
+            const ids = [];
+            document.querySelectorAll('.sup-row-cb:checked').forEach(function (cb) {
+                ids.push(cb.getAttribute('data-sup-id'));
+            });
+            if (!ids.length) {
+                alert('حدد مورداً واحداً على الأقل.');
+                return;
+            }
+            if (!confirm('حذف ' + ids.length + ' مورد نهائياً؟\nلا يمكن التراجع.')) return;
+            ensureDBShape();
+            DB.suppliers = (DB.suppliers || []).filter(function (s) {
+                return ids.indexOf(String(s.id)) === -1;
+            });
+            try { pushAudit('save_sup', 'حذف جماعي: ' + ids.length + ' مورد', { entityType: 'supplier', entityId: ids.join(','), entityLabel: 'حذف جماعي' }); } catch (e) {}
+            saveDB();
+            if (typeof renderSuppliers === 'function') renderSuppliers();
+            alert('تم حذف ' + ids.length + ' مورد.');
+        }
+
         function deleteSup(id) {
             if(!DB.suppliers) DB.suppliers = [];
+            if (currentUserRole !== 'admin' && currentUsername !== 'admin') {
+                // السماح بالحذف الفردي كما كان للصلاحيات المعتادة إن وُجدت — الأدمن فقط للجماعي
+            }
             if(confirm('حذف المورد نهائياً؟')) {
                 DB.suppliers = DB.suppliers.filter(s => s.id !== id);
                 saveDB();
+                if (typeof renderSuppliers === 'function') renderSuppliers();
             }
         }
 
@@ -6546,16 +6598,32 @@
         function openAuditLog() {
             ensureDBShape();
             const body = document.getElementById('audit-log-body');
-            const logs = (DB.auditLog || []).slice(0, 150);
+            const isAdmin = currentUserRole === 'admin' || currentUsername === 'admin';
+            const tools = document.getElementById('audit-admin-tools');
+            if (tools) tools.classList.toggle('hidden', !isAdmin);
+
+            // إخفاء السجلات القديمة الفارغة (ملخص = رقم فقط بدون معنى)
+            let logs = (DB.auditLog || []).filter(function (l) {
+                const d = String(l.detail || '').trim();
+                const hasChanges = Array.isArray(l.changes) && l.changes.length > 0;
+                const hasEntity = !!(l.entityType && l.entityId != null && String(l.entityId) !== '');
+                // إخفاء: تفصيل فارغ أو رقم فقط بدون تغييرات/كيان
+                if (!d && !hasChanges && !hasEntity) return false;
+                if (/^\d+$/.test(d) && !hasChanges) return false;
+                return true;
+            }).slice(0, 150);
+
             if (!body) return;
             if (!logs.length) {
-                body.innerHTML = '<div class="empty-state">لا توجد أحداث مسجّلة بعد</div>';
+                body.innerHTML = '<div class="empty-state">لا توجد أحداث مسجّلة للعرض</div>';
             } else {
-                body.innerHTML = logs.map(function (l) {
+                body.innerHTML = logs.map(function (l, visibleIdx) {
+                    const realIdx = (DB.auditLog || []).indexOf(l);
                     const d = l.at ? new Date(l.at) : null;
                     const when = d && !isNaN(d.getTime()) ? d.toLocaleString('ar-EG') : (l.at || '');
                     const label = auditActionLabel(l.action);
                     const detail = l.detail ? String(l.detail) : '';
+                    const showDetail = detail && !/^\d+$/.test(detail.trim());
                     const changes = Array.isArray(l.changes) ? l.changes : [];
                     let changesHtml = '';
                     if (changes.length) {
@@ -6578,19 +6646,49 @@
                             (l.entityLabel ? ' — ' + escHtml(String(l.entityLabel).slice(0, 40)) : ' #' + escHtml(eid)) +
                             '</button>';
                     }
+                    const delBtn = isAdmin
+                        ? ('<button type="button" class="mt-1.5 mr-1 px-2.5 py-1 rounded-lg bg-red-50 text-red-600 border border-red-200 text-[10px] font-bold hover:bg-red-100" onclick="deleteAuditEntry(' + realIdx + ')"><i class="fa-solid fa-trash ml-1"></i>مسح</button>')
+                        : '';
                     return '<div class="border-b dark:border-slate-700 py-2.5 px-1 text-xs">' +
                         '<div class="flex justify-between gap-2 items-start">' +
                         '<b class="text-indigo-600 dark:text-indigo-300">' + escHtml(label) + '</b>' +
                         '<span class="text-slate-400 whitespace-nowrap text-[10px]">' + escHtml(when) + '</span></div>' +
                         '<div class="text-slate-600 dark:text-slate-300 mt-1">' +
                         '<span class="font-bold">المستخدم:</span> ' + escHtml(l.user || '—') +
-                        (detail ? '<br><span class="font-bold">الملخص:</span> ' + escHtml(detail) : '') +
-                        changesHtml + jumpBtn +
+                        (showDetail ? '<br><span class="font-bold">الملخص:</span> ' + escHtml(detail) : '') +
+                        changesHtml +
+                        '<div class="flex flex-wrap gap-1">' + jumpBtn + delBtn + '</div>' +
                         '</div></div>';
                 }).join('');
             }
             openModal('modal-audit');
         }
+
+        function deleteAuditEntry(idx) {
+            if (currentUserRole !== 'admin' && currentUsername !== 'admin') {
+                alert('حذف التدقيق متاح لحساب admin فقط.');
+                return;
+            }
+            ensureDBShape();
+            if (idx < 0 || idx >= (DB.auditLog || []).length) return;
+            if (!confirm('مسح سجل التدقيق هذا؟')) return;
+            DB.auditLog.splice(idx, 1);
+            saveDB();
+            openAuditLog();
+        }
+
+        function clearAllAuditLog() {
+            if (currentUserRole !== 'admin' && currentUsername !== 'admin') {
+                alert('مسح السجل متاح لحساب admin فقط.');
+                return;
+            }
+            if (!confirm('مسح سجل التدقيق بالكامل؟ لا يمكن التراجع.')) return;
+            ensureDBShape();
+            DB.auditLog = [];
+            saveDB();
+            openAuditLog();
+        }
+
 
 
         // --- نسخة احتياطية كاملة ---
