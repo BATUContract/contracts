@@ -1280,6 +1280,24 @@
                 height: 64px !important;
                 margin: 0 auto 6px !important;
             }
+            
+            body.printing-op-report #modal-monthly-report {
+                display: block !important;
+                position: static !important;
+                background: #fff !important;
+                padding: 0 !important;
+            }
+            body.printing-op-report #modal-monthly-report > div {
+                max-width: 100% !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+            }
+            body.printing-op-report #monthly-report-body {
+                overflow: visible !important;
+                max-height: none !important;
+            }
+
             body.printing-op-report .report-sub {
                 text-align: center !important;
                 font-size: 10px !important;
@@ -1288,6 +1306,25 @@
             }
 
 }
+    
+        .mob-nav-item {
+            display: flex; align-items: center; gap: 0.6rem;
+            width: 100%; text-align: right;
+            padding: 0.7rem 0.75rem;
+            border-radius: 0.75rem;
+            font-size: 13px; font-weight: 700;
+            color: rgba(226,232,240,0.95);
+            transition: background 0.15s;
+        }
+        .mob-nav-item:hover, .mob-nav-item:active {
+            background: rgba(129, 140, 248, 0.18);
+            color: #fff;
+        }
+        @media (min-width: 768px) {
+            #mobile-nav-drawer { display: none !important; }
+            #nav-hamburger { display: none !important; }
+        }
+
     </style>
 </head>
 <body class="flex flex-col min-h-screen intro-active">
@@ -1310,11 +1347,19 @@
                 <span class="text-[11px] font-black text-white tracking-wide">منظومة التعاقدات</span>
                 <span class="text-[9px] font-semibold text-indigo-200/90">Smart Contracts Platform</span>
             </div>
-            <div class="flex items-center gap-1.5 flex-wrap">
+
+            <button type="button" id="nav-hamburger" onclick="toggleMobileNav()" class="md:hidden p-2 rounded-xl text-white hover:bg-white/10" aria-label="القائمة">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+
+            <div id="nav-links-desktop" class="hidden md:flex items-center gap-1.5 flex-wrap">
                 <button onclick="playSound('click'); switchTab('home')" class="nav-btn px-3 py-1.5 rounded-xl transition font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-house"></i> الصفحة الرئيسية</button>
                 <button onclick="playSound('click'); openDriveFolderModal()" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1 text-amber-400"><i class="fa-brands fa-google-drive"></i> أرشيف المستندات</button>
                 <button onclick="playSound('click'); switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-chart-pie"></i> المؤشرات التنفيذية</button>
                 <button type="button" onclick="playSound('click'); openGlobalSearch()" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1" title="بحث موحّد (Ctrl+K)"><i class="fa-solid fa-magnifying-glass"></i> بحث</button>
+                <button type="button" onclick="playSound('click'); openTrashModal()" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-trash-can"></i> السلة</button>
+                <button type="button" onclick="playSound('click'); openMonthlyReport()" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-calendar-days"></i> تقرير شهري</button>
+
                 <button type="button" onclick="playSound('click'); openAuditLog()" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1"><i class="fa-solid fa-clock-rotate-left"></i> التدقيق</button>
                 <button type="button" onclick="playSound('click'); exportFullBackup()" class="nav-btn px-2.5 py-1.5 rounded-xl transition font-semibold text-xs flex items-center gap-1 text-emerald-300"><i class="fa-solid fa-download"></i> نسخة</button>
 
@@ -1367,6 +1412,33 @@
             </div>
         </div>
     </nav>
+
+    <!-- قائمة موبايل -->
+    <div id="mobile-nav-drawer" class="fixed inset-0 z-[70] hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="toggleMobileNav(false)"></div>
+        <div class="absolute top-0 right-0 h-full w-[min(320px,88vw)] bg-[#0F172A] text-slate-100 shadow-2xl overflow-y-auto p-4 flex flex-col gap-1">
+            <div class="flex justify-between items-center mb-3 pb-3 border-b border-white/10">
+                <span class="font-black text-sm">القائمة</span>
+                <button type="button" onclick="toggleMobileNav(false)" class="p-2 text-slate-300 hover:text-white"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); switchTab('home')"><i class="fa-solid fa-house w-5"></i> الرئيسية</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); switchTab('dashboard')"><i class="fa-solid fa-chart-pie w-5"></i> المؤشرات</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); switchTab('operations')"><i class="fa-solid fa-file-signature w-5"></i> سجل الطرح</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); switchTab('awards')"><i class="fa-solid fa-medal w-5"></i> الترسيات</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); switchTab('suppliers')"><i class="fa-solid fa-building w-5"></i> الموردين</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); switchTab('executive')"><i class="fa-solid fa-table w-5"></i> التقرير التنفيذي</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); switchTab('tasks')"><i class="fa-solid fa-list-check w-5"></i> مهام اليوم</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); switchTab('query')"><i class="fa-solid fa-search w-5"></i> استعلام</button>
+            <hr class="border-white/10 my-2">
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); openGlobalSearch()"><i class="fa-solid fa-magnifying-glass w-5"></i> بحث</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); openAuditLog()"><i class="fa-solid fa-clock-rotate-left w-5"></i> التدقيق</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); openTrashModal()"><i class="fa-solid fa-trash-can w-5"></i> السلة</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); openMonthlyReport()"><i class="fa-solid fa-calendar-days w-5"></i> تقرير شهري</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); exportFullBackup()"><i class="fa-solid fa-download w-5"></i> نسخة احتياطية</button>
+            <button type="button" class="mob-nav-item" onclick="toggleMobileNav(false); openDriveFolderModal()"><i class="fa-brands fa-google-drive w-5"></i> أرشيف</button>
+        </div>
+    </div>
+
 
     <main class="flex-1 relative w-full p-2 md:p-4 overflow-y-auto">
         
@@ -2204,6 +2276,63 @@
 
 
 
+
+        <!-- سلة المحذوفات -->
+        <div id="modal-trash" class="fixed inset-0 bg-slate-900/70 z-50 hidden items-center justify-center p-3 backdrop-blur-sm">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col border dark:border-slate-700">
+                <div class="p-4 border-b dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="font-black text-sm"><i class="fa-solid fa-trash-can ml-1"></i> سلة المحذوفات (7 أيام)</h3>
+                    <button type="button" onclick="closeModal('modal-trash')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <div class="p-3 overflow-y-auto flex-1" id="trash-body"></div>
+            </div>
+        </div>
+
+        <!-- استيراد Excel -->
+        <div id="modal-import-xlsx" class="fixed inset-0 bg-slate-900/70 z-50 hidden items-center justify-center p-3 backdrop-blur-sm">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col border dark:border-slate-700">
+                <div class="p-4 border-b dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="font-black text-sm"><i class="fa-solid fa-file-import ml-1"></i> استيراد Excel مجمّع</h3>
+                    <button type="button" onclick="closeModal('modal-import-xlsx')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <div class="p-4 space-y-3 overflow-y-auto flex-1 text-xs">
+                    <p class="text-slate-500">ارفع شيت أعمدته: رقم، الاسم، الجهة، النوع، الموقف، تاريخ_الطرح (اختياري). أو ترسيات: رقم_العملية، البند، المورد، القيمة، تقديري.</p>
+                    <select id="import-kind" class="w-full border rounded-xl px-2 py-1.5 dark:bg-slate-900"><option value="operations">عمليات</option><option value="awards">ترسيات</option></select>
+                    <input type="file" id="import-file" accept=".xlsx,.xls,.csv" class="w-full text-xs">
+                    <div id="import-preview" class="max-h-48 overflow-auto border rounded-xl p-2 text-[11px] bg-slate-50 dark:bg-slate-900"></div>
+                </div>
+                <div class="p-3 border-t dark:border-slate-700 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('modal-import-xlsx')" class="px-3 py-1.5 rounded-xl border text-xs font-bold">إلغاء</button>
+                    <button type="button" onclick="commitImportXlsx()" class="px-3 py-1.5 rounded-xl bg-primary text-white text-xs font-bold">ترحيل المعاينة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- توحيد موردين -->
+        <div id="modal-merge-sup" class="fixed inset-0 bg-slate-900/70 z-50 hidden items-center justify-center p-3 backdrop-blur-sm">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col border dark:border-slate-700">
+                <div class="p-4 border-b dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="font-black text-sm"><i class="fa-solid fa-code-merge ml-1"></i> توحيد أسماء الموردين</h3>
+                    <button type="button" onclick="closeModal('modal-merge-sup')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <div class="p-3 overflow-y-auto flex-1" id="merge-sup-body"></div>
+            </div>
+        </div>
+
+        <!-- تقرير شهري -->
+        <div id="modal-monthly-report" class="fixed inset-0 bg-slate-900/70 z-50 hidden items-center justify-center p-3 backdrop-blur-sm">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col border dark:border-slate-700">
+                <div class="p-3 border-b dark:border-slate-700 flex justify-between items-center no-print">
+                    <h3 class="font-black text-sm">التقرير الشهري للإدارة</h3>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="document.body.classList.add('printing-op-report'); window.print();" class="px-3 py-1.5 rounded-xl bg-primary text-white text-xs font-bold">طباعة / PDF</button>
+                        <button type="button" onclick="document.body.classList.remove('printing-op-report'); closeModal('modal-monthly-report')" class="px-3 py-1.5 rounded-xl border text-xs font-bold">إغلاق</button>
+                    </div>
+                </div>
+                <div class="p-4 overflow-y-auto flex-1" id="monthly-report-body"></div>
+            </div>
+        </div>
+
         <!-- Global Search (Ctrl+K) -->
         <div id="modal-global-search" class="fixed inset-0 bg-slate-900/70 z-[60] hidden items-center justify-center p-3 backdrop-blur-sm">
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col border border-slate-200 dark:border-slate-700">
@@ -2560,6 +2689,8 @@
         }
 
         function applyRolePermissions() {
+            try { resetIdleTimer(); checkWeeklyBackupReminder(); } catch (e) {}
+
             const adminBtnTop = document.getElementById('nav-manage-users-btn');
             const adminBtnHome = document.getElementById('home-admin-controls');
             const loginBtn = document.getElementById('nav-login-btn');
@@ -3706,6 +3837,7 @@
                     dot.title = 'غير متصل بالسيرفر — التعديلات قد لا تظهر على الأجهزة الأخرى';
                 }
             });
+            try { bumpLastSyncUI(ok, reason); } catch (e) {}
         }
 
         // حالة الاتصال
@@ -3751,6 +3883,12 @@
             if (!DB.syncErrors) DB.syncErrors = [];
             if (!DB.auditLog) DB.auditLog = [];
             if (!DB.meta) DB.meta = {};
+            if (!DB.trash) DB.trash = []; // حذف ناعم
+            // تنظيف سلة أقدم من 7 أيام
+            try {
+                const cut = Date.now() - 7 * 86400000;
+                DB.trash = (DB.trash || []).filter(function (t) { return (t.deletedAt || 0) >= cut; });
+            } catch (e) {}
         }
 
         function saveDB() {
@@ -3802,17 +3940,67 @@
         loadOfflineCacheIfNeeded();
 
 
-        function deleteOp(id) { 
-            if(!DB.operations) DB.operations = [];
-            if(!DB.awards) DB.awards = [];
-            
-            if(confirm('هل أنت متأكد من حذف هذه العملية نهائياً؟')) { 
-                DB.operations = DB.operations.filter(o => String(o.id) !== String(id)); 
-                DB.awards = DB.awards.filter(a => String(a.opId) !== String(id));
-                saveDB(); 
-                alert('تم حذف العملية بنجاح!');
-            } 
+        function deleteOp(id) {
+            if (!DB.operations) DB.operations = [];
+            if (!DB.awards) DB.awards = [];
+            ensureDBShape();
+            if (!confirm('نقل العملية إلى سلة المحذوفات؟\nيمكن استعادتها خلال 7 أيام.')) return;
+            const op = DB.operations.find(function (o) { return String(o.id) === String(id); });
+            if (!op) return;
+            const linkedAwards = (DB.awards || []).filter(function (a) { return String(a.opId) === String(id); });
+            DB.trash = DB.trash || [];
+            DB.trash.unshift({
+                deletedAt: Date.now(),
+                deletedBy: (typeof currentUsername !== 'undefined' && currentUsername) ? currentUsername : 'user',
+                type: 'operation',
+                op: JSON.parse(JSON.stringify(op)),
+                awards: JSON.parse(JSON.stringify(linkedAwards))
+            });
+            DB.operations = DB.operations.filter(function (o) { return String(o.id) !== String(id); });
+            DB.awards = DB.awards.filter(function (a) { return String(a.opId) !== String(id); });
+            try { pushAudit('soft_delete_op', String(id)); } catch (e) {}
+            saveDB();
+            alert('تم الأرشفة في سلة المحذوفات (استعادة متاحة 7 أيام).');
         }
+
+        function restoreFromTrash(idx) {
+            ensureDBShape();
+            const item = (DB.trash || [])[idx];
+            if (!item || !item.op) return alert('العنصر غير موجود');
+            const id = item.op.id;
+            if ((DB.operations || []).some(function (o) { return Number(o.id) === Number(id); })) {
+                return alert('عملية بنفس الرقم موجودة حالياً. غيّر رقمها أو احذف الحالية أولاً.');
+            }
+            DB.operations.push(item.op);
+            (item.awards || []).forEach(function (a) { DB.awards.push(a); });
+            DB.trash.splice(idx, 1);
+            DB.operations.sort(function (a, b) { return (Number(a.id) || 0) - (Number(b.id) || 0); });
+            try { pushAudit('restore_op', String(id)); } catch (e) {}
+            saveDB();
+            alert('تمت استعادة العملية ' + id);
+            if (typeof openTrashModal === 'function') openTrashModal();
+        }
+
+        function openTrashModal() {
+            ensureDBShape();
+            const body = document.getElementById('trash-body');
+            if (!body) return;
+            const list = DB.trash || [];
+            if (!list.length) {
+                body.innerHTML = '<div class="empty-state">السلة فارغة</div>';
+            } else {
+                body.innerHTML = list.map(function (t, i) {
+                    const left = Math.max(0, 7 - Math.floor((Date.now() - (t.deletedAt || 0)) / 86400000));
+                    const when = t.deletedAt ? new Date(t.deletedAt).toLocaleString('ar-EG') : '';
+                    return '<div class="border-b dark:border-slate-700 py-2 flex justify-between gap-2 items-start text-xs">' +
+                        '<div><b>عملية ' + (t.op && t.op.id) + '</b> — ' + escHtml((t.op && t.op.name) || '') +
+                        '<div class="text-slate-500">' + when + ' | متبقي ' + left + ' يوم | ' + escHtml(t.deletedBy || '') + '</div></div>' +
+                        '<button type="button" class="px-2 py-1 rounded-lg bg-emerald-600 text-white font-bold text-[10px]" onclick="restoreFromTrash(' + i + ')">استعادة</button></div>';
+                }).join('');
+            }
+            openModal('modal-trash');
+        }
+
 
         function autoDetectDocType() {
             const itemText = (document.getElementById('f-aw-item').value || '').toLowerCase();
@@ -5312,7 +5500,7 @@
                 }
                 DB.operations.sort(function (a, b) { return (Number(a.id) || 0) - (Number(b.id) || 0); });
 
-                try { pushAudit('save_operation', String(id)); } catch (ae) {}
+                try { pushAudit('save_operation', 'عملية ' + id + ' | ' + (newOp.name || '') + ' | موقف: ' + (newOp.status || '') + ' | طرح: ' + (newOp.date1 || '-')); } catch (ae) {}
 
                 if (idInput) idInput.disabled = false;
 
@@ -5413,13 +5601,27 @@
 
             const opId = parseInt(document.getElementById('f-aw-opid').value), supp = document.getElementById('f-aw-supp').value.trim();
             if(!opId || !supp) return;
-            
-            if(!DB.suppliers.find(s => s.name === supp)) {
-                DB.suppliers.unshift({ 
-                    id: "V-"+String(DB.suppliers.length+1).padStart(3,'0'), 
-                    name: supp, cr: "", tax: "", signAuth: "", addr: "", phone: "", bankAcc: "", bankName: "", bankBranch: "" 
-                });
+            // تدقيق منطقي إضافي
+            if (!(DB.operations || []).some(function (o) { return Number(o.id) === Number(opId); })) {
+                if (!confirm('لا توجد عملية بهذا الرقم في السجل. المتابعة؟')) return;
             }
+            const gTypeChk = document.getElementById('f-aw-gtype').value;
+            const gValChk = parseFloat(document.getElementById('f-aw-gval').value) || 0;
+            if (gTypeChk && gTypeChk.indexOf('خطاب ضمان') >= 0 && gValChk <= 0) {
+                if (!confirm('نوع الضمان «خطاب ضمان» وقيمته صفر. المتابعة؟')) return;
+            }
+            
+            const _supHit = (DB.suppliers || []).find(function (s) { return typeof normalizeSupplierName === 'function' && normalizeSupplierName(s.name) === normalizeSupplierName(supp); });
+            if (!_supHit) {
+                DB.suppliers.unshift({
+                    id: "V-"+String(DB.suppliers.length+1).padStart(3,'0'),
+                    name: supp, cr: "", tax: "", signAuth: "", addr: "", phone: "", bankAcc: "", bankName: "", bankBranch: ""
+                });
+            } else {
+                // استخدم الاسم المسجّل لتفادي التكرار الشكلي
+                // (الترسية تحتفظ بما أدخله المستخدم ثم dedupe يوحّد)
+            }
+            if (typeof dedupeSuppliersInDB === 'function') dedupeSuppliersInDB();
 
             const gTypeVal = document.getElementById('f-aw-gtype').value;
             const fVal = parseFloat(document.getElementById('f-aw-val').value)||0;
@@ -5488,6 +5690,7 @@
         function saveSup() {
             if(!DB.suppliers) DB.suppliers = [];
             const id = document.getElementById('f-sup-original-id').value, name = document.getElementById('f-sup-name').value.trim(); if(!name) return;
+            if (typeof assertUniqueSupplierName === 'function' && !assertUniqueSupplierName(name, id || null)) return;
             const s = { 
                 id: id || ("V-"+String(DB.suppliers.length+1).padStart(3,'0')), name, 
                 cr: document.getElementById('f-sup-cr').value, tax: document.getElementById('f-sup-tax').value, 
@@ -5497,6 +5700,8 @@
                 bankBranch: document.getElementById('f-sup-bank-branch').value 
             };
             if(id) { const idx = DB.suppliers.findIndex(x=>x.id===id); if(idx>=0) DB.suppliers[idx]=s; } else DB.suppliers.unshift(s);
+            if (typeof dedupeSuppliersInDB === 'function') dedupeSuppliersInDB();
+            try { pushAudit('save_sup', name); } catch (e) {}
             closeModal('modal-sup');
             try {
                 if (typeof renderSuppliers === 'function') renderSuppliers();
@@ -5564,7 +5769,7 @@
             if(id === 'awards') setAwardSubTab(currentAwardSubTab);
             if(id === 'executive') renderExecutive();
             if(id === 'query') runQuery();
-            if(id === 'tasks') { buildSmartAlerts(); renderTodayTasks(_tasksFilter || 'all'); }
+            if(id === 'tasks') { buildSmartAlerts(); renderTodayTasks(_tasksFilter || 'all'); try { enhanceTodayBoard(); } catch(e) {} }
         }
 
 
@@ -6126,10 +6331,27 @@
         });
 
         // --- سجل التدقيق ---
+        function auditActionLabel(action) {
+            const map = {
+                save_operation: 'حفظ / تعديل عملية طرح',
+                soft_delete_op: 'حذف ناعم لعملية (سلة)',
+                restore_op: 'استعادة عملية من السلة',
+                lock_op: 'تجميد عملية',
+                unlock_op: 'فك تجميد عملية',
+                status_change: 'تغيير موقف العملية',
+                op_note: 'ملاحظة / متابعة على عملية',
+                normalize_supplier: 'توحيد اسم مورد',
+                import_xlsx: 'استيراد بيانات',
+                full_backup: 'تنزيل نسخة احتياطية',
+                save_award: 'حفظ ترسية',
+                save_sup: 'حفظ مورد'
+            };
+            return map[action] || action || 'إجراء';
+        }
         function openAuditLog() {
             ensureDBShape();
             const body = document.getElementById('audit-log-body');
-            const logs = (DB.auditLog || []).slice(0, 100);
+            const logs = (DB.auditLog || []).slice(0, 150);
             if (!body) return;
             if (!logs.length) {
                 body.innerHTML = '<div class="empty-state">لا توجد أحداث مسجّلة بعد</div>';
@@ -6137,9 +6359,16 @@
                 body.innerHTML = logs.map(function (l) {
                     const d = l.at ? new Date(l.at) : null;
                     const when = d && !isNaN(d.getTime()) ? d.toLocaleString('ar-EG') : (l.at || '');
-                    return '<div class="border-b dark:border-slate-700 py-2 px-1 text-xs">' +
-                        '<div class="flex justify-between gap-2"><b class="text-indigo-600">' + escHtml(l.action || '') + '</b><span class="text-slate-400">' + escHtml(when) + '</span></div>' +
-                        '<div class="text-slate-600 dark:text-slate-300 mt-0.5">' + escHtml(l.user || '') + (l.detail ? ' — ' + escHtml(l.detail) : '') + '</div></div>';
+                    const label = auditActionLabel(l.action);
+                    const detail = l.detail ? String(l.detail) : '';
+                    return '<div class="border-b dark:border-slate-700 py-2.5 px-1 text-xs">' +
+                        '<div class="flex justify-between gap-2 items-start">' +
+                        '<b class="text-indigo-600 dark:text-indigo-300">' + escHtml(label) + '</b>' +
+                        '<span class="text-slate-400 whitespace-nowrap text-[10px]">' + escHtml(when) + '</span></div>' +
+                        '<div class="text-slate-600 dark:text-slate-300 mt-1">' +
+                        '<span class="font-bold">المستخدم:</span> ' + escHtml(l.user || '—') +
+                        (detail ? '<br><span class="font-bold">التفاصيل:</span> ' + escHtml(detail) : '') +
+                        '</div></div>';
                 }).join('');
             }
             openModal('modal-audit');
@@ -6328,6 +6557,7 @@
 
         function enhanceDashboardKPIs() {
             try {
+                try { renderYearComparisonIntoDashboard(); } catch (e1) {}
                 const sav = computeSavingsStats();
                 const el = document.getElementById('kpi-savings-pct');
                 if (el) el.textContent = (isFinite(sav.pct) ? sav.pct.toFixed(1) : '0') + '%';
@@ -6340,6 +6570,353 @@
             } catch (e) { console.warn(e); }
         }
 
+
+        
+        // ===== حزمة الإدارة: استيراد / موردين / تقرير شهري / جلسة / اختصارات =====
+        let _importRows = [];
+        let _idleTimer = null;
+        const IDLE_MS = 45 * 60 * 1000; // 45 دقيقة
+
+        function resetIdleTimer() {
+            if (_idleTimer) clearTimeout(_idleTimer);
+            if (!currentUserRole || currentUserRole === 'guest') return;
+            _idleTimer = setTimeout(function () {
+                alert('انتهت الجلسة بسبب عدم النشاط. سيتم تسجيل الخروج.');
+                currentUserRole = null;
+                currentUsername = null;
+                try { openModal('modal-login'); } catch (e) {}
+            }, IDLE_MS);
+        }
+        ['click', 'keydown', 'mousemove', 'touchstart'].forEach(function (ev) {
+            document.addEventListener(ev, function () { try { resetIdleTimer(); } catch (e) {} }, { passive: true });
+        });
+
+        // اختصارات: N عملية، / بحث جدول، E يفتح أول صف مرئي إن أمكن
+        document.addEventListener('keydown', function (e) {
+            if (e.target && ['INPUT', 'TEXTAREA', 'SELECT'].indexOf(e.target.tagName) >= 0) return;
+            if (e.key === 'n' || e.key === 'N') {
+                if (currentUserRole && currentUserRole !== 'guest') {
+                    e.preventDefault();
+                    switchTab('operations');
+                    setTimeout(function () { try { openOpModal(); } catch (err) {} }, 150);
+                }
+            }
+            if (e.key === '/') {
+                e.preventDefault();
+                const s = document.getElementById('ops-search-input');
+                if (s) { switchTab('operations'); setTimeout(function () { s.focus(); }, 100); }
+                else openGlobalSearch();
+            }
+        });
+
+        // مؤشر آخر مزامنة
+        const _origSetSyncStatus = typeof setSyncStatus === 'function' ? setSyncStatus : null;
+        // تعزيز بعد تعريف setSyncStatus عبر hook في نهايته — نعيد تعريف wrapper
+        function bumpLastSyncUI(ok, reason) {
+            try {
+                const by = (DB.meta && DB.meta.updatedBy) ? DB.meta.updatedBy : '';
+                const at = (DB.meta && DB.meta.updatedAt) ? new Date(DB.meta.updatedAt).toLocaleString('ar-EG') : '';
+                const tip = ok
+                    ? ('متصل' + (at ? ' — آخر حفظ: ' + at : '') + (by ? ' (' + by + ')' : ''))
+                    : 'غير متصل بالسيرفر';
+                ['sync-status-dot', 'home-sync-status-dot'].forEach(function (id) {
+                    const dot = document.getElementById(id);
+                    if (dot) dot.title = tip + (reason ? ' · ' + reason : '');
+                });
+                const old = document.getElementById('last-sync-label');
+                if (old) old.remove();
+            } catch (e) {}
+        }
+
+        // نسخ أسبوعي صامت — تذكير
+        function checkWeeklyBackupReminder() {
+            try {
+                const key = 'last_weekly_backup_ack';
+                const last = parseInt(localStorage.getItem(key) || '0', 10);
+                if (Date.now() - last > 7 * 86400000) {
+                    const skip = sessionStorage.getItem('backup_remind_session');
+                    if (!skip) {
+                        sessionStorage.setItem('backup_remind_session', '1');
+                        setTimeout(function () {
+                            if (confirm('مرّ أسبوع دون نسخة احتياطية ظاهرة. تنزيل نسخة الآن؟')) {
+                                exportFullBackup();
+                                localStorage.setItem(key, String(Date.now()));
+                            }
+                        }, 2500);
+                    }
+                }
+            } catch (e) {}
+        }
+        // بعد تسجيل الدخول
+        const _origApplyRole = typeof applyRolePermissions === 'function' ? applyRolePermissions : null;
+
+        function openImportXlsx() {
+            _importRows = [];
+            const prev = document.getElementById('import-preview');
+            if (prev) prev.innerHTML = '';
+            const f = document.getElementById('import-file');
+            if (f) f.value = '';
+            openModal('modal-import-xlsx');
+            const fileInput = document.getElementById('import-file');
+            if (fileInput && !fileInput._bound) {
+                fileInput._bound = true;
+                fileInput.addEventListener('change', function (ev) {
+                    const file = ev.target.files && ev.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        try {
+                            const data = new Uint8Array(e.target.result);
+                            const wb = XLSX.read(data, { type: 'array' });
+                            const sheet = wb.Sheets[wb.SheetNames[0]];
+                            const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+                            _importRows = json;
+                            const prev = document.getElementById('import-preview');
+                            if (prev) {
+                                prev.innerHTML = '<b>' + json.length + ' صف</b><pre class="whitespace-pre-wrap mt-1">' +
+                                    escHtml(JSON.stringify(json.slice(0, 5), null, 0)).slice(0, 1200) + '</pre>';
+                            }
+                        } catch (err) {
+                            alert('تعذر قراءة الملف: ' + err.message);
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                });
+            }
+        }
+
+        function commitImportXlsx() {
+            ensureDBShape();
+            const kind = (document.getElementById('import-kind') || {}).value || 'operations';
+            if (!_importRows.length) return alert('لا بيانات للترحيل');
+            let added = 0;
+            if (kind === 'operations') {
+                _importRows.forEach(function (r) {
+                    const id = parseInt(r['رقم'] || r.id || r['ID'] || r['رقم العملية'], 10);
+                    if (!id) return;
+                    if (DB.operations.some(function (o) { return Number(o.id) === id; })) return;
+                    DB.operations.push({
+                        id: id,
+                        name: r['الاسم'] || r.name || r['اسم العملية'] || '',
+                        entity: r['الجهة'] || r.entity || '',
+                        type: r['النوع'] || r.type || 'مناقصة عامة',
+                        status: r['الموقف'] || r.status || 'تحت الطرح',
+                        date1: r['تاريخ_الطرح'] || r.date1 || r['الطرح'] || '',
+                        category: (String(r['النوع'] || '').indexOf('مباشر') >= 0) ? 'direct' : 'tender',
+                        budget: 'نعم', portal: 'نعم', total: 0
+                    });
+                    added++;
+                });
+            } else {
+                _importRows.forEach(function (r) {
+                    const opId = parseInt(r['رقم_العملية'] || r.opId || r['العملية'], 10);
+                    const item = r['البند'] || r.item || '';
+                    const supp = r['المورد'] || r.supp || '';
+                    if (!opId || !item) return;
+                    DB.awards.unshift({
+                        opId: opId, item: item, supp: supp,
+                        val: parseFloat(r['القيمة'] || r.val || 0) || 0,
+                        estVal: parseFloat(r['تقديري'] || r.estVal || 0) || 0,
+                        awardStatus: 'تم الترسية', gType: 'خطاب ضمان', days: 30, del: 'لا',
+                        poNum: r['أمر'] || '', poDate: r['تاريخ'] || ''
+                    });
+                    if (supp && !(DB.suppliers || []).some(function (s) { return s.name === supp; })) {
+                        DB.suppliers.unshift({ id: 'V-' + String(DB.suppliers.length + 1).padStart(3, '0'), name: supp, cr: '', tax: '', phone: '', addr: '', bankAcc: '', bankName: '', bankBranch: '', signAuth: '' });
+                    }
+                    added++;
+                });
+            }
+            DB.operations.sort(function (a, b) { return (Number(a.id) || 0) - (Number(b.id) || 0); });
+            pushAudit('import_xlsx', kind + ':' + added);
+            closeModal('modal-import-xlsx');
+            saveDB();
+            alert('تم ترحيل ' + added + ' صف.');
+        }
+
+        let _mergePairsCache = [];
+        function openMergeSuppliers() {
+            ensureDBShape();
+            const body = document.getElementById('merge-sup-body');
+            if (!body) return;
+            const names = (DB.suppliers || []).map(function (s) { return s.name; }).filter(Boolean);
+            const pairs = [];
+            for (let i = 0; i < names.length; i++) {
+                for (let j = i + 1; j < names.length; j++) {
+                    const sc = similarityScore(names[i], names[j]);
+                    if (sc >= 0.72 && sc < 1) pairs.push({ a: names[i], b: names[j], sc: sc });
+                }
+            }
+            pairs.sort(function (x, y) { return y.sc - x.sc; });
+            _mergePairsCache = pairs.slice(0, 30);
+            if (!_mergePairsCache.length) {
+                body.innerHTML = '<div class="empty-state">لا أسماء متشابهة واضحة</div>';
+            } else {
+                body.innerHTML = _mergePairsCache.map(function (p, idx) {
+                    return '<div class="border-b dark:border-slate-700 py-2 text-xs">' +
+                        '<div class="font-bold">' + escHtml(p.a) + '</div>' +
+                        '<div class="text-slate-500">يشبه (' + Math.round(p.sc * 100) + '%) → ' + escHtml(p.b) + '</div>' +
+                        '<button type="button" class="mt-1 px-2 py-1 rounded-lg bg-indigo-600 text-white text-[10px] font-bold" onclick="applyMergePair(' + idx + ')">دمج الأول في الثاني</button></div>';
+                }).join('');
+            }
+            openModal('modal-merge-sup');
+        }
+        function applyMergePair(idx) {
+            const p = _mergePairsCache[idx];
+            if (!p) return;
+            if (!confirm('دمج «' + p.a + '» داخل «' + p.b + '»؟')) return;
+            mergeSupplierNames(p.a, p.b);
+            openMergeSuppliers();
+        }
+
+        function openMonthlyReport() {
+            ensureDBShape();
+            const now = new Date();
+            const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+            const ops = (DB.operations || []).filter(function (o) {
+                const d = String(o.date1 || o.approvalDate || '');
+                return d.indexOf(ym) === 0 || d.indexOf(String(now.getMonth() + 1).padStart(2, '0') + '-' + now.getFullYear()) >= 0;
+            });
+            // أوسع: كل العمليات + إحصاء العام
+            const awards = (DB.awards || []).filter(function (a) { return a.awardStatus === 'تم الترسية'; });
+            const sav = (typeof computeSavingsStats === 'function') ? computeSavingsStats() : { pct: 0 };
+            const alerts = (typeof buildSmartAlerts === 'function') ? buildSmartAlerts() : [];
+            const byType = {};
+            (DB.operations || []).forEach(function (o) {
+                const t = o.type || 'أخرى';
+                byType[t] = (byType[t] || 0) + 1;
+            });
+            const byEnt = {};
+            (DB.operations || []).forEach(function (o) {
+                const e = o.entity || 'غير محدد';
+                byEnt[e] = (byEnt[e] || 0) + 1;
+            });
+            const typeRows = Object.keys(byType).map(function (k) {
+                return '<tr><td>' + escHtml(k) + '</td><td style="text-align:center">' + byType[k] + '</td></tr>';
+            }).join('');
+            const entRows = Object.keys(byEnt).slice(0, 15).map(function (k) {
+                return '<tr><td style="text-align:right">' + escHtml(k) + '</td><td style="text-align:center">' + byEnt[k] + '</td></tr>';
+            }).join('');
+            const totalVal = awards.reduce(function (s, a) { return s + (parseFloat(a.val) || 0); }, 0);
+            const body = document.getElementById('monthly-report-body');
+            if (body) {
+                body.innerHTML = '<div id="op-report-sheet">' +
+                    '<div class="report-sub">جامعة برج العرب التكنولوجية</div>' +
+                    '<div class="report-title">تقرير موقف التعاقدات — للإدارة</div>' +
+                    '<div class="report-sub">' + now.toLocaleDateString('ar-EG') + '</div>' +
+                    '<table style="margin:12px 0"><tr><td class="meta-label">إجمالي العمليات</td><td>' + (DB.operations || []).length + '</td></tr>' +
+                    '<tr><td class="meta-label">إجمالي الترسيات المعتمدة</td><td>' + awards.length + '</td></tr>' +
+                    '<tr><td class="meta-label">قيمة الترسيات</td><td>' + totalVal.toLocaleString('en') + ' ج.م</td></tr>' +
+                    '<tr><td class="meta-label">متوسط الوفر</td><td>' + (sav.pct ? sav.pct.toFixed(1) : 0) + '%</td></tr>' +
+                    '<tr><td class="meta-label">تنبيهات قائمة</td><td>' + alerts.length + '</td></tr></table>' +
+                    '<div style="font-weight:800;margin:8px 0">حسب النوع</div><table><thead><tr><th>النوع</th><th>العدد</th></tr></thead><tbody>' + typeRows + '</tbody></table>' +
+                    '<div style="font-weight:800;margin:12px 0 8px">حسب الجهة</div><table><thead><tr><th>الجهة</th><th>العدد</th></tr></thead><tbody>' + entRows + '</tbody></table>' +
+                    '<div style="margin-top:16px;font-size:9px;text-align:center;border-top:1px solid #94a3b8;padding-top:8px">منظومة التعاقدات — تقرير آلي</div></div>';
+            }
+            document.body.classList.add('printing-op-report');
+            openModal('modal-monthly-report');
+        }
+
+        // مقارنة سنة بسنة في الداشبورد
+        function renderYearComparisonIntoDashboard() {
+            try {
+                let host = document.getElementById('dash-year-compare');
+                if (!host) {
+                    const dash = document.getElementById('view-dashboard');
+                    if (!dash) return;
+                    host = document.createElement('div');
+                    host.id = 'dash-year-compare';
+                    host.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-soft p-4 mb-4';
+                    host.innerHTML = '<h3 class="font-bold text-sm mb-2"><i class="fa-solid fa-chart-column ml-1"></i> مقارنة السنوات (عدد العمليات حسب سنة الطرح)</h3><div id="dash-year-bars" class="space-y-2 text-xs"></div>';
+                    const firstGrid = dash.querySelector('.grid');
+                    if (firstGrid && firstGrid.parentElement) firstGrid.parentElement.insertBefore(host, firstGrid.nextSibling);
+                    else dash.appendChild(host);
+                }
+                const years = {};
+                (DB.operations || []).forEach(function (op) {
+                    const y = String(op.date1 || op.approvalDate || '').slice(0, 4);
+                    if (y && y.length === 4 && /^\d{4}$/.test(y)) years[y] = (years[y] || 0) + 1;
+                });
+                const keys = Object.keys(years).sort();
+                const bars = document.getElementById('dash-year-bars');
+                if (!bars) return;
+                if (!keys.length) { bars.innerHTML = '<span class="text-slate-400">لا بيانات كافية</span>'; return; }
+                const max = Math.max.apply(null, keys.map(function (k) { return years[k]; }));
+                bars.innerHTML = keys.map(function (y) {
+                    const pct = max ? Math.round(years[y] / max * 100) : 0;
+                    return '<div class="flex items-center gap-2"><span class="w-10 font-bold">' + y + '</span>' +
+                        '<div class="flex-1 h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden"><div class="h-full bg-indigo-500 rounded-full" style="width:' + pct + '%"></div></div>' +
+                        '<span class="w-8 text-left font-bold">' + years[y] + '</span></div>';
+                }).join('');
+            } catch (e) { console.warn(e); }
+        }
+
+        // تعزيز لوحة مهام اليوم إن وُجدت
+        function enhanceTodayBoard() {
+            try {
+                if (typeof buildSmartAlerts === 'function') buildSmartAlerts();
+                if (typeof renderTodayTasks === 'function') renderTodayTasks(_tasksFilter || 'all');
+            } catch (e) {}
+        }
+
+        // ربط الأرشيف بالعملية — أزرار سريعة عند فتح مرفق إن أمكن
+        function archiveOpQuickLinks(opId) {
+            if (!opId) return '';
+            return '<div class="flex gap-1 mt-1 no-print">' +
+                '<button type="button" class="px-2 py-0.5 rounded-lg bg-indigo-600 text-white text-[10px] font-bold" onclick="openOpTimeline(' + opId + ')">المسار الزمني</button>' +
+                '<button type="button" class="px-2 py-0.5 rounded-lg bg-slate-700 text-white text-[10px] font-bold" onclick="editOp(' + opId + ')">تعديل العملية</button></div>';
+        }
+
+
+        
+        function dedupeSuppliersInDB() {
+            ensureDBShape();
+            const seen = {};
+            const keep = [];
+            (DB.suppliers || []).forEach(function (s) {
+                const key = normalizeSupplierName(s.name);
+                if (!key) return;
+                if (seen[key]) {
+                    const base = seen[key];
+                    ['cr', 'tax', 'phone', 'addr', 'bankAcc', 'bankName', 'bankBranch', 'signAuth'].forEach(function (f) {
+                        if ((!base[f] || base[f] === '-') && s[f]) base[f] = s[f];
+                    });
+                    (DB.awards || []).forEach(function (aw) {
+                        if (normalizeSupplierName(aw.supp) === key) aw.supp = base.name;
+                    });
+                } else {
+                    seen[key] = s;
+                    keep.push(s);
+                }
+            });
+            DB.suppliers = keep;
+        }
+        function assertUniqueSupplierName(name, exceptId) {
+            const key = normalizeSupplierName(name);
+            if (!key) return true;
+            const hit = (DB.suppliers || []).find(function (s) {
+                if (exceptId && s.id === exceptId) return false;
+                return normalizeSupplierName(s.name) === key;
+            });
+            if (hit) {
+                alert('اسم الشركة مسجّل مسبقاً: «' + hit.name + '»\nلن يتم إنشاء تكرار.');
+                return false;
+            }
+            return true;
+        }
+
+        
+        function toggleMobileNav(force) {
+            const d = document.getElementById('mobile-nav-drawer');
+            if (!d) return;
+            const open = force === true ? true : force === false ? false : d.classList.contains('hidden');
+            if (open) {
+                d.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                d.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
 
         // ===== المسار الزمني للعملية (Timeline) =====
         function buildOpTimeline(opId) {
