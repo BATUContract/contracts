@@ -5,6 +5,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -4140,7 +4142,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">رقم العملية:</label><input type="number" id="st-op-id" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
                                 <div class="flex flex-col sm:col-span-2"><label class="text-[10px] font-bold mb-1">اسم العملية:</label><input type="text" id="st-op-name" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"></div>
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">الجهة الطالبة:</label><input type="text" id="st-op-entity" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800"></div>
-                                <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">نوع العملية:</label><select id="st-op-type" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"><option>مناقصة عامة</option><option>مناقصة محدودة</option><option>ممارسة عامة</option><option>ممارسة محدودة</option><option>أمر مباشر</option></select></div>
+                                <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">نوع العملية:</label><select id="st-op-type" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800 font-bold"><option>مناقصة عامة</option><option>مناقصة محدودة</option><option>ممارسة عامة</option><option>ممارسة محدودة</option><option>أمر مباشر</option><option>تجديد تعاقد</option><option>تمديد تعاقد</option></select></div>
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1">المبلغ التقديري:</label><input type="text" id="st-op-est" class="border rounded-lg p-1.5 text-xs bg-white dark:bg-slate-800"></div>
                                 <div class="flex flex-col"><label class="text-[10px] font-bold mb-1 text-amber-700">القيمة الاسترشادية (أمر مباشر):</label><input type="number" step="0.01" id="st-op-guideline" class="border rounded-lg p-1.5 text-xs bg-amber-50 dark:bg-slate-800 text-amber-700 font-bold" placeholder="من مذكرة الاحتياج"></div>
                             </div>
@@ -4248,7 +4250,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">رقم العملية *</label><input type="number" id="f-op-id" required class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"></div>
                         <div class="flex flex-col sm:col-span-2"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">اسم العملية / التوريد *</label><input type="text" id="f-op-name" required class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"></div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">الجهة الطالبة</label><input type="text" id="f-op-entity" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"></div>
-                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">نوع العملية</label><select id="f-op-type" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"><option>مناقصة عامة</option><option>مناقصة محدودة</option><option>ممارسة عامة</option><option>ممارسة محدودة</option><option>أمر مباشر</option></select></div>
+                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">نوع العملية</label><select id="f-op-type" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"><option>مناقصة عامة</option><option>مناقصة محدودة</option><option>ممارسة عامة</option><option>ممارسة محدودة</option><option>أمر مباشر</option><option>تجديد تعاقد</option><option>تمديد تعاقد</option></select></div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">اعتماد الموازنة</label><select id="f-op-budget" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"><option>نعم</option><option>لا</option></select></div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">هل مجزأة؟</label><select id="f-op-divided" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option>لا - ترسية كلية</option><option>نعم - قابلة للتجزئة</option></select></div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">المبلغ التقديري</label><input type="text" id="f-op-est" value="قيمة تقديرية في مظروف مغلق" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"></div>
@@ -5193,13 +5195,20 @@ body.dark #bid-side-cards select.bid-tech-sel {
 
         function sanitizeParsedAiData(parsed) {
             if (!parsed || typeof parsed !== 'object') return parsed;
-            const dateKeys = ['approvalDate','date1','date2','date3','date4','date5','date6'];
+            const dateKeys = ['approvalDate','date1','date2','date3','date4','date5','date6','contractStart','contractEnd'];
             dateKeys.forEach(k => {
                 if (parsed[k] != null) {
                     const n = normalizeAiDate(parsed[k]);
                     parsed[k] = n || null;
                 }
             });
+            // إن وُجدت مدة عقد في date1/date2 بالخطأ لمناقصة (والـ opType مناقصة) اتركها في contract* فقط
+            try {
+                const ot = String(parsed.opType || '');
+                if (/مناقصة|ممارسة/.test(ot) && parsed.contractStart && parsed.date1 && parsed.date1 === parsed.contractStart) {
+                    // لا نمسح date1 هنا لأننا قد نكون في تجديد؛ يُعالَج عند الاعتماد حسب category
+                }
+            } catch (e) {}
             if (parsed.opId != null) {
                 const idNum = parseInt(String(parsed.opId).replace(/[^\d]/g, ''), 10);
                 parsed.opId = isNaN(idNum) ? null : idNum;
@@ -5381,7 +5390,7 @@ JSON فقط.`;
 - "محضر بت 1 / بت 2 / بت 3" بدون عبارة ترسية أو إسناد صريح → awards = [].
 - فقط عندما يرد نص مثل: "تم الترسية على..." أو "أسندت إلى..." أو "توصي اللجنة بترسية..." أو أمر توريد/إسناد صادر → أضف عنصراً في awards و awardDecisions.
 - محضر البت النهائي الذي يذكر ترسية كل بند بقيمة → awards كاملة + awardDecisions + estimateItems إن وُجد جدول تقديري.
-- suppliersList: فقط شركات لها بيانات سجل/ضريبية/بنك مستخرجة من مستندات الشركات، وليس كل المتقدمين في المحاضر.
+- suppliersList: شركات لها أي بيانات تعريفية من المستندات (سجل/ضريبية/بنك/عنوان/هاتف) من أوامر التوريد أو الإسناد أو العقود أو مستندات الشركات. أضف اسم الشركة الفائزة/المتعاقد معها حتى لو باقي الحقول null. ليس كل المتقدمين في محاضر الفتح بدون ترسية.
 
 7) تمييز نوع المستند:
    - محضر طرح / إعلان → date1 + opName + opId — بدون awards
@@ -5392,13 +5401,39 @@ JSON فقط.`;
    - بت مالي مع ترسية صريحة → date6 + awards للفائزين فقط
    - بت مالي بدون ترسية → date6 فقط و awards = []
    - خطاب ضمان / أمر توريد / عقد → املأ حقولها فقط عند وجودها صراحة مرتبطة بترسية
+   - **أمر إسناد / أمر توريد بعد ترسية مناقصة**: opType يبقى مناقصة/ممارسة، opId = رقم المناقصة، poNum = رقم الأمر، awards بالشركة والقيمة، status = "تم الترسية" أو "مكتمل". contractStart/contractEnd من مدة التعاقد إن وُجدت — **ممنوع** وضعها في date1..date6 (تواريخ دورة الطرح).
+   - **عقد / أمر إسناد تجديد أو تمديد فقط** (بدون إشارة لمناقصة طرح): opType = "تجديد تعاقد" أو "تمديد تعاقد"، contractStart و contractEnd من مدة العقد، و date1=بداية و date2=نهاية في هذه الحالة فقط. poNum = رقم الملحق/الأمر.
+   - **أمر مباشر خالص** (بدون مناقصة): opType = "أمر مباشر"، guideline من مذكرة الاحتياج، awards بالشركة والقيمة ورقم الأمر.
 8) status من آخر مرحلة موثقة فقط:
    تحت الطرح | جاري الدراسة الفنية | جاري البت المالي | تم الترسية | مكتمل
 
-=== قواعد رقم العملية (opId) — إلزامي ===
-- استخرج رقم العملية من أي مستند يظهر فيه صراحة: "عملية رقم"، "رقم العملية"، "مناقصة رقم"، "رقم: 7"، "عملية 7"، ختم أو ترويسة بها رقم.
-- لو الرقم ظاهر في اسم الملف أو داخل النص → ضعه في opId كعدد صحيح.
-- لو غير موجود إطلاقاً → null (سيُولَّد تلقائياً في النظام). ممنوع اختراع رقم عشوائي.
+=== قواعد تاريخ بدء/انتهاء العقد — إلزامي ===
+- contractStart / contractEnd من عبارة المدة مثل "تبدأ من 1/9/2026 حتى 30/8/2027" → 2026-09-01 و 2027-08-30.
+- صيغة YYYY-MM-DD فقط. ممنوع التخمين.
+- **في المناقصة/الممارسة**: contractStart/End يُحفظان في حقول العقد فقط وداخل awards (poDate يمكن أن يكون تاريخ الأمر إن وُجد). **لا تكتب** contractStart في date1 ولا contractEnd في date2 — date1..date6 مخصصة لدورة الطرح فقط (طرح، فتح مظاريف، فني، تظلمات، مالي، بت).
+- **في التجديد/التمديد فقط**: date1 = contractStart و date2 = contractEnd.
+- poDate في awards = تاريخ إصدار أمر الإسناد/التوريد إن وُجد صراحة، وليس تاريخ بدء الخدمة إلا إذا تطابقا في النص.
+
+=== قواعد رقم العملية (opId) مقابل رقم أمر الإسناد/التوريد (poNum) — إلزامي وحاسم ===
+فرّق دائماً بين رقمين مختلفين تماماً:
+(أ) **opId = رقم العملية / المناقصة / الممارسة** (مثل: "مناقصة عامة رقم (2)" → opId = 2).
+(ب) **poNum = رقم أمر الإسناد أو أمر التوريد** (مثل: "أمر إسناد رقم (5)" → poNum = "5" داخل عنصر awards — وليس opId).
+
+قواعد حسب نوع المستند:
+1) **أمر إسناد أو أمر توريد صادر عن ترسية مناقصة/ممارسة**:
+   - إذا ورد في النص "مناقصة عامة رقم (X)" أو "عملية رقم (X)" أو "المناقصة رقم X" → **opId = X** دائماً.
+   - "أمر إسناد رقم (Y)" أو "أمر توريد رقم (Y)" → **poNum = Y** في awards فقط. ممنوع وضع Y في opId.
+   - opType = نوع المناقصة/الممارسة الأصلي (مناقصة عامة / محدودة / ممارسة...) وليس "أمر مباشر".
+   - هذا المستند **يحدّث** العملية X الموجودة: ترسيات + رقم الأمر + الشركة + القيمة. لا ينشئ عملية جديدة برقم الأمر.
+2) **أمر مباشر خالص** (لا يشير لمناقصة/ممارسة سابقة):
+   - opType = "أمر مباشر".
+   - إن وُجد رقم أمر إسناد/توريد فقط بدون رقم مناقصة → يمكن وضع رقم الأمر في opId.
+   - ممنوع أخذ رقم مناقصة من مستند غير مرتبط.
+3) **تجديد / تمديد تعاقد** (ملحق عقد / قرار تمديد بدون طرح مناقصة جديدة):
+   - opType = "تجديد تعاقد" أو "تمديد تعاقد".
+   - إن أشار لعملية أصلية برقم → opId = رقم العملية الأصلية.
+   - وإلا رقم الملحق/الأمر في poNum، و opId = null إن لم يوجد رقم عملية.
+4) لو غير موجود إطلاقاً رقم عملية → opId = null. ممنوع اختراع رقم أو الخلط بين رقم الأمر ورقم العملية.
 
 === قواعد الجهة الطالبة (opEntity) — إلزامي ===
 - opEntity = الجهة الطالبة الفعلية (الكلية / الإدارة / الوحدة) وليس اسم الجامعة ككل.
@@ -5432,6 +5467,8 @@ JSON فقط.`;
   "date4": "تاريخ التقرير بعد التظلمات YYYY-MM-DD أو null",
   "date5": "تاريخ الفتح المالي YYYY-MM-DD أو null",
   "date6": "تاريخ البت المالي YYYY-MM-DD أو null",
+  "contractStart": "تاريخ بدء العقد/التمديد YYYY-MM-DD أو null (من العقد أو أمر الإسناد أو ملحق التجديد)",
+  "contractEnd": "تاريخ انتهاء العقد/التمديد YYYY-MM-DD أو null (من العقد أو أمر الإسناد أو ملحق التجديد)",
   "status": "تحت الطرح | جاري الدراسة الفنية | جاري البت المالي | تم الترسية | مكتمل",
   "awards": [
     {
@@ -5512,6 +5549,8 @@ JSON فقط.`;
 - مستند عنوانه "عقد" أو "عقد توريد" أو يحتوي توقيعات الطرفين → contract="نعم" لنفس الشركة والبند.
 - "خطاب ضمان نهائي" أو "خطاب ضمان ابتدائي" → املأ حقول g* فقط ولا تلمس poDate إلا إذا ورد صراحة أمر توريد.
 - "أمر توريد رقم ..." → poNum + poDate + days.
+- مثال حاسم: مستند عنوانه "أمر إسناد رقم (5)" وفيه "المناقصة العامة رقم (2)" و"مدة التعاقد تبدأ من 1/9/2026 حتى 30/8/2027" وشركة فائزة وقيمة سنوية:
+  → opId=2 ، opType="مناقصة عامة" ، awards[0].poNum="5" ، awards[0].val=القيمة السنوية ، awards[0].supp=اسم الشركة ، contractStart="2026-09-01" ، contractEnd="2027-08-30" ، date1..date6 تُترك null إن لم ترد في هذا المستند (لا تملأها من مدة العقد).
 - لا تضع تاريخ المحضر الفني في date6.
 
 إذا كان وضع الاستخراج الحذر مفعلاً: لا تملأ أي حقل غير واضح بنسبة عالية، واتركه null.
@@ -5630,12 +5669,41 @@ JSON فقط.`;
                     document.getElementById('st-op-entity').value = parsed.opEntity || '';
                     
                     let typeSelect = document.getElementById('st-op-type');
-                    if (parsed.opType && (parsed.opType.includes('أمر مباشر') || parsed.opType.includes('مباشر'))) {
+                    if (parsed.opType && (parsed.opType.includes('أمر مباشر') || (parsed.opType.includes('مباشر') && !parsed.opType.includes('ممارسة')))) {
                         typeSelect.value = 'أمر مباشر';
-                    } else if (parsed.opType && (parsed.opType.includes('تجديد') || parsed.opType.includes('تمديد'))) {
+                    } else if (parsed.opType && parsed.opType.includes('تمديد')) {
+                        typeSelect.value = 'تمديد تعاقد';
+                    } else if (parsed.opType && parsed.opType.includes('تجديد')) {
                         typeSelect.value = 'تجديد تعاقد';
+                    } else if (parsed.opType && parsed.opType.includes('ممارسة محدودة')) {
+                        typeSelect.value = 'ممارسة محدودة';
+                    } else if (parsed.opType && parsed.opType.includes('ممارسة')) {
+                        typeSelect.value = 'ممارسة عامة';
+                    } else if (parsed.opType && parsed.opType.includes('محدودة')) {
+                        typeSelect.value = 'مناقصة محدودة';
                     } else {
-                        typeSelect.value = 'مناقصة عامة';
+                        // try match exact option
+                        let matched = false;
+                        if (parsed.opType) {
+                            for (let i = 0; i < typeSelect.options.length; i++) {
+                                if (typeSelect.options[i].value === parsed.opType || typeSelect.options[i].text === parsed.opType) {
+                                    typeSelect.value = typeSelect.options[i].value;
+                                    matched = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!matched) typeSelect.value = 'مناقصة عامة';
+                    }
+                    // تواريخ العقد → date1/date2 فقط في التجديد/التمديد — ممنوع لمس دورة طرح المناقصة
+                    const _ot = (parsed.opType || typeSelect.value || '').toString();
+                    if ((_ot.includes('تجديد') || _ot.includes('تمديد')) && (parsed.contractStart || parsed.contractEnd)) {
+                        parsed.date1 = parsed.date1 || parsed.contractStart || null;
+                        parsed.date2 = parsed.date2 || parsed.contractEnd || null;
+                    }
+                    // إن أشار أمر الإسناد لمناقصة: لا تضع رقم الأمر كـ opId
+                    if (parsed.opId != null && Array.isArray(parsed.awards)) {
+                        // حماية: لو opId يساوي poNum لكل الترسيات وopType مناقصة — اترك opId كما هو من المناقصة
                     }
 
                     document.getElementById('st-op-est').value = parsed.opEst || '';
@@ -6374,6 +6442,105 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             }
         }
 
+        /** إزالة ترسيات مكررة لنفس العملية (نفس الشركة + بند متقارب أو نفس رقم الأمر) — يصلح البيانات القديمة */
+        function pruneAllDuplicateAwards(silent) {
+            if (!DB) return 0;
+            if (!DB.awards) DB.awards = [];
+            if (!DB.operations) DB.operations = [];
+            if (!DB.awards.length) return 0;
+            const normS = function(x) {
+                return String(x || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+                    .replace(/[^\w\u0600-\u06FF\s]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+            };
+            const itemKey = function(x) {
+                if (typeof _storyNormKey === 'function') return _storyNormKey(x) || '';
+                return normS(x);
+            };
+            const itemsRelated = function(ia, ib) {
+                if (!ia && !ib) return true;
+                if (!ia || !ib) return true;
+                if (ia === ib || ia.includes(ib) || ib.includes(ia)) return true;
+                const ta = ia.split(' ').filter(t => t.length > 2);
+                const tb = ib.split(' ').filter(t => t.length > 2);
+                if (!ta.length || !tb.length) return false;
+                let inter = 0;
+                const setA = new Set(ta);
+                tb.forEach(t => { if (setA.has(t)) inter++; });
+                return inter >= 2 || (inter >= 1 && Math.min(ta.length, tb.length) <= 4);
+            };
+            const score = function (x) {
+                let s = 0;
+                if (x.val) s += 3;
+                if (x.gNum && x.gNum !== '-') s += 2;
+                if (x.poNum && String(x.poNum).trim() && x.poNum !== '-') s += 3;
+                if (x.poDate) s += 1;
+                if ((x.item || '').length > 15) s += 0.3;
+                if (x.awardStatus === 'تم الترسية') s += 1;
+                return s;
+            };
+            const mergeAw = function(primary, other) {
+                ['supp','item','docOrderType','awardStatus','gType','gNum','gBank','poNum','poDate','gIssuance','del','contract','ret'].forEach(function(f) {
+                    const nv = other[f], pv = primary[f];
+                    if (nv != null && String(nv).trim() && String(nv).trim() !== '-' &&
+                        (!pv || String(pv).trim() === '' || String(pv).trim() === '-')) primary[f] = nv;
+                });
+                if (other.val && (!primary.val || Number(other.val) >= Number(primary.val))) primary.val = other.val;
+                if (other.estVal && !primary.estVal) primary.estVal = other.estVal;
+                if (other.gVal != null && (primary.gVal == null || primary.gVal === 0)) primary.gVal = other.gVal;
+                if (other.poNum && String(other.poNum).trim() !== '-' && (!primary.poNum || primary.poNum === '-')) primary.poNum = other.poNum;
+                return primary;
+            };
+            const byOp = {};
+            (DB.awards || []).forEach(function(a, idx) {
+                const k = String(a.opId);
+                if (!byOp[k]) byOp[k] = [];
+                byOp[k].push(a);
+            });
+            let removed = 0;
+            const newAwards = [];
+            Object.keys(byOp).forEach(function(opK) {
+                const list = byOp[opK];
+                const groups = [];
+                list.forEach(function(a) {
+                    let found = -1;
+                    for (let gi = 0; gi < groups.length; gi++) {
+                        const g0 = groups[gi][0];
+                        const samePo = a.poNum && g0.poNum && String(a.poNum).trim() !== '-' &&
+                            String(a.poNum).trim() === String(g0.poNum).trim();
+                        const relatedItem = itemsRelated(itemKey(a.item), itemKey(g0.item));
+                        const sameSupp = a.supp && g0.supp && normS(a.supp) === normS(g0.supp) && normS(a.supp).length >= 4;
+                        if (samePo || (relatedItem && sameSupp) || (relatedItem && (!a.supp || !g0.supp)) || (sameSupp && (!itemKey(a.item) || !itemKey(g0.item)))) {
+                            found = gi; break;
+                        }
+                    }
+                    if (found >= 0) groups[found].push(a);
+                    else groups.push([a]);
+                });
+                groups.forEach(function(g) {
+                    g.sort(function(a,b){ return score(b) - score(a); });
+                    let primary = g[0];
+                    for (let i = 1; i < g.length; i++) {
+                        primary = mergeAw(primary, g[i]);
+                        removed++;
+                    }
+                    newAwards.push(primary);
+                });
+            });
+            // awards not in byOp shouldn't happen
+            if (removed > 0) {
+                DB.awards = newAwards;
+                // تحديث إجماليات العمليات
+                (DB.operations || []).forEach(function(op) {
+                    op.total = (DB.awards || []).filter(a => String(a.opId) === String(op.id) && a.awardStatus === 'تم الترسية')
+                        .reduce((s, a) => s + (parseFloat(a.val) || 0), 0);
+                });
+                if (!silent && typeof saveDB === 'function') {
+                    try { saveDB(); } catch (e) {}
+                }
+            }
+            return removed;
+        }
+
         // دالة الدمج التراكمي الذكي للعمليات والبنود وترحيل كافة بيانات الشركات بدقة متناهية
         function commitStagingDataToDB() {
             try {
@@ -6389,30 +6556,141 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                     return;
                 }
 
-                let opId = parseInt(document.getElementById('st-op-id').value, 10) || parseInt(globalParsedData.opId, 10) || null;
-                if (!opId || isNaN(opId)) {
-                    // توليد تلقائي: أكبر رقم عملية موجود + 1
-                    const maxId = (DB.operations || []).reduce((m, o) => Math.max(m, parseInt(o.id, 10) || 0), 0);
-                    opId = maxId + 1;
-                    const stId = document.getElementById('st-op-id');
-                    if (stId) stId.value = opId;
-                    console.info('تم توليد رقم عملية تلقائياً:', opId);
+                let opName = document.getElementById('st-op-name').value || globalParsedData.opName || 'عملية جديدة';
+                let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || '';
+                let opType = document.getElementById('st-op-type').value || globalParsedData.opType || 'مناقصة عامة';
+                let opEst = document.getElementById('st-op-est').value || globalParsedData.opEst || 'مظروف مغلق';
+                let currentStatus = globalParsedData.status || 'تحت الطرح';
+
+                // لو المستخرج أمر إسناد يشير لمناقصة موجودة — أبقِ النوع مناقصة حتى لو الـ select اتغيّر بالغلط
+                const rawType = String(globalParsedData.opType || opType || '');
+                const looksLikeTenderRef = /مناقصة|ممارسة/.test(rawType) ||
+                    (globalParsedData.opId != null && Array.isArray(globalParsedData.awards) &&
+                     (globalParsedData.awards || []).some(a => a && a.poNum && String(a.poNum).trim() && String(a.poNum).trim() !== String(globalParsedData.opId)));
+                if (looksLikeTenderRef && /أمر مباشر|تجديد|تمديد/.test(opType) && /مناقصة|ممارسة/.test(rawType)) {
+                    opType = rawType.includes('محدودة') ? (rawType.includes('ممارسة') ? 'ممارسة محدودة' : 'مناقصة محدودة')
+                        : (rawType.includes('ممارسة') ? 'ممارسة عامة' : 'مناقصة عامة');
+                    const ts = document.getElementById('st-op-type');
+                    if (ts) { try { ts.value = opType; } catch(e) {} }
                 }
 
-                let existingOpIndex = DB.operations.findIndex(o => o.id == opId);
-                let existingOp = existingOpIndex >= 0 ? DB.operations[existingOpIndex] : null;
-
-                let opName = document.getElementById('st-op-name').value || globalParsedData.opName || (existingOp ? existingOp.name : 'عملية جديدة');
-                let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || (existingOp ? existingOp.entity : '');
-                let opType = document.getElementById('st-op-type').value || globalParsedData.opType || (existingOp ? existingOp.type : 'مناقصة عامة');
-                let opEst = document.getElementById('st-op-est').value || globalParsedData.opEst || (existingOp ? existingOp.est : 'مظروف مغلق');
-                let currentStatus = globalParsedData.status || (existingOp ? existingOp.status : 'تحت الطرح');
-                
                 let category = 'tender';
-                if (opType && (opType.includes('أمر مباشر') || opType.includes('مباشر'))) {
+                if (opType && (opType.includes('أمر مباشر') || (opType.includes('مباشر') && !opType.includes('ممارسة')))) {
                     category = 'direct';
                 } else if (opType && (opType.includes('تجديد') || opType.includes('تمديد'))) {
                     category = 'renewal';
+                }
+
+                function _nextUniqueOpId() {
+                    const maxId = (DB.operations || []).reduce((m, o) => Math.max(m, parseInt(o.id, 10) || 0), 0);
+                    return maxId + 1;
+                }
+                function _parsePoNumAsId(raw) {
+                    if (raw == null || raw === '') return null;
+                    const s = String(raw).trim();
+                    let m = s.match(/^(\d+)$/);
+                    if (m) return parseInt(m[1], 10);
+                    m = s.match(/(?:رقم|رقم:|#)\s*(\d+)/);
+                    if (m) return parseInt(m[1], 10);
+                    m = s.match(/(\d{1,6})\s*$/);
+                    if (m) return parseInt(m[1], 10);
+                    return null;
+                }
+
+                // opId: مناقصة = رقم العملية | أمر مباشر/تجديد = رقم أمر الإسناد/التوريد أولاً
+                let preferredId = parseInt(document.getElementById('st-op-id').value, 10) || parseInt(globalParsedData.opId, 10) || null;
+                if (category === 'direct' || category === 'renewal') {
+                    // الأولوية المطلقة لرقم أمر الإسناد/التوريد
+                    const awardsForId = Array.isArray(globalParsedData.awards) ? globalParsedData.awards : [];
+                    let poAsId = null;
+                    for (let i = 0; i < awardsForId.length; i++) {
+                        const pid = _parsePoNumAsId(awardsForId[i] && awardsForId[i].poNum);
+                        if (pid && !isNaN(pid) && pid > 0) { poAsId = pid; break; }
+                    }
+                    if (poAsId) preferredId = poAsId;
+                    // إن المستخدم كتب رقماً في الشاشة وهو ليس رقم مناقصة بالخطأ — نستخدمه إن لم يوجد poNum
+                }
+                // حماية: في المناقصة لا تستخدم poNum كـ opId أبداً
+                if (category === 'tender' && preferredId) {
+                    const awardsForId = Array.isArray(globalParsedData.awards) ? globalParsedData.awards : [];
+                    const poIds = awardsForId.map(a => _parsePoNumAsId(a && a.poNum)).filter(Boolean);
+                    const aiOp = parseInt(globalParsedData.opId, 10);
+                    // إذا preferredId == رقم أمر فقط ولم يأتِ من AI opId → تجاهله
+                    if (poIds.includes(preferredId) && (!aiOp || isNaN(aiOp) || aiOp !== preferredId)) {
+                        const stRaw = parseInt(document.getElementById('st-op-id').value, 10);
+                        if (stRaw && stRaw === preferredId && aiOp && !isNaN(aiOp)) preferredId = aiOp;
+                        else if (aiOp && !isNaN(aiOp)) preferredId = aiOp;
+                        else if (poIds.includes(preferredId) && stRaw === preferredId && !aiOp) {
+                            // المستخدم كتب رقم الأمر بالخطأ في خانة العملية — ابحث عن عملية بنفس الاسم
+                            preferredId = null;
+                        }
+                    }
+                }
+
+                let opId = preferredId;
+                let existingOpIndex = -1;
+                let existingOp = null;
+
+                // مطابقة ذكية بالاسم إذا لم يتوفر opId صحيح (تحديث عملية موجودة)
+                if ((!opId || isNaN(opId)) && opName) {
+                    const norm = function(s) {
+                        return String(s || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+                            .replace(/\s+/g,' ').trim().toLowerCase();
+                    };
+                    const nName = norm(opName);
+                    if (nName.length >= 8) {
+                        const byName = (DB.operations || []).find(o => {
+                            if ((o.category || 'tender') !== category) return false;
+                            const on = norm(o.name);
+                            return on && (on === nName || on.includes(nName) || nName.includes(on));
+                        });
+                        if (byName) {
+                            opId = byName.id;
+                        }
+                    }
+                }
+
+                if (opId && !isNaN(opId)) {
+                    existingOpIndex = DB.operations.findIndex(o => String(o.id) === String(opId));
+                    existingOp = existingOpIndex >= 0 ? DB.operations[existingOpIndex] : null;
+                    if (existingOp) {
+                        const existCat = existingOp.category || 'tender';
+                        // أمر إسناد لمناقصة: حدّث المناقصة حتى لو الـ AI صنّفها خطأً كأمر مباشر
+                        if (existCat === 'tender' && category !== 'tender' && looksLikeTenderRef) {
+                            category = 'tender';
+                            opType = existingOp.type || opType;
+                        } else if (existCat !== category && category === 'tender' && existCat !== 'tender') {
+                            // لا تستبدل تجديد/مباشر بعملية مناقصة بنفس الرقم
+                            opId = _nextUniqueOpId();
+                            existingOpIndex = -1;
+                            existingOp = null;
+                        } else if (existCat !== category && existCat === 'tender' && category !== 'tender') {
+                            // رقم مناقصة موجود — لا تنشئ مباشر/تجديد بنفس الرقم
+                            opId = _nextUniqueOpId();
+                            existingOpIndex = -1;
+                            existingOp = null;
+                        }
+                    }
+                } else {
+                    opId = _nextUniqueOpId();
+                }
+                const stIdEl = document.getElementById('st-op-id');
+                if (stIdEl) stIdEl.value = opId;
+
+                if (existingOp) {
+                    // دمج تحديثي: لا تمسح الاسم/الجهة إن الاستخراج ناقص
+                    opName = (document.getElementById('st-op-name').value || '').trim() || globalParsedData.opName || existingOp.name || 'عملية جديدة';
+                    opEntity = (document.getElementById('st-op-entity').value || '').trim() || globalParsedData.opEntity || existingOp.entity || '';
+                    opEst = (document.getElementById('st-op-est').value || '').trim() || globalParsedData.opEst || existingOp.est || 'مظروف مغلق';
+                    // الحالة: ترقية للأحدث فقط
+                    const stNew = globalParsedData.status || '';
+                    const rank = { 'تحت الطرح': 1, 'جاري الدراسة الفنية': 2, 'جاري البت المالي': 3, 'تم الترسية': 4, 'مكتمل': 5 };
+                    if (stNew && (rank[stNew] || 0) >= (rank[existingOp.status] || 0)) currentStatus = stNew;
+                    else currentStatus = existingOp.status || stNew || 'تحت الطرح';
+                    // حافظ على نوع العملية الأصلي للمناقصة عند تحديث بأمر إسناد
+                    if ((existingOp.category || 'tender') === 'tender' && category === 'tender') {
+                        opType = existingOp.type || opType;
+                    }
                 }
 
                 let awardsList = Array.isArray(globalParsedData.awards) ? globalParsedData.awards : [];
@@ -6444,14 +6722,46 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                     if (!isAwarded && fVal > 0 && aw.supp) isAwarded = true;
                     let detectedDocType = aw.docOrderType || ((aw.item && (aw.item.includes('صيانة') || aw.item.includes('تركيب') || aw.item.includes('كامير') || aw.item.includes('تكييف') || aw.item.includes('صوت') || aw.item.includes('أمن') || aw.item.includes('نظافة') || aw.item.includes('سيار'))) ? 'أمر إسناد' : 'أمر توريد');
 
-                    // مطابقة بالبند أولاً (بعد تطبيع) لنفس العملية — يمنع تكرار البنود عند اختلاف صياغة اسم الشركة
+                    // مطابقة قوية لنفس العملية: بند / رقم أمر / نفس الشركة (أمر إسناد يحدّث نفس الترسية)
+                    const normS = function(x) {
+                        return String(x || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+                            .replace(/[^\w؀-ۿ\s]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+                    };
+                    const itemKey = function(x) {
+                        if (typeof _storyNormKey === 'function') return _storyNormKey(x);
+                        return normS(x);
+                    };
+                    const itemsRelated = function(ia, ib) {
+                        if (!ia && !ib) return true;
+                        if (!ia || !ib) return true;
+                        if (ia === ib || ia.includes(ib) || ib.includes(ia)) return true;
+                        const ta = ia.split(' ').filter(t => t.length > 2);
+                        const tb = ib.split(' ').filter(t => t.length > 2);
+                        if (!ta.length || !tb.length) return false;
+                        let inter = 0;
+                        const setA = new Set(ta);
+                        tb.forEach(t => { if (setA.has(t)) inter++; });
+                        return inter >= 2 || (inter >= 1 && Math.min(ta.length, tb.length) <= 4);
+                    };
                     let existingAwardIdx = DB.awards.findIndex(a => {
                         if (String(a.opId) !== String(opId)) return false;
-                        const sameItem = (typeof _storyNormKey === 'function')
-                            ? (_storyNormKey(a.item) === _storyNormKey(aw.item))
-                            : (a.item === aw.item);
-                        if (sameItem) return true;
-                        return a.item === aw.item && a.supp === aw.supp;
+                        // 1) نفس رقم أمر الإسناد/التوريد
+                        if (aw.poNum && a.poNum && String(aw.poNum).trim() !== '-' && String(aw.poNum).trim() === String(a.poNum).trim()) return true;
+                        // 2) بند متقارب
+                        const ikA = itemKey(a.item), ikB = itemKey(aw.item);
+                        if (itemsRelated(ikA, ikB)) {
+                            // إن وُجدت شركتان مختلفتان بوضوح لا تدمج
+                            if (aw.supp && a.supp && normS(aw.supp) !== normS(a.supp) && normS(aw.supp).length >= 4 && normS(a.supp).length >= 4) {
+                                // بند متشابه لكن شركة مختلفة → بنود مجزأة لنفس الوصف؟ أبقِ منفصل
+                                return false;
+                            }
+                            return true;
+                        }
+                        // 3) نفس الشركة + بند متقارب أو بند فارغ
+                        if (aw.supp && a.supp && normS(aw.supp) === normS(a.supp) && normS(aw.supp).length >= 4) {
+                            if (itemsRelated(ikA, ikB) || !ikA || !ikB) return true;
+                        }
+                        return false;
                     });
 
                     if (existingAwardIdx >= 0) {
@@ -6491,6 +6801,13 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         if (aw.gBank && aw.gBank !== '-' && (!exAw.gBank || exAw.gBank === '-')) exAw.gBank = aw.gBank;
                         if (aw.poNum && !exAw.poNum) exAw.poNum = aw.poNum;
                         if (aw.poDate && !exAw.poDate) exAw.poDate = normalizeAiDate(aw.poDate) || aw.poDate;
+                        if (category === 'renewal') {
+                            const cs = normalizeAiDate(globalParsedData.contractStart) || globalParsedData.contractStart;
+                            const ce = normalizeAiDate(globalParsedData.contractEnd) || globalParsedData.contractEnd;
+                            if (cs) exAw.poDate = cs;
+                            if (ce) exAw.gIssuance = ce;
+                            exAw.contract = 'نعم';
+                        }
                     } else {
                         const gTypeVal = isAwarded ? (aw.gType || (category === 'direct' ? 'إعفاء (أمر مباشر - غير مطلوب)' : 'خطاب ضمان')) : (aw.gType || '-');
                         let gValCalc = 0;
@@ -6498,6 +6815,15 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                             if (gTypeVal === 'إعفاء (توريد خلال 10 أيام)' || (gTypeVal && gTypeVal.indexOf('إعفاء') !== -1) || (gTypeVal && gTypeVal.indexOf('أمر مباشر') !== -1 && gTypeVal.indexOf('غير مطلوب') !== -1)) gValCalc = 0;
                             else if (aw.gVal != null && !isNaN(parseFloat(aw.gVal))) gValCalc = parseFloat(aw.gVal);
                             else gValCalc = fVal * 0.05;
+                        }
+                        // في التجديد/التمديد: جدول الترسيات يعرض poDate=بدء و gIssuance=انتهاء
+                        let _poDate = normalizeAiDate(aw.poDate) || aw.poDate || '';
+                        let _gIss = normalizeAiDate(aw.gIssuance) || aw.gIssuance || '';
+                        if (category === 'renewal') {
+                            const cs = normalizeAiDate(globalParsedData.contractStart) || globalParsedData.contractStart || '';
+                            const ce = normalizeAiDate(globalParsedData.contractEnd) || globalParsedData.contractEnd || '';
+                            if (!_poDate && cs) _poDate = cs;
+                            if (!_gIss && ce) _gIss = ce;
                         }
                         DB.awards.unshift({
                             opId: opId,
@@ -6510,12 +6836,12 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                             awardStatus: isAwarded ? 'تم الترسية' : (aw.awardStatus || 'قيد البت المالي'),
                             gType: gTypeVal,
                             gNum: (aw.gNum && aw.gNum !== 'null') ? aw.gNum : '-',
-                            gIssuance: normalizeAiDate(aw.gIssuance) || aw.gIssuance || '',
+                            gIssuance: _gIss,
                             gBank: (aw.gBank && aw.gBank !== 'null') ? aw.gBank : '-',
                             ret: aw.ret === 'نعم' ? 'نعم' : 'لا',
-                            contract: aw.contract === 'نعم' ? 'نعم' : 'لا',
+                            contract: (category === 'renewal' || aw.contract === 'نعم') ? 'نعم' : (aw.contract === 'لا' ? 'لا' : 'لا'),
                             poNum: aw.poNum || '',
-                            poDate: normalizeAiDate(aw.poDate) || aw.poDate || '',
+                            poDate: _poDate,
                             days: parseInt(aw.days) || 30,
                             del: aw.del === 'نعم' ? 'نعم' : 'لا'
                         });
@@ -6590,13 +6916,35 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                     })(),
                     status: currentStatus,
                     portal: globalParsedData.portal || (existingOp ? existingOp.portal : 'نعم'),
-                    approvalDate: normalizeAiDate(globalParsedData.approvalDate) || globalParsedData.approvalDate || (existingOp ? existingOp.approvalDate : ''),
-                    date1: normalizeAiDate(globalParsedData.date1) || globalParsedData.date1 || (existingOp ? existingOp.date1 : ''),
-                    date2: normalizeAiDate(globalParsedData.date2) || globalParsedData.date2 || (existingOp ? existingOp.date2 : ''),
-                    date3: normalizeAiDate(globalParsedData.date3) || globalParsedData.date3 || (existingOp ? existingOp.date3 : ''),
-                    date4: normalizeAiDate(globalParsedData.date4) || globalParsedData.date4 || (existingOp ? existingOp.date4 : ''),
-                    date5: normalizeAiDate(globalParsedData.date5) || globalParsedData.date5 || (existingOp ? existingOp.date5 : ''),
-                    date6: normalizeAiDate(globalParsedData.date6) || globalParsedData.date6 || (existingOp ? existingOp.date6 : ''),
+                    approvalDate: (function(){
+                        const n = normalizeAiDate(globalParsedData.approvalDate) || globalParsedData.approvalDate || '';
+                        return n || (existingOp ? existingOp.approvalDate : '') || '';
+                    })(),
+                    // تواريخ دورة الطرح: حدّث فقط إن جاء تاريخ جديد من الاستخراج — لا تملأ من مدة العقد
+                    date1: (function(){
+                        if (category === 'renewal') {
+                            const cs = normalizeAiDate(globalParsedData.contractStart) || globalParsedData.contractStart || '';
+                            const d1 = normalizeAiDate(globalParsedData.date1) || globalParsedData.date1 || '';
+                            return cs || d1 || (existingOp ? existingOp.date1 : '') || '';
+                        }
+                        const d1 = normalizeAiDate(globalParsedData.date1) || globalParsedData.date1 || '';
+                        return d1 || (existingOp ? existingOp.date1 : '') || '';
+                    })(),
+                    date2: (function(){
+                        if (category === 'renewal') {
+                            const ce = normalizeAiDate(globalParsedData.contractEnd) || globalParsedData.contractEnd || '';
+                            const d2 = normalizeAiDate(globalParsedData.date2) || globalParsedData.date2 || '';
+                            return ce || d2 || (existingOp ? existingOp.date2 : '') || '';
+                        }
+                        const d2 = normalizeAiDate(globalParsedData.date2) || globalParsedData.date2 || '';
+                        return d2 || (existingOp ? existingOp.date2 : '') || '';
+                    })(),
+                    date3: (normalizeAiDate(globalParsedData.date3) || globalParsedData.date3 || '') || (existingOp ? existingOp.date3 : '') || '',
+                    date4: (normalizeAiDate(globalParsedData.date4) || globalParsedData.date4 || '') || (existingOp ? existingOp.date4 : '') || '',
+                    date5: (normalizeAiDate(globalParsedData.date5) || globalParsedData.date5 || '') || (existingOp ? existingOp.date5 : '') || '',
+                    date6: (normalizeAiDate(globalParsedData.date6) || globalParsedData.date6 || '') || (existingOp ? existingOp.date6 : '') || '',
+                    contractStart: (normalizeAiDate(globalParsedData.contractStart) || globalParsedData.contractStart || '') || (existingOp ? existingOp.contractStart : '') || '',
+                    contractEnd: (normalizeAiDate(globalParsedData.contractEnd) || globalParsedData.contractEnd || '') || (existingOp ? existingOp.contractEnd : '') || '',
                     total: totalVal
                 };
 
@@ -6608,29 +6956,95 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
 
                 try { pruneDuplicateSuppliers(); } catch (eSupPrune) { console.warn(eSupPrune); }
 
-                // تنظيف تكرار بنود الترسية لنفس العملية (بعد الترحيل)
+                // تنظيف تكرار الترسيات لنفس العملية (بند متشابه أو نفس الشركة)
                 try {
-                    const byItem = new Map();
-                    const kept = [];
+                    const normS = function(x) {
+                        return String(x || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+                            .replace(/[^\w؀-ۿ\s]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+                    };
+                    const itemKey = function(x) {
+                        if (typeof _storyNormKey === 'function') return _storyNormKey(x) || '';
+                        return normS(x);
+                    };
+                    const score = function (x) {
+                        let s = 0;
+                        if (x.val) s += 3;
+                        if (x.gNum && x.gNum !== '-') s += 2;
+                        if (x.poNum && String(x.poNum).trim() && x.poNum !== '-') s += 3;
+                        if (x.poDate) s += 1;
+                        if (x.gIssuance) s += 1;
+                        if ((x.supp || '').length > 8) s += 0.5;
+                        if ((x.item || '').length > 15) s += 0.3;
+                        if (x.awardStatus === 'تم الترسية') s += 1;
+                        return s;
+                    };
+                    const mergeAw = function(primary, other) {
+                        ['supp','item','docOrderType','awardStatus','gType','gNum','gBank','poNum','poDate','gIssuance','del','contract','ret'].forEach(function(f) {
+                            const nv = other[f], pv = primary[f];
+                            if (nv != null && String(nv).trim() && String(nv).trim() !== '-' &&
+                                (!pv || String(pv).trim() === '' || String(pv).trim() === '-')) {
+                                primary[f] = nv;
+                            }
+                        });
+                        // فضّل القيم الرقمية الأكبر/الأحدث المعقولة
+                        if (other.val && (!primary.val || Number(other.val) >= Number(primary.val))) primary.val = other.val;
+                        if (other.estVal && !primary.estVal) primary.estVal = other.estVal;
+                        if (other.gVal != null && (primary.gVal == null || primary.gVal === 0)) primary.gVal = other.gVal;
+                        if (other.days && !primary.days) primary.days = other.days;
+                        // رقم أمر الإسناد: فضّل غير الفارغ
+                        if (other.poNum && String(other.poNum).trim() !== '-' &&
+                            (!primary.poNum || primary.poNum === '-')) primary.poNum = other.poNum;
+                        return primary;
+                    };
+                    const groups = [];
+                    const itemsRelated = function(ia, ib) {
+                        if (!ia && !ib) return true;
+                        if (!ia || !ib) return true;
+                        if (ia === ib || ia.includes(ib) || ib.includes(ia)) return true;
+                        const ta = ia.split(' ').filter(t => t.length > 2);
+                        const tb = ib.split(' ').filter(t => t.length > 2);
+                        if (!ta.length || !tb.length) return false;
+                        let inter = 0;
+                        const setA = new Set(ta);
+                        tb.forEach(t => { if (setA.has(t)) inter++; });
+                        return inter >= 2 || (inter >= 1 && Math.min(ta.length, tb.length) <= 4);
+                    };
                     (DB.awards || []).forEach(function (a) {
-                        if (String(a.opId) !== String(opId)) { kept.push(a); return; }
-                        const k = (typeof _storyNormKey === 'function') ? _storyNormKey(a.item) : String(a.item || '');
-                        if (!k) { kept.push(a); return; }
-                        if (!byItem.has(k)) { byItem.set(k, a); return; }
-                        const prev = byItem.get(k);
-                        const score = function (x) {
-                            let s = 0;
-                            if (x.val) s += 2;
-                            if (x.gNum && x.gNum !== '-') s += 2;
-                            if (x.poNum) s += 1;
-                            if ((x.supp || '').length > 8) s += 0.5;
-                            return s;
-                        };
-                        if (score(a) >= score(prev)) byItem.set(k, a);
+                        if (String(a.opId) !== String(opId)) return;
+                        let found = -1;
+                        for (let gi = 0; gi < groups.length; gi++) {
+                            const g0 = groups[gi][0];
+                            const samePo = a.poNum && g0.poNum && String(a.poNum).trim() !== '-' &&
+                                String(a.poNum).trim() === String(g0.poNum).trim();
+                            const ikA = itemKey(a.item), ikB = itemKey(g0.item);
+                            const relatedItem = itemsRelated(ikA, ikB);
+                            const sameSupp = a.supp && g0.supp && normS(a.supp) === normS(g0.supp) && normS(a.supp).length >= 4;
+                            if (samePo || (relatedItem && sameSupp) || (relatedItem && (!a.supp || !g0.supp)) || (sameSupp && (!ikA || !ikB))) {
+                                found = gi; break;
+                            }
+                        }
+                        if (found >= 0) groups[found].push(a);
+                        else groups.push([a]);
                     });
-                    const prunedForOp = Array.from(byItem.values());
+                    const prunedForOp = groups.map(function(list) {
+                        list.sort(function(a,b){ return score(b) - score(a); });
+                        let primary = list[0];
+                        for (let i = 1; i < list.length; i++) primary = mergeAw(primary, list[i]);
+                        return primary;
+                    });
                     DB.awards = (DB.awards || []).filter(a => String(a.opId) !== String(opId)).concat(prunedForOp);
+                    // إعادة حساب الإجمالي بعد إزالة التكرار
+                    totalVal = prunedForOp.filter(a => a.awardStatus === 'تم الترسية').reduce((sum, a) => sum + (parseFloat(a.val) || 0), 0);
+                    // حدّث total على opData إن كان اتحسب قبل التقليم
                 } catch (ePrune) { console.warn(ePrune); }
+
+                // تأكيد إجمالي العملية بعد إزالة تكرار الترسيات
+                try {
+                    totalVal = (DB.awards || []).filter(a => String(a.opId) === String(opId) && a.awardStatus === 'تم الترسية')
+                        .reduce((sum, a) => sum + (parseFloat(a.val) || 0), 0);
+                    const opIdx = DB.operations.findIndex(o => String(o.id) === String(opId));
+                    if (opIdx >= 0) DB.operations[opIdx].total = totalVal;
+                } catch (eTot) {}
 
                 // آخر استخراج يحدّث سرد العملية تلقائياً
                 try {
@@ -6645,7 +7059,12 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
 
                 saveDB();
                 closeModal('modal-smart-staging');
-                alert('تم ترحيل البيانات وتحديث سرد العملية رقم ' + opId + ' حسب آخر استخراج.\nافتح السرد من رقم العملية في جدول الطرح.');
+                try {
+                    if (typeof switchTab === 'function') switchTab('operations');
+                    if (typeof setOpSubTab === 'function') setOpSubTab(category);
+                } catch (eNav) {}
+                const catLabel = category === 'direct' ? 'أمر مباشر' : (category === 'renewal' ? 'تجديد/تمديد' : 'مناقصة/ممارسة');
+                alert('تم ترحيل البيانات وتحديث سرد العملية رقم ' + opId + ' (' + catLabel + ') حسب آخر استخراج.\nالتبويب الصحيح: ' + catLabel + '.\nالموردون أُضيفوا/حُدّثوا تلقائياً بدون تكرار.');
             } catch(err) {
                 console.error(err);
                 alert('خطأ أثناء الترحيل والتحديث: ' + err.message);
@@ -6775,6 +7194,17 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             if (!DB.suppliers) DB.suppliers = [];
             if (!DB.operations) DB.operations = [];
             if (!DB.awards) DB.awards = [];
+            // إصلاح صامت لترسيات مكررة قديمة (مرة لكل تحميل)
+            try {
+                if (!window._awardsPrunedOnce && typeof pruneAllDuplicateAwards === 'function') {
+                    window._awardsPrunedOnce = true;
+                    const n = pruneAllDuplicateAwards(true);
+                    if (n > 0) {
+                        console.info('تم دمج ترسيات مكررة:', n);
+                        try { if (typeof saveDB === 'function') saveDB(); } catch (e) {}
+                    }
+                }
+            } catch (ePr) {}
             if (!DB.archives) DB.archives = {};
             if (!DB.favorites) DB.favorites = [];
             if (!DB.todos) DB.todos = [];
@@ -7505,6 +7935,35 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             playSound('click');
         }
 
+        /** عرض رقم العملية حسب التبويب: مناقصة=رقم فقط | مباشر=رقم-اتفاق مباشر | تجديد=رقم-تجديد تعاقد */
+        function formatOpDisplayId(opOrId, categoryHint, typeHint) {
+            let id, cat, typ;
+            if (opOrId != null && typeof opOrId === 'object') {
+                id = opOrId.id;
+                cat = opOrId.category || 'tender';
+                typ = opOrId.type || '';
+            } else {
+                id = opOrId;
+                cat = categoryHint || 'tender';
+                typ = typeHint || '';
+                const found = (typeof DB !== 'undefined' && DB.operations || []).find(o => String(o.id) === String(id));
+                if (found) {
+                    cat = found.category || cat;
+                    typ = found.type || typ;
+                }
+            }
+            if (id == null || id === '') return '—';
+            const num = String(id);
+            if (cat === 'direct' || (typ && typ.includes('أمر مباشر'))) {
+                return num + '-اتفاق مباشر';
+            }
+            if (cat === 'renewal' || (typ && (typ.includes('تجديد') || typ.includes('تمديد')))) {
+                if (typ && typ.includes('تمديد')) return num + '-تمديد تعاقد';
+                return num + '-تجديد تعاقد';
+            }
+            return num;
+        }
+
         function renderOperations() {
             if(!DB.operations) DB.operations = [];
             DB.operations.sort((a, b) => a.id - b.id);
@@ -7550,7 +8009,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         const lock = (typeof isOpLocked === 'function' && isOpLocked(op.id)) ? ' 🔒' : '';
                         const chk = (typeof checklistScore === 'function') ? checklistScore(op.id) : {pct:0};
                         return `<div class="surface p-3 text-xs text-right">
-                            <div class="font-black text-sm mb-1">${fav} ${op.id} — ${op.name || ''}${lock}</div>
+                            <div class="font-black text-sm mb-1">${fav} ${formatOpDisplayId(op)} — ${op.name || ''}${lock}</div>
                             <div class="opacity-80 mb-1">${op.entity || ''} | ${op.type || ''}</div>
                             <div class="mb-1">الموقف: <b>${op.status || '-'}</b> | Checklist: ${chk.pct}%</div>
                             <div class="mb-2">الطرح: ${op.date1||'-'} | فتح: ${op.date2||'-'} | فني: ${op.date3||'-'}</div>
@@ -7583,7 +8042,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         ]
                     );
                     return `<tr>
-                        <td class="font-bold"><button type="button" class="text-primary font-black underline decoration-dotted hover:text-indigo-700" onclick="openOpStory(${op.id})" title="سرد العملية">${op.id}</button></td>
+                        <td class="font-bold"><button type="button" class="text-primary font-black underline decoration-dotted hover:text-indigo-700" onclick="openOpStory(${op.id})" title="سرد العملية">${formatOpDisplayId(op)}</button></td>
                         <td class="op-name-cell" title="${escHtml(op.name || '')}">${escHtml(op.name || '')}</td>
                         <td class="wrap-text">${op.entity || ''}</td>
                         <td>${op.budget || ''}</td>
@@ -7615,7 +8074,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         [{ label: 'المذكرة', icon: 'fa-file-contract', onclick: `openDirectArchive('op_approval', ${op.id}, 'مذكرة الإسناد: ${escHtml(op.name)}')`, itemClass: 'bg-amber-50 hover:bg-amber-100 text-amber-700' }]
                     );
                     return `<tr>
-                        <td class="font-bold"><button type="button" class="text-amber-600 font-black underline decoration-dotted" onclick="openOpStory(${op.id})" title="سرد العملية">${op.id}</button></td>
+                        <td class="font-bold"><button type="button" class="text-amber-600 font-black underline decoration-dotted" onclick="openOpStory(${op.id})" title="سرد العملية">${formatOpDisplayId(op)}</button></td>
                         <td class="op-name-cell" title="${escHtml(op.name || '')}">${escHtml(op.name || '')}</td>
                         <td class="wrap-text">${op.entity || ''}</td>
                         <td>${op.budget || ''}</td>
@@ -7639,12 +8098,12 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         [{ label: 'الملحق', icon: 'fa-file-signature', onclick: `openDirectArchive('op_approval', ${op.id}, 'ملحق العقد: ${escHtml(op.name)}')`, itemClass: 'bg-cyan-50 hover:bg-cyan-100 text-cyan-700' }]
                     );
                     return `<tr>
-                        <td class="font-bold"><button type="button" class="text-cyan-600 font-black underline decoration-dotted" onclick="openOpStory(${op.id})" title="سرد العملية">${op.id}</button></td>
+                        <td class="font-bold"><button type="button" class="text-cyan-600 font-black underline decoration-dotted" onclick="openOpStory(${op.id})" title="سرد العملية">${formatOpDisplayId(op)}</button></td>
                         <td class="op-name-cell" title="${escHtml(op.name || '')}">${escHtml(op.name || '')}</td>
                         <td class="wrap-text">${op.entity || ''}</td>
                         <td>${pill(op.type || '-', 'blue')}</td>
-                        <td class="text-[11px]">${op.date1 || '-'}</td>
-                        <td class="text-[11px]">${op.date2 || '-'}</td>
+                        <td class="text-[11px]">${op.contractStart || op.date1 || '-'}</td>
+                        <td class="text-[11px]">${op.contractEnd || op.date2 || '-'}</td>
                         <td>${pill(op.status || '-', 'blue')}</td>
                         <td>${attach}</td>
                         ${opEditDeleteBtns(op.id)}
@@ -7699,7 +8158,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         [{ label: 'الأمر', icon: 'fa-file-contract', onclick: `openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'المستند: ${escHtml(aw.item)}')`, itemClass: 'hover:bg-slate-100 text-blue-600' }]
                     );
                     return `<tr>
-                        <td class="font-bold">${aw.opId}</td>
+                        <td class="font-bold" title="رقم العملية الداخلي: ${aw.opId}">${formatOpDisplayId(op.category ? op : { id: aw.opId, category: 'direct', type: op.type || 'أمر مباشر' })}</td>
                         <td>${pill(op.type || 'أمر مباشر', 'blue')}</td>
                         <td class="text-right font-bold wrap-text">${aw.item || ''}</td>
                         <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${escHtml(aw.supp)}')">${aw.supp || ''}</td>
@@ -7729,7 +8188,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         [{ label: 'العقد', icon: 'fa-file-signature', onclick: `openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'الملحق: ${escHtml(aw.item)}')`, itemClass: 'hover:bg-slate-100 text-cyan-600' }]
                     );
                     return `<tr>
-                        <td class="font-bold">${aw.opId}</td>
+                        <td class="font-bold" title="رقم العملية الداخلي: ${aw.opId}">${formatOpDisplayId(op.category ? op : { id: aw.opId, category: 'renewal', type: op.type || 'تجديد تعاقد' })}</td>
                         <td>${pill(op.type || 'تجديد', 'blue')}</td>
                         <td class="text-right font-bold wrap-text">${aw.item || ''}</td>
                         <td class="text-right text-primary dark:text-indigo-400 font-bold wrap-text">${aw.supp || ''}</td>
@@ -7762,7 +8221,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         ]
                     );
                     return `<tr>
-                        <td class="font-bold">${aw.opId}</td>
+                        <td class="font-bold" title="رقم العملية الداخلي: ${aw.opId}">${formatOpDisplayId(op.id != null ? op : { id: aw.opId, category: 'tender', type: op.type || 'مناقصة عامة' })}</td>
                         <td>${pill(op.type || 'مناقصة', 'blue')}</td>
                         <td class="text-right font-bold wrap-text">${aw.item || ''}</td>
                         <td class="text-right text-primary dark:text-indigo-400 underline font-bold cursor-pointer wrap-text" onclick="showSupInfo('${escHtml(aw.supp)}')">${aw.supp || ''}</td>
@@ -7937,7 +8396,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                     : 'قيد البت';
                 
                 tb.innerHTML += `<tr>
-                    <td class="font-bold text-center">${aw.opId}</td>
+                    <td class="font-bold text-center">${formatOpDisplayId({ id: aw.opId, category: (op.category||'tender'), type: op.type })}</td>
                     <td class="text-right"><b>${op.name || '-'}</b><br><span class="text-[10px] text-slate-500">${op.entity || '-'}</span></td>
                     <td class="text-right font-bold">${aw.item || '-'}</td>
                     <td class="text-right font-bold text-primary dark:text-indigo-400">${aw.supp || '-'}</td>
@@ -9623,7 +10082,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             }
             window._storyOpId = Number(opId);
             const op = data.op;
-            document.getElementById('op-story-title').textContent = 'سرد العملية رقم ' + op.id;
+            document.getElementById('op-story-title').textContent = 'سرد العملية ' + formatOpDisplayId(op);
             document.getElementById('op-story-sub').textContent = (op.name || '') + (op.type ? (' · ' + op.type) : '');
 
             const narrative = buildOpStoryNarrative(data);
