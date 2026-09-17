@@ -7,6 +7,9 @@
 
 
 
+
+
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -2604,7 +2607,20 @@
             #view-executive .excel-table-container {
                 border: none !important;
             }
-            #view-executive table.excel-table {
+            
+            /* تقرير تنفيذي: جداول منفصلة للطباعة */
+            #executive-report-host .executive-section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 14px !important;
+            }
+            #executive-report-host .executive-section h3 {
+                font-size: 11px !important;
+                margin: 0 0 4px 0 !important;
+                color: #000 !important;
+            }
+            #tbl-executive { display: none !important; }
+#view-executive table.excel-table {
                 table-layout: auto !important;
                 font-size: 8px !important;
             }
@@ -3308,7 +3324,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
                     <button type="button" class="nav-burger-item" id="nav-operations" onclick="playSound('click'); switchTab('operations'); closeNavBurger();"><i class="fa-solid fa-gavel fa-shake"></i> سجل إجراءات الطرح</button>
                     <button type="button" class="nav-burger-item" id="nav-awards" onclick="playSound('click'); switchTab('awards'); closeNavBurger();"><i class="fa-solid fa-trophy fa-bounce"></i> قرارات الترسية</button>
                     <button type="button" class="nav-burger-item" id="nav-suppliers" onclick="playSound('click'); switchTab('suppliers'); closeNavBurger();"><i class="fa-solid fa-truck-fast fa-beat"></i> سجل الموردين والمقاولين</button>
-                    <button type="button" class="nav-burger-item" id="nav-executive" onclick="playSound('click'); switchTab('executive'); closeNavBurger();"><i class="fa-solid fa-clipboard-list fa-beat-fade"></i> التقرير التنفيذي الشامل لموقف التعاقدات</button>
+                    <button type="button" class="nav-burger-item" id="nav-executive" onclick="playSound('click'); switchTab('executive'); closeNavBurger();"><i class="fa-solid fa-clipboard-list fa-beat-fade"></i> تقرير بموقف عمليات إدارة التعاقدات</button>
                     <button type="button" class="nav-burger-item" id="nav-query" onclick="playSound('click'); switchTab('query'); closeNavBurger();"><i class="fa-solid fa-magnifying-glass fa-beat text-yellow-300"></i> استعلام عملية</button>
                     <button type="button" class="nav-burger-item" id="nav-tasks" onclick="playSound('click'); switchTab('tasks'); closeNavBurger();"><i class="fa-solid fa-fire fa-beat text-orange-300"></i> مهام اليوم</button>
                     <button type="button" class="nav-burger-item" id="nav-audit" onclick="playSound('click'); switchTab('audit'); closeNavBurger();"><i class="fa-solid fa-clipboard-check text-emerald-300"></i> سجل التدقيق</button>
@@ -3703,7 +3719,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
         <!-- EXECUTIVE REPORT -->
         <div id="view-executive" class="view-section p-3 md:p-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 no-print gap-2">
-                <h2 class="font-black text-slate-900 dark:text-white text-lg"><i class="fa-solid fa-clipboard-list fa-beat-fade text-lg icon-live"></i> التقرير التنفيذي الشامل لموقف التعاقدات الشامل</h2>
+                <h2 class="font-black text-slate-900 dark:text-white text-lg"><i class="fa-solid fa-clipboard-list fa-beat-fade text-lg icon-live"></i> تقرير بموقف عمليات إدارة التعاقدات</h2>
                 <div class="flex gap-2 w-full sm:w-auto">
                     <button onclick="playSound('click'); exportExcel('tbl-executive', 'التقرير_التنفيذي_الشامل')" class="bg-success text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-green-700 transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-file-arrow-down fa-bounce text-sm icon-live"></i> Excel</button>
                     <button onclick="playSound('click'); window.print()" class="bg-slate-800 text-white px-4 py-1.5 rounded-xl font-bold shadow-sm hover:bg-black transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-print fa-beat-fade text-sm icon-live"></i> طباعة</button>
@@ -3711,7 +3727,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
             </div>
             <div class="hidden print-header text-center">
                 <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="logo-print">
-                <h2 class="font-black text-xl text-gray-900 mb-1">التقرير التنفيذي الشامل لموقف التعاقدات الشامل لموقف التعاقدات والتوريدات</h2>
+                <h2 class="font-black text-xl text-gray-900 mb-1">تقرير بموقف عمليات إدارة التعاقدات</h2>
                 <h3 class="font-bold text-gray-600 text-xs">جامعة برج العرب التكنولوجية</h3>
             </div>
 
@@ -3766,7 +3782,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
             </div>
             <div class="print-footer">
                 <span id="print-datetime"></span>
-                <span>الإدارة العامة للتعاقدات والتوريدات — جامعة برج العرب التكنولوجية</span>
+                <span>إدارة التعاقدات — جامعة برج العرب التكنولوجية</span>
             </div>
         </div>
 
@@ -3853,6 +3869,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
                 </div>
                 <div class="flex flex-wrap gap-2 items-center">
                     <input type="search" id="recycle-search" placeholder="بحث في السلة..." oninput="renderRecycleBin()" class="border rounded-xl px-3 py-1.5 text-xs bg-white dark:bg-slate-900 dark:text-white min-w-[160px]">
+                    <button type="button" id="btn-purge-orphans" onclick="purgeOrphanData(false)" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold" title="حذف الترسيات والسجلات غير المرتبطة بأي عملية"><i class="fa-solid fa-broom"></i> تنظيف بيانات يتيمة</button>
                     <button type="button" id="btn-empty-recycle" onclick="emptyRecycleBinAdmin()" class="hidden px-3 py-1.5 rounded-xl bg-rose-700 hover:bg-rose-800 text-white text-[11px] font-bold"><i class="fa-solid fa-dumpster-fire"></i> تفريغ السلة</button>
                 </div>
             </div>
@@ -3939,7 +3956,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
             </div>
             <div class="print-footer">
                 <span id="print-datetime-q"></span>
-                <span>الإدارة العامة للتعاقدات والتوريدات — جامعة برج العرب التكنولوجية</span>
+                <span>إدارة التعاقدات — جامعة برج العرب التكنولوجية</span>
             </div>
         </div>
 
@@ -5210,7 +5227,20 @@ body.dark #bid-side-cards select.bid-tech-sel {
                 }
             } catch (e) {}
             if (parsed.opId != null) {
-                const idNum = parseInt(String(parsed.opId).replace(/[^\d]/g, ''), 10);
+                // خذ أول رقم عملية معقول فقط — ممنوع دمج أرقام مثل 1/001 → 1001
+                const sOp = String(parsed.opId).trim();
+                let idNum = NaN;
+                let mOp = sOp.match(/(?:رقم\s*)?(?:\(?\s*)(\d{1,6})(?:\s*\)?)/);
+                if (mOp) idNum = parseInt(mOp[1], 10);
+                if (isNaN(idNum)) {
+                    mOp = sOp.match(/^(\d{1,6})/);
+                    if (mOp) idNum = parseInt(mOp[1], 10);
+                }
+                // إذا وُجد فاصل (/, -, سنة) والرقم كبير: خذ الرقم قبل الفاصل فقط
+                if (!isNaN(idNum) && idNum > 999 && /[\/\-]|سنة/.test(sOp)) {
+                    mOp = sOp.match(/(\d{1,4})\s*[\/\-]/);
+                    if (mOp) idNum = parseInt(mOp[1], 10);
+                }
                 parsed.opId = isNaN(idNum) ? null : idNum;
             }
             if (Array.isArray(parsed.awards)) {
@@ -6531,14 +6561,72 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 DB.awards = newAwards;
                 // تحديث إجماليات العمليات
                 (DB.operations || []).forEach(function(op) {
-                    op.total = (DB.awards || []).filter(a => String(a.opId) === String(op.id) && a.awardStatus === 'تم الترسية')
-                        .reduce((s, a) => s + (parseFloat(a.val) || 0), 0);
+                    op.total = (typeof calcOpAwardTotal === 'function') ? calcOpAwardTotal(op) : 0;
                 });
                 if (!silent && typeof saveDB === 'function') {
                     try { saveDB(); } catch (e) {}
                 }
             }
             return removed;
+        }
+
+
+        // ===== هوية العملية: الرقم فريد داخل نفس الفئة فقط (مناقصة / مباشر / تجديد) =====
+        function findOperation(id, category) {
+            if (id == null || id === '') return null;
+            const list = (typeof DB !== 'undefined' && DB.operations) ? DB.operations : [];
+            if (category) {
+                return list.find(o => String(o.id) === String(id) && (o.category || 'tender') === category) || null;
+            }
+            return list.find(o => String(o.id) === String(id)) || null;
+        }
+        function nextUniqueOpIdForCategory(cat) {
+            const c = cat || 'tender';
+            const maxId = ((typeof DB !== 'undefined' && DB.operations) ? DB.operations : [])
+                .filter(o => (o.category || 'tender') === c)
+                .reduce((m, o) => Math.max(m, parseInt(o.id, 10) || 0), 0);
+            return maxId + 1;
+        }
+
+        // إصلاح العمليات ذات الأرقام التالفة (null / غير رقمي) التي تظهر كـ ؟ في الجدول
+        function repairInvalidOpIds() {
+            try {
+                if (!DB || !DB.operations) return 0;
+                const maxByCat = { tender: 0, direct: 0, renewal: 0 };
+                DB.operations.forEach(function(o) {
+                    const c = o.category || 'tender';
+                    if (maxByCat[c] == null) maxByCat[c] = 0;
+                    maxByCat[c] = Math.max(maxByCat[c], parseInt(o.id, 10) || 0);
+                });
+                let fixed = 0;
+                DB.operations.forEach(function(op) {
+                    const n = parseInt(op.id, 10);
+                    if (op.id == null || op.id === '' || isNaN(n) || n < 1) {
+                        const c = op.category || 'tender';
+                        if (maxByCat[c] == null) maxByCat[c] = 0;
+                        maxByCat[c] += 1;
+                        const oldId = op.id;
+                        op.id = maxByCat[c];
+                        (DB.awards || []).forEach(function(a) {
+                            if (String(a.opId) === String(oldId) && (!a.opCategory || a.opCategory === c)) a.opId = op.id;
+                        });
+                        (DB.applicants || []).forEach(function(a) {
+                            if (String(a.opId) === String(oldId)) a.opId = op.id;
+                        });
+                        fixed++;
+                    }
+                });
+                if (fixed > 0) {
+                    console.warn('[repairInvalidOpIds] تم إصلاح ' + fixed + ' عملية بدون رقم صالح');
+                    if (typeof saveDB === 'function') {
+                        try { saveDB(); } catch (e) {}
+                    }
+                }
+                return fixed;
+            } catch (e) {
+                console.warn('repairInvalidOpIds error', e);
+                return 0;
+            }
         }
 
         // دالة الدمج التراكمي الذكي للعمليات والبنود وترحيل كافة بيانات الشركات بدقة متناهية
@@ -6555,6 +6643,8 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                     alert('لا توجد بيانات مستخرجة للاعتماد.');
                     return;
                 }
+
+                try { repairInvalidOpIds(); } catch (eRep) {}
 
                 let opName = document.getElementById('st-op-name').value || globalParsedData.opName || 'عملية جديدة';
                 let opEntity = document.getElementById('st-op-entity').value || globalParsedData.opEntity || '';
@@ -6582,8 +6672,11 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 }
 
                 function _nextUniqueOpId() {
-                    const maxId = (DB.operations || []).reduce((m, o) => Math.max(m, parseInt(o.id, 10) || 0), 0);
-                    return maxId + 1;
+                    // فريد داخل نفس فئة العملية فقط (مناقصة / مباشر / تجديد)
+                    return (typeof nextUniqueOpIdForCategory === 'function')
+                        ? nextUniqueOpIdForCategory(category)
+                        : ((DB.operations || []).filter(o => (o.category || 'tender') === category)
+                            .reduce((m, o) => Math.max(m, parseInt(o.id, 10) || 0), 0) + 1);
                 }
                 function _parsePoNumAsId(raw) {
                     if (raw == null || raw === '') return null;
@@ -6597,41 +6690,46 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                     return null;
                 }
 
-                // opId: مناقصة = رقم العملية | أمر مباشر/تجديد = رقم أمر الإسناد/التوريد أولاً
-                let preferredId = parseInt(document.getElementById('st-op-id').value, 10) || parseInt(globalParsedData.opId, 10) || null;
+                // ===== تحديد رقم العملية (إصلاح: احترام رقم المستخدم ومنع 1→1001) =====
+                const stRawUser = parseInt((document.getElementById('st-op-id') || {}).value, 10);
+                const aiOpRaw = parseInt(globalParsedData.opId, 10);
+                const userExplicitlySetId = !!(stRawUser && !isNaN(stRawUser) && stRawUser > 0);
+
+                // أولوية مطلقة لما كتبه المستخدم في خانة رقم العملية
+                let preferredId = userExplicitlySetId ? stRawUser
+                    : (aiOpRaw && !isNaN(aiOpRaw) && aiOpRaw > 0 ? aiOpRaw : null);
+
                 if (category === 'direct' || category === 'renewal') {
-                    // الأولوية المطلقة لرقم أمر الإسناد/التوريد
+                    // في المباشر/التجديد: رقم أمر الإسناد إن لم يحدد المستخدم رقماً
                     const awardsForId = Array.isArray(globalParsedData.awards) ? globalParsedData.awards : [];
                     let poAsId = null;
                     for (let i = 0; i < awardsForId.length; i++) {
                         const pid = _parsePoNumAsId(awardsForId[i] && awardsForId[i].poNum);
                         if (pid && !isNaN(pid) && pid > 0) { poAsId = pid; break; }
                     }
-                    if (poAsId) preferredId = poAsId;
-                    // إن المستخدم كتب رقماً في الشاشة وهو ليس رقم مناقصة بالخطأ — نستخدمه إن لم يوجد poNum
+                    if (userExplicitlySetId) preferredId = stRawUser;
+                    else if (poAsId) preferredId = poAsId;
                 }
-                // حماية: في المناقصة لا تستخدم poNum كـ opId أبداً
-                if (category === 'tender' && preferredId) {
+
+                // حماية: في المناقصة لا تستخدم poNum كـ opId (إلا إذا المستخدم كتبه صراحة)
+                if (category === 'tender' && preferredId && !userExplicitlySetId) {
                     const awardsForId = Array.isArray(globalParsedData.awards) ? globalParsedData.awards : [];
                     const poIds = awardsForId.map(a => _parsePoNumAsId(a && a.poNum)).filter(Boolean);
                     const aiOp = parseInt(globalParsedData.opId, 10);
-                    // إذا preferredId == رقم أمر فقط ولم يأتِ من AI opId → تجاهله
                     if (poIds.includes(preferredId) && (!aiOp || isNaN(aiOp) || aiOp !== preferredId)) {
-                        const stRaw = parseInt(document.getElementById('st-op-id').value, 10);
-                        if (stRaw && stRaw === preferredId && aiOp && !isNaN(aiOp)) preferredId = aiOp;
-                        else if (aiOp && !isNaN(aiOp)) preferredId = aiOp;
-                        else if (poIds.includes(preferredId) && stRaw === preferredId && !aiOp) {
-                            // المستخدم كتب رقم الأمر بالخطأ في خانة العملية — ابحث عن عملية بنفس الاسم
-                            preferredId = null;
-                        }
+                        preferredId = null;
                     }
+                }
+                // إعادة تأكيد أولوية المستخدم دائماً في المناقصة
+                if (category === 'tender' && userExplicitlySetId) {
+                    preferredId = stRawUser;
                 }
 
                 let opId = preferredId;
                 let existingOpIndex = -1;
                 let existingOp = null;
 
-                // مطابقة ذكية بالاسم إذا لم يتوفر opId صحيح (تحديث عملية موجودة)
+                // مطابقة بالاسم فقط إن لم يتوفر رقم — وداخل نفس الفئة فقط
                 if ((!opId || isNaN(opId)) && opName) {
                     const norm = function(s) {
                         return String(s || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
@@ -6644,33 +6742,19 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                             const on = norm(o.name);
                             return on && (on === nName || on.includes(nName) || nName.includes(on));
                         });
-                        if (byName) {
-                            opId = byName.id;
-                        }
+                        if (byName) opId = byName.id;
                     }
                 }
 
                 if (opId && !isNaN(opId)) {
-                    existingOpIndex = DB.operations.findIndex(o => String(o.id) === String(opId));
+                    // الرقم + الفئة معاً: يسمح بمناقصة رقم 1 ومباشر رقم 1 معاً
+                    existingOpIndex = DB.operations.findIndex(o =>
+                        String(o.id) === String(opId) && (o.category || 'tender') === category);
                     existingOp = existingOpIndex >= 0 ? DB.operations[existingOpIndex] : null;
-                    if (existingOp) {
-                        const existCat = existingOp.category || 'tender';
-                        // أمر إسناد لمناقصة: حدّث المناقصة حتى لو الـ AI صنّفها خطأً كأمر مباشر
-                        if (existCat === 'tender' && category !== 'tender' && looksLikeTenderRef) {
-                            category = 'tender';
-                            opType = existingOp.type || opType;
-                        } else if (existCat !== category && category === 'tender' && existCat !== 'tender') {
-                            // لا تستبدل تجديد/مباشر بعملية مناقصة بنفس الرقم
-                            opId = _nextUniqueOpId();
-                            existingOpIndex = -1;
-                            existingOp = null;
-                        } else if (existCat !== category && existCat === 'tender' && category !== 'tender') {
-                            // رقم مناقصة موجود — لا تنشئ مباشر/تجديد بنفس الرقم
-                            opId = _nextUniqueOpId();
-                            existingOpIndex = -1;
-                            existingOp = null;
-                        }
+                    if (existingOp && category === 'tender' && looksLikeTenderRef) {
+                        opType = existingOp.type || opType;
                     }
+                    // لا يوجد تعارض عبر الفئات — إن لم تُوجد في نفس الفئة تُنشأ جديدة بنفس الرقم
                 } else {
                     opId = _nextUniqueOpId();
                 }
@@ -6892,7 +6976,11 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                     }
                 });
 
-                let totalVal = DB.awards.filter(a => String(a.opId) === String(opId) && a.awardStatus === 'تم الترسية').reduce((sum, a) => sum + parseFloat(a.val || 0), 0);
+                // ربط الترسيات بفئة العملية لتمييز مناقصة 1 عن مباشر 1
+                (DB.awards || []).forEach(function(a) {
+                    if (String(a.opId) === String(opId) && !a.opCategory) a.opCategory = category;
+                });
+                let totalVal = DB.awards.filter(a => String(a.opId) === String(opId) && (!a.opCategory || a.opCategory === category) && a.awardStatus === 'تم الترسية').reduce((sum, a) => sum + parseFloat(a.val || 0), 0);
 
                 let opData = {
                     id: opId,
@@ -7223,7 +7311,9 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
         function saveDB() {
             if (_applyingRemote) return; // لا تعِد الكتابة أثناء تطبيق تحديث قادم من السيرفر
             ensureDBShape();
+            try { repairInvalidOpIds(); } catch (eR) {}
             try { purgeExpiredRecycleBin(true); } catch (e) {}
+            try { cleanupOrphanedOpData(true); } catch (e) {}
             if (DB.operations) DB.operations.sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
             DB.meta = DB.meta || {};
             DB.meta.updatedAt = Date.now();
@@ -7270,25 +7360,451 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
         loadOfflineCacheIfNeeded();
 
 
-        async function deleteOp(id) { 
-            if(!DB.operations) DB.operations = [];
-            if(!DB.awards) DB.awards = [];
-            const op = (DB.operations || []).find(o => String(o.id) === String(id));
-            if (!op) return alert('العملية غير موجودة.');
-            if(!(await showConfirm('نقل العملية رقم ' + id + ' إلى سلة المحذوفات؟\n(تُحفظ أسبوعاً ويمكن استعادتها من السلة)', { title: 'سلة المحذوفات', confirmText: 'نقل للسلة', danger: true }))) return;
-            const relatedAwards = (DB.awards || []).filter(a => String(a.opId) === String(id));
-            softDeleteToBin('operation', { operation: op, awards: relatedAwards }, 'عملية ' + id + ': ' + (op.name || ''));
-            DB.operations = DB.operations.filter(o => String(o.id) !== String(id)); 
-            DB.awards = DB.awards.filter(a => String(a.opId) !== String(id));
-            pushAudit('delete_operation', 'عملية ' + id + ' — ' + (op.name || ''), {
-                entityType: 'operation', entityId: String(id), opId: Number(id),
-                changes: [{ field: 'الحالة', from: 'نشطة', to: 'محذوفة → السلة' }]
-            });
-            saveDB(); 
-            alert('تم نقل العملية إلى سلة المحذوفات (تُحفظ 7 أيام).');
+                
+        // ===== تنظيف جذري: بيانات بلا عملية مرتبطة + ترسيات بفئة خاطئة =====
+        
+        /** هل الترسية تتبع هذه العملية (رقم + فئة) مع معالجة البيانات القديمة بلا opCategory؟ */
+        
+        /** حل العملية المرتبطة بترسية بشكل صحيح (فئة + تطابق اسم عند الاشتراك في الرقم) */
+        function resolveAwardOperation(aw, preferredCat) {
+            if (!aw) return {};
+            const oid = aw.opId;
+            let cat = aw.opCategory || preferredCat || null;
+            let op = null;
+            if (cat && typeof findOperation === 'function') op = findOperation(oid, cat);
+            if (!op && cat) op = (DB.operations || []).find(o => String(o.id) === String(oid) && (o.category || 'tender') === cat);
+            if (!op) {
+                const cands = (DB.operations || []).filter(o => String(o.id) === String(oid));
+                if (cands.length === 1) op = cands[0];
+                else if (cands.length > 1) {
+                    const norm = s => String(s || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+                        .replace(/\s+/g,' ').trim().toLowerCase();
+                    const blob = norm(aw.item) + ' ' + norm(aw.supp);
+                    let best = null, bestSc = -1;
+                    cands.forEach(function(o) {
+                        const on = norm(o.name);
+                        let sc = 0;
+                        const setO = new Set(on.split(' ').filter(t => t.length > 2));
+                        blob.split(' ').forEach(t => { if (t.length > 2 && setO.has(t)) sc++; });
+                        // فضّل الفئة المفضّلة عند التعادل
+                        if (preferredCat && (o.category || 'tender') === preferredCat) sc += 0.5;
+                        if (sc > bestSc) { bestSc = sc; best = o; }
+                    });
+                    op = best || cands[0];
+                }
+            }
+            if (!op && typeof findOperation === 'function') op = findOperation(oid, preferredCat || null);
+            if (!op) op = (DB.operations || []).find(o => String(o.id) === String(oid)) || {};
+            return op || {};
+        }
+        /** تصحيح opCategory للترسية إن كانت مربوطة بعملية خاطئة (حفظ صامت) */
+        function fixAwardOpCategory(aw, preferredCat) {
+            if (!aw) return false;
+            const op = resolveAwardOperation(aw, preferredCat);
+            if (!op || op.id == null) return false;
+            const rightCat = op.category || preferredCat || 'tender';
+            // إن تطابق الاسم مع عملية فئة مختلفة عن المسجّل — صحّح
+            if (aw.opCategory && aw.opCategory !== rightCat) {
+                // تحقق أن الاسم يدعم التصحيح
+                const norm = s => String(s || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/\s+/g,' ').trim().toLowerCase();
+                const blob = norm(aw.item);
+                const on = norm(op.name);
+                if (on.length >= 6 && blob.length >= 4) {
+                    const ot = on.split(' ').filter(t => t.length > 2);
+                    let inter = 0; const sO = new Set(ot);
+                    blob.split(' ').forEach(t => { if (t.length > 2 && sO.has(t)) inter++; });
+                    if (inter >= 2 || (ot.length && inter >= 1)) {
+                        aw.opCategory = rightCat;
+                        return true;
+                    }
+                }
+            }
+            if (!aw.opCategory) {
+                aw.opCategory = rightCat;
+                return true;
+            }
+            return false;
         }
 
-                function autoDetectDocType() {
+function awardBelongsToOperation(a, op) {
+            if (!a || !op) return false;
+            if (String(a.opId) !== String(op.id)) return false;
+            const oc = op.category || 'tender';
+            if (a.opCategory) return a.opCategory === oc;
+            // بلا فئة: إن لم توجد عمليات أخرى بنفس الرقم → تُحسب
+            const cands = (DB.operations || []).filter(o => String(o.id) === String(op.id));
+            if (cands.length <= 1) return true;
+            // عدة عمليات بنفس الرقم: طابق اسم البند مع اسم العملية
+            const norm = s => String(s || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+                .replace(/\s+/g,' ').trim().toLowerCase();
+            const blob = norm(a.item) + ' ' + norm(a.supp);
+            let best = null, bestSc = -1;
+            cands.forEach(function(o) {
+                const on = norm(o.name);
+                let sc = 0;
+                const setO = new Set(on.split(' ').filter(t => t.length > 2));
+                blob.split(' ').forEach(t => { if (t.length > 2 && setO.has(t)) sc++; });
+                if (sc > bestSc) { bestSc = sc; best = o; }
+            });
+            if (best && bestSc > 0) {
+                return String(best.id) === String(op.id) && (best.category || 'tender') === oc;
+            }
+            // تعادل/بدون تطابق: انسب للمناقصة فقط
+            return oc === 'tender';
+        }
+        function fixAllAwardCategories(silent) {
+            if (!DB.awards || !DB.awards.length) return 0;
+            let n = 0;
+            (DB.awards || []).forEach(function(aw) {
+                if (typeof fixAwardOpCategory === 'function') {
+                    // جرّب بدون preferred ثم مع كل فئة
+                    const cats = ['tender', 'direct', 'renewal'];
+                    const before = aw.opCategory;
+                    // resolve best op by name across same id
+                    if (typeof resolveAwardOperation === 'function') {
+                        const op = resolveAwardOperation(aw, aw.opCategory || null);
+                        if (op && op.id != null) {
+                            const right = op.category || 'tender';
+                            if (aw.opCategory !== right) { aw.opCategory = right; n++; }
+                            else if (!aw.opCategory) { aw.opCategory = right; n++; }
+                        }
+                    } else if (typeof fixAwardOpCategory === 'function') {
+                        if (fixAwardOpCategory(aw, aw.opCategory || 'tender')) n++;
+                    }
+                }
+            });
+            if (n > 0 && typeof calcOpAwardTotal === 'function') {
+                (DB.operations || []).forEach(function(op) { op.total = calcOpAwardTotal(op); });
+            }
+            if (n > 0 && typeof saveDB === 'function') { try { saveDB(); } catch (e) {} }
+            if (!silent && n > 0) console.info('[fixAllAwardCategories]', n);
+            return n;
+        }
+
+        function calcOpAwardTotal(op) {
+            if (!op) return 0;
+            return (DB.awards || []).filter(a =>
+                awardBelongsToOperation(a, op) && a.awardStatus === 'تم الترسية'
+            ).reduce((s, a) => s + (parseFloat(a.val) || 0), 0);
+        }
+
+function purgeOrphanData(silent) {
+            try {
+                ensureDBShape();
+                if (!DB.operations) DB.operations = [];
+                if (!DB.awards) DB.awards = [];
+                let removed = { awards: 0, applicants: 0, comparisons: 0, aiVersions: 0, stories: 0, meta: 0 };
+
+                function opExists(oid, cat) {
+                    if (oid == null || oid === '') return false;
+                    return (DB.operations || []).some(o => {
+                        if (String(o.id) !== String(oid)) return false;
+                        if (cat) return (o.category || 'tender') === cat;
+                        return true;
+                    });
+                }
+
+                // ترسيات: إما العملية غير موجودة، أو opCategory لا تطابق أي عملية بنفس الرقم
+                const beforeA = (DB.awards || []).length;
+                DB.awards = (DB.awards || []).filter(a => {
+                    const oid = a.opId;
+                    if (oid == null || oid === '') return false; // ترسية بلا رقم عملية
+                    if (a.opCategory) {
+                        return opExists(oid, a.opCategory);
+                    }
+                    // بلا فئة: تُبقى فقط إن وُجدت عملية بنفس الرقم (أي فئة)
+                    return opExists(oid, null);
+                });
+                removed.awards = beforeA - DB.awards.length;
+
+                const beforeAp = (DB.applicants || []).length;
+                DB.applicants = (DB.applicants || []).filter(a => opExists(a.opId, a.opCategory || null));
+                removed.applicants = beforeAp - (DB.applicants || []).length;
+
+                const beforeC = (DB.bidComparisons || []).length;
+                DB.bidComparisons = (DB.bidComparisons || []).filter(c => opExists(c.opId, c.opCategory || null));
+                removed.comparisons = beforeC - (DB.bidComparisons || []).length;
+
+                const beforeV = (DB.aiVersions || []).length;
+                DB.aiVersions = (DB.aiVersions || []).filter(v => opExists(v.opId, v.opCategory || null));
+                removed.aiVersions = beforeV - (DB.aiVersions || []).length;
+
+                // مفاتيح السرد/الميتا اليتيمة
+                if (DB.opStories && typeof DB.opStories === 'object') {
+                    Object.keys(DB.opStories).forEach(k => {
+                        let oid = k, cat = null;
+                        if (k.indexOf(':') >= 0) {
+                            const parts = k.split(':');
+                            cat = parts[0];
+                            oid = parts.slice(1).join(':');
+                        }
+                        if (!opExists(oid, cat)) {
+                            delete DB.opStories[k];
+                            removed.stories++;
+                        }
+                    });
+                }
+                if (DB.opMeta && typeof DB.opMeta === 'object') {
+                    Object.keys(DB.opMeta).forEach(k => {
+                        let oid = k, cat = null;
+                        if (k.indexOf(':') >= 0) {
+                            const parts = k.split(':');
+                            cat = parts[0];
+                            oid = parts.slice(1).join(':');
+                        }
+                        if (!opExists(oid, cat)) {
+                            delete DB.opMeta[k];
+                            removed.meta++;
+                        }
+                    });
+                }
+
+                // إعادة حساب إجماليات العمليات بعد التنظيف
+                (DB.operations || []).forEach(function(op) {
+                    op.total = (typeof calcOpAwardTotal === 'function') ? calcOpAwardTotal(op) : 0;
+                });
+
+                const totalRm = removed.awards + removed.applicants + removed.comparisons + removed.aiVersions + removed.stories + removed.meta;
+                if (totalRm > 0) {
+                    if (typeof saveDB === 'function') { try { saveDB(); } catch (e) {} }
+                    console.info('[purgeOrphanData]', removed);
+                    if (!silent) {
+                        alert('تم تنظيف البيانات اليتيمة:\n' +
+                            '• ترسيات: ' + removed.awards + '\n' +
+                            '• متقدمون: ' + removed.applicants + '\n' +
+                            '• كشوف تفريغ: ' + removed.comparisons + '\n' +
+                            '• إصدارات استخراج: ' + removed.aiVersions + '\n' +
+                            '• سرد: ' + removed.stories + '\n' +
+                            '• بيانات إضافية: ' + removed.meta);
+                    }
+                } else if (!silent) {
+                    alert('لا توجد بيانات يتيمة تحتاج تنظيفًا.');
+                }
+                return removed;
+            } catch (e) {
+                console.warn('purgeOrphanData', e);
+                if (!silent) alert('تعذر التنظيف: ' + (e && e.message ? e.message : e));
+                return null;
+            }
+        }
+
+        /** فصل ترسيات لا تطابق اسم العملية (مثل شئون بيئة داخل سرد ميني باص) */
+        
+        /** تنظيف لقطة السرد من ترسيات/نصوص تجديد لا تخص المناقصة */
+        function sanitizeOpStoryAwards(opId, category) {
+            try {
+                ensureDBShape();
+                if (!DB.opStories) return 0;
+                const op = (typeof findOperation === 'function') ? findOperation(opId, category) :
+                    (DB.operations || []).find(o => String(o.id) === String(opId));
+                if (!op) return 0;
+                const opCat = op.category || category || 'tender';
+                const keys = [String(opId)];
+                if (opCat !== 'tender') keys.push(opCat + ':' + opId);
+                const norm = s => String(s || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+                    .replace(/[^\w\u0600-\u06FF\s]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+                const opN = norm(op.name);
+                const opTokens = opN.split(' ').filter(t => t.length > 2);
+                let cleaned = 0;
+                keys.forEach(function(k) {
+                    const st = DB.opStories[k];
+                    if (!st || !Array.isArray(st.awardDecisions)) return;
+                    const before = st.awardDecisions.length;
+                    st.awardDecisions = st.awardDecisions.filter(function(a) {
+                        const blob = norm(a.item) + ' ' + norm(a.note) + ' ' + norm(a.company);
+                        if (opCat === 'tender' && /تجديد\s*تعاقد|تمديد\s*تعاقد|تجديد\s*لمدة|لعام\s*آخر/.test(blob)) return false;
+                        if (opTokens.length >= 3) {
+                            const it = blob.split(' ').filter(t => t.length > 2);
+                            let inter = 0;
+                            const setO = new Set(opTokens);
+                            it.forEach(t => { if (setO.has(t)) inter++; });
+                            if (inter === 0 && it.length >= 2) return false;
+                        }
+                        return true;
+                    });
+                    cleaned += (before - st.awardDecisions.length);
+                    if (st.decisionText && opCat === 'tender' && /تجديد\s*تعاقد|تمديد\s*تعاقد|لعام\s*آخر/.test(st.decisionText)) {
+                        st.decisionText = '';
+                        cleaned++;
+                    }
+                    // في التجديد/المباشر: احذف بنود تقديرية وتفريغ لا تطابق اسم العملية
+                    if (opCat !== 'tender' && opTokens.length >= 3) {
+                        if (Array.isArray(st.estimateItems)) {
+                            const b = st.estimateItems.length;
+                            st.estimateItems = st.estimateItems.filter(function(e) {
+                                const it = norm(e.item || e.name || '');
+                                if (!it) return false;
+                                let inter = 0; const sO = new Set(opTokens);
+                                it.split(' ').forEach(function(t){ if (t.length>2 && sO.has(t)) inter++; });
+                                return inter > 0;
+                            });
+                            cleaned += (b - st.estimateItems.length);
+                        }
+                        if (Array.isArray(st.financialRows)) {
+                            const b = st.financialRows.length;
+                            let inter = 0; const sO = new Set(opTokens);
+                            st.financialRows.forEach(function(r){
+                                norm(r.item||'').split(' ').forEach(function(t){ if (t.length>2 && sO.has(t)) inter++; });
+                            });
+                            if (inter === 0) {
+                                cleaned += st.financialRows.length;
+                                st.financialRows = [];
+                            }
+                        }
+                        // تأمينات ابتدائية وشركات من مناقصة أخرى — امسحها في التجديد إن لم تُطابق
+                        if (Array.isArray(st.provisionalGuarantees) && st.provisionalGuarantees.length > 3) {
+                            // تجديد عادةً لا يحتاج كشف عطاءات كامل؛ إن وُجدت أسماء كثيرة من مناقصة امسح
+                            st.provisionalGuarantees = [];
+                            cleaned++;
+                        }
+                    }
+                });
+                if (cleaned > 0 && typeof saveDB === 'function') {
+                    try { saveDB(); } catch (e) {}
+                    console.info('[sanitizeOpStoryAwards] removed', cleaned, 'for op', opId);
+                }
+                return cleaned;
+            } catch (e) {
+                console.warn('sanitizeOpStoryAwards', e);
+                return 0;
+            }
+        }
+
+function detachMismatchedAwards(opId, category) {
+            ensureDBShape();
+            const op = (typeof findOperation === 'function') ? findOperation(opId, category) :
+                (DB.operations || []).find(o => String(o.id) === String(opId) && (o.category || 'tender') === (category || 'tender'));
+            if (!op) return 0;
+            const opCat = op.category || 'tender';
+            const norm = s => String(s || '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+                .replace(/[^\w\u0600-\u06FF\s]/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+            const on = norm(op.name);
+            if (on.length < 6) return 0;
+            let moved = 0;
+            (DB.awards || []).forEach(function(a) {
+                if (String(a.opId) !== String(opId)) return;
+                if (a.opCategory && a.opCategory !== opCat) return;
+                const item = norm(a.item);
+                if (!item || item.length < 6) return;
+                // تطابق ضعيف جدًا بين اسم العملية والبند
+                const onTokens = on.split(' ').filter(t => t.length > 2);
+                const itTokens = item.split(' ').filter(t => t.length > 2);
+                let inter = 0;
+                const setO = new Set(onTokens);
+                itTokens.forEach(t => { if (setO.has(t)) inter++; });
+                const ratio = inter / Math.max(1, Math.min(onTokens.length, itTokens.length));
+                if (ratio < 0.2 && inter < 2) {
+                    // ابحث عن عملية أخرى اسمها أقرب للبند
+                    let best = null, bestScore = 0;
+                    (DB.operations || []).forEach(function(o) {
+                        if (String(o.id) === String(opId) && (o.category || 'tender') === opCat) return;
+                        const nn = norm(o.name);
+                        const nt = nn.split(' ').filter(t => t.length > 2);
+                        let sc = 0;
+                        const sset = new Set(nt);
+                        itTokens.forEach(t => { if (sset.has(t)) sc++; });
+                        if (sc > bestScore) { bestScore = sc; best = o; }
+                    });
+                    if (best && bestScore >= 2) {
+                        a.opId = best.id;
+                        a.opCategory = best.category || 'tender';
+                        moved++;
+                    }
+                }
+            });
+            if (moved > 0 && typeof saveDB === 'function') {
+                try { saveDB(); } catch (e) {}
+            }
+            return moved;
+        }
+
+async function deleteOp(id, categoryHint) {
+            if (!DB.operations) DB.operations = [];
+            if (!DB.awards) DB.awards = [];
+            ensureDBShape();
+            let op = null;
+            if (categoryHint && typeof findOperation === 'function') op = findOperation(id, categoryHint);
+            if (!op && typeof findOperation === 'function') op = findOperation(id, currentOpSubTab);
+            if (!op) op = (DB.operations || []).find(o => String(o.id) === String(id) && (o.category || 'tender') === (categoryHint || currentOpSubTab || 'tender'));
+            if (!op) op = (DB.operations || []).find(o => String(o.id) === String(id));
+            if (!op) return alert('العملية غير موجودة.');
+            const opCat = op.category || 'tender';
+            const catLabel = opCat === 'tender' ? 'مناقصة/ممارسة' : (opCat === 'direct' ? 'أمر مباشر' : 'تجديد/تمديد');
+            if (!(await showConfirm(
+                'حذف جذري للعملية رقم ' + id + ' (' + catLabel + ')؟\n' +
+                (op.name || '') + '\n\n' +
+                'سيتم مسح: الترسيات + المتقدمين + كشوف التفريغ + السرد + المرفقات المرتبطة بهذه العملية في هذا التبويب فقط.\n' +
+                'عمليات أخرى بنفس الرقم في تبويب مختلف لن تُمس.\n' +
+                '(نسخة في سلة المحذوفات لمدة 7 أيام)',
+                { title: 'حذف جذري', confirmText: 'حذف نهائي من التبويب', danger: true }
+            ))) return;
+
+            // هل هذا السجل مرتبط بهذه العملية (رقم + فئة)؟
+            function belongsToOp(entityOpId, entityCat) {
+                if (String(entityOpId) !== String(id)) return false;
+                if (entityCat) return entityCat === opCat;
+                // قديم بلا فئة: يُنسب للمناقصة فقط
+                return opCat === 'tender';
+            }
+
+            const relatedAwards = (DB.awards || []).filter(a => belongsToOp(a.opId, a.opCategory));
+            const relatedApplicants = (DB.applicants || []).filter(a => belongsToOp(a.opId, a.opCategory));
+            const relatedComparisons = (DB.bidComparisons || []).filter(c => belongsToOp(c.opId, c.opCategory));
+            const relatedAiVersions = (DB.aiVersions || []).filter(v => belongsToOp(v.opId, v.opCategory));
+            const storyKey = (opCat !== 'tender') ? (opCat + ':' + id) : String(id);
+            const relatedStory = (DB.opStories && (DB.opStories[storyKey] || DB.opStories[String(id)]))
+                ? JSON.parse(JSON.stringify(DB.opStories[storyKey] || DB.opStories[String(id)])) : null;
+            const relatedMeta = (DB.opMeta && (DB.opMeta[storyKey] || DB.opMeta[String(id)]))
+                ? JSON.parse(JSON.stringify(DB.opMeta[storyKey] || DB.opMeta[String(id)])) : null;
+
+            softDeleteToBin('operation', {
+                operation: op,
+                awards: relatedAwards,
+                applicants: relatedApplicants,
+                bidComparisons: relatedComparisons,
+                aiVersions: relatedAiVersions,
+                opStory: relatedStory,
+                opMeta: relatedMeta,
+                category: opCat
+            }, 'عملية ' + id + ' [' + catLabel + ']: ' + (op.name || ''));
+
+            // —— مسح جذري داخل نفس الفئة فقط ——
+            DB.operations = DB.operations.filter(o =>
+                !(String(o.id) === String(id) && (o.category || 'tender') === opCat));
+            DB.awards = (DB.awards || []).filter(a => !belongsToOp(a.opId, a.opCategory));
+            DB.applicants = (DB.applicants || []).filter(a => !belongsToOp(a.opId, a.opCategory));
+            DB.bidComparisons = (DB.bidComparisons || []).filter(c => !belongsToOp(c.opId, c.opCategory));
+            DB.aiVersions = (DB.aiVersions || []).filter(v => !belongsToOp(v.opId, v.opCategory));
+            if (DB.opStories) {
+                delete DB.opStories[storyKey];
+                // مفتاح قديم مشترك: احذفه فقط إن لم تبقَ عملية أخرى بنفس الرقم
+                const still = (DB.operations || []).some(o => String(o.id) === String(id));
+                if (!still) delete DB.opStories[String(id)];
+            }
+            if (DB.opMeta) {
+                delete DB.opMeta[storyKey];
+                const still = (DB.operations || []).some(o => String(o.id) === String(id));
+                if (!still) delete DB.opMeta[String(id)];
+            }
+            // مفضلات
+            if (Array.isArray(DB.favorites)) {
+                DB.favorites = DB.favorites.filter(fid => String(fid) !== String(id) && String(fid) !== (opCat + ':' + id));
+            }
+
+            pushAudit('delete_operation', 'حذف جذري ' + id + ' [' + catLabel + '] — ' + (op.name || ''), {
+                entityType: 'operation', entityId: String(id), opId: Number(id),
+                changes: [{ field: 'الحالة', from: 'نشطة', to: 'محذوفة جذرياً → السلة' }]
+            });
+
+            try { if (typeof purgeOrphanData === 'function') purgeOrphanData(true); try { fixAllAwardCategories(true); } catch(_f) {}; } catch (e) {}
+            saveDB();
+            try { if (typeof renderAll === 'function') renderAll(); } catch (e) {}
+            try { if (typeof renderOperations === 'function') renderOperations(); } catch (e) {}
+            try { if (typeof renderAwards === 'function') renderAwards(); } catch (e) {}
+            alert('تم الحذف الجذري للعملية رقم ' + id + ' (' + catLabel + ') وكل بياناتها في هذا التبويب.');
+        }
+
+        function autoDetectDocType() {
             // طبيعة الأمر اختيارية بالكامل — لا نفرض قيمة عند التعديل أو بعد اختيار يدوي
             if (window._awDocTypeManual) return;
             const docSelect = document.getElementById('f-aw-doc-type');
@@ -7585,9 +8101,13 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
         }
 
         function getProgress(status) {
-            if (status === 'مكتمل' || status === 'تم الترسية') return 100;
-            if (status === 'جاري البت المالي') return 75;
-            if (status === 'جاري الدراسة الفنية') return 50;
+            const s = String(status || '');
+            if (s === 'مكتمل' || s === 'تم الترسية') return 100;
+            if (s === 'جاري البت المالي' || s.indexOf('بت مالي') !== -1) return 75;
+            if (s === 'جاري الدراسة الفنية' || s.indexOf('فني') !== -1) return 50;
+            if (s === 'تحت الطرح' || s.indexOf('طرح') !== -1) return 20;
+            if (s.indexOf('تظلمات') !== -1) return 60;
+            if (s.indexOf('فتح') !== -1) return 35;
             return 25;
         }
 
@@ -7640,11 +8160,13 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             const s = str || '-';
             return s.length > maxLen ? s.substring(0, maxLen - 3) + '...' : s;
         }
-        function opEditDeleteBtns(opId) {
+        function opEditDeleteBtns(opId, opCategory) {
+            const cat = opCategory ? String(opCategory).replace(/'/g, '') : '';
+            const catArg = cat ? `, '${cat}'` : '';
             return `<td class="no-print">
-                <button onclick="playSound('click'); openOpStory(${opId})" class="text-indigo-500 hover:text-indigo-700 mx-1" title="سرد العملية"><i class="fa-solid fa-book-open"></i></button>
-                <button onclick="playSound('click'); editOp(${opId})" class="text-slate-400 hover:text-primary mx-1" title="تعديل"><i class="fa-solid fa-pen"></i></button>
-                <button onclick="playSound('delete'); deleteOp(${opId})" class="text-slate-400 hover:text-red-500 mx-1" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                <button onclick="playSound('click'); openOpStory(${opId}${catArg})" class="text-indigo-500 hover:text-indigo-700 mx-1" title="سرد العملية"><i class="fa-solid fa-book-open"></i></button>
+                <button onclick="playSound('click'); editOp(${opId}${catArg})" class="text-slate-400 hover:text-primary mx-1" title="تعديل الرقم والبيانات"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="playSound('delete'); deleteOp(${opId}${catArg})" class="text-slate-400 hover:text-red-500 mx-1" title="حذف"><i class="fa-solid fa-trash"></i></button>
             </td>`;
         }
         function awardEditDeleteBtns(realIdx) {
@@ -7738,7 +8260,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
 
             DB.awards.forEach(aw => {
                 if(aw.awardStatus === 'تم الترسية') {
-                    const op = DB.operations.find(o => String(o.id) === String(aw.opId));
+                    const op = (typeof resolveAwardOperation === 'function') ? resolveAwardOperation(aw, aw.opCategory || null) : (DB.operations.find(o => String(o.id) === String(aw.opId)) || null);
                     if(op) {
                         let t = op.type || 'أخرى';
                         if(!typeBreakdown[t]) typeBreakdown[t] = { count: 0, totalVal: 0 };
@@ -7966,6 +8488,10 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
 
         function renderOperations() {
             if(!DB.operations) DB.operations = [];
+            // إعادة حساب إجمالي الترسية حسب الفئة قبل العرض (منع خلط تجديد/مباشر مع مناقصة بنفس الرقم)
+            if (typeof calcOpAwardTotal === 'function') {
+                (DB.operations || []).forEach(function(op) { op.total = calcOpAwardTotal(op); });
+            }
             DB.operations.sort((a, b) => a.id - b.id);
             const trHead = document.getElementById('ops-thead-tr');
             const tb = document.getElementById('ops-tbody'); 
@@ -8060,7 +8586,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         <td title="${escHtml(cleanStatus)}"><span class="pill blue truncate max-w-[150px] inline-block">${shortStatus}</span></td>
                         <td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>
                         <td>${attach}</td>
-                        ${opEditDeleteBtns(op.id)}
+                        ${opEditDeleteBtns(op.id, op.category || 'tender')}
                     </tr>`;
                 });
                 setTableBody(tb, tenderRows);
@@ -8084,7 +8610,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         <td>${pill(op.status || '-', 'blue')}</td>
                         <td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>
                         <td>${attach}</td>
-                        ${opEditDeleteBtns(op.id)}
+                        ${opEditDeleteBtns(op.id, op.category || 'tender')}
                     </tr>`;
                 });
                 setTableBody(tb, directRows);
@@ -8106,7 +8632,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         <td class="text-[11px]">${op.contractEnd || op.date2 || '-'}</td>
                         <td>${pill(op.status || '-', 'blue')}</td>
                         <td>${attach}</td>
-                        ${opEditDeleteBtns(op.id)}
+                        ${opEditDeleteBtns(op.id, op.category || 'tender')}
                     </tr>`;
                 });
                 setTableBody(tb, renewalRows);
@@ -8129,10 +8655,32 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             tb.innerHTML = '';
 
             const q = (awardsSearchQ || '').toLowerCase().trim();
+            // تصحيح صامت لتصنيف الترسيات قبل العرض
+            let _awCatFixed = false;
+            (DB.awards || []).forEach(function(aw) {
+                if (typeof fixAwardOpCategory === 'function' && fixAwardOpCategory(aw, currentAwardSubTab)) _awCatFixed = true;
+            });
+            if (_awCatFixed && typeof saveDB === 'function') { try { saveDB(); } catch (e) {} }
+
             let filteredAwards = DB.awards.filter(aw => {
-                const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || { category: 'tender' };
-                let cat = op.category || 'tender';
+                const op = (typeof resolveAwardOperation === 'function')
+                    ? resolveAwardOperation(aw, currentAwardSubTab)
+                    : ((DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {});
+                const cat = aw.opCategory || op.category || 'tender';
+                // عرض التبويب الحالي فقط
                 if (cat !== currentAwardSubTab) return false;
+                // استبعاد إن كان اسم البند أقرب لعملية في تبويب آخر بنفس الرقم
+                if (typeof awardBelongsToOperation === 'function' && op && op.id != null) {
+                    if (!awardBelongsToOperation(aw, op) && (DB.operations || []).filter(o => String(o.id) === String(aw.opId)).length > 1) {
+                        // جرّب عملية التبويب الحالي
+                        const preferred = (DB.operations || []).find(o => String(o.id) === String(aw.opId) && (o.category || 'tender') === currentAwardSubTab);
+                        if (preferred && awardBelongsToOperation(aw, preferred)) {
+                            aw.opCategory = currentAwardSubTab;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
                 if (!q) return true;
                 return String(aw.opId).includes(q) ||
                     (aw.item || '').toLowerCase().includes(q) ||
@@ -8150,7 +8698,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 `;
                 const rows = filteredAwards.map((aw) => {
                     const realIdx = findAwardIndex(aw);
-                    const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
+                    const op = (typeof resolveAwardOperation === 'function') ? resolveAwardOperation(aw, currentAwardSubTab) : ((DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {});
                     const isAwarded = (aw.awardStatus === 'تم الترسية');
                     const dSt = getDeliveryStatus(aw.del, aw.poDate, aw.days);
                     const attach = attachmentMenu(
@@ -8182,7 +8730,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 `;
                 const rows = filteredAwards.map((aw) => {
                     const realIdx = findAwardIndex(aw);
-                    const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
+                    const op = (typeof resolveAwardOperation === 'function') ? resolveAwardOperation(aw, currentAwardSubTab) : ((DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {});
                     const attach = attachmentMenu(
                         'bg-cyan-50 dark:bg-cyan-950 text-cyan-700',
                         [{ label: 'العقد', icon: 'fa-file-signature', onclick: `openDirectArchive('aw_po', '${aw.opId}_${realIdx}', 'الملحق: ${escHtml(aw.item)}')`, itemClass: 'hover:bg-slate-100 text-cyan-600' }]
@@ -8208,7 +8756,7 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 `;
                 const rows = filteredAwards.map((aw) => {
                     const realIdx = findAwardIndex(aw);
-                    const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
+                    const op = (typeof resolveAwardOperation === 'function') ? resolveAwardOperation(aw, currentAwardSubTab) : ((DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {});
                     const isAwarded = (aw.awardStatus === 'تم الترسية');
                     const gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: "قيد البت", class: "yellow", code: 0 };
                     const dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: "قيد الإجراء", class: "blue", code: 0 };
@@ -8355,11 +8903,9 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             fill('exec-filter-status', statuses);
         }
 
-        function renderExecutive() {
-            if(!DB.awards) DB.awards = [];
-            const tb = document.getElementById('executive-tbody'); 
-            if(!tb) return;
-            tb.innerHTML = '';
+                function renderExecutive() {
+            if (!DB.awards) DB.awards = [];
+            if (!DB.operations) DB.operations = [];
             populateExecutiveFilters();
 
             const fromStr = document.getElementById('exec-filter-from')?.value || '';
@@ -8371,88 +8917,290 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             const toD = toStr ? new Date(toStr) : null;
             if (toD) toD.setHours(23, 59, 59, 999);
 
-            DB.awards.forEach(aw => {
-                const op = (DB.operations || []).find(o => String(o.id) === String(aw.opId)) || {};
-                if (fEntity && (op.entity || '') !== fEntity) return;
-                if (fType && (op.type || '') !== fType) return;
-                if (fStatus && (op.status || '') !== fStatus) return;
-                // تاريخ مرجعي: أمر التوريد أو تاريخ الطرح أو البت
-                const refDateStr = aw.poDate || op.date6 || op.date1 || op.approvalDate || '';
-                if (fromD || toD) {
-                    if (!refDateStr) return;
-                    const rd = new Date(refDateStr);
-                    if (fromD && rd < fromD) return;
-                    if (toD && rd > toD) return;
+            function resolveOpForAward(aw) {
+                const oid = aw.opId;
+                let cat = aw.opCategory || null;
+                let op = null;
+                if (cat && typeof findOperation === 'function') op = findOperation(oid, cat);
+                if (!op && cat) op = (DB.operations || []).find(o => String(o.id) === String(oid) && (o.category || 'tender') === cat);
+                // بدون opCategory: عند تعدد عمليات بنفس الرقم اختر الأقرب لاسم البند
+                if (!op) {
+                    const cands = (DB.operations || []).filter(o => String(o.id) === String(oid));
+                    if (cands.length === 1) op = cands[0];
+                    else if (cands.length > 1) {
+                        const norm = s => String(s || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+                            .replace(/\s+/g,' ').trim().toLowerCase();
+                        const blob = norm(aw.item) + ' ' + norm(aw.supp);
+                        let best = cands[0], bestSc = -1;
+                        cands.forEach(function(o) {
+                            const on = norm(o.name);
+                            const ot = on.split(' ').filter(t => t.length > 2);
+                            let sc = 0;
+                            const setO = new Set(ot);
+                            blob.split(' ').forEach(t => { if (t.length > 2 && setO.has(t)) sc++; });
+                            // فضّل المناقصة إن التعادل وكان البند يشبه طرحًا
+                            if (sc > bestSc || (sc === bestSc && (o.category || 'tender') === 'tender')) {
+                                bestSc = sc; best = o;
+                            }
+                        });
+                        op = best;
+                        cat = op.category || 'tender';
+                    }
                 }
+                if (!op && typeof findOperation === 'function') op = findOperation(oid, null);
+                if (!op) op = (DB.operations || []).find(o => String(o.id) === String(oid));
+                return op || {};
+            }
 
+            // جمع الصفوف: كل الترسية + العمليات بدون ترسية بعد (تحت الطرح / جاري...)
+            const rows = [];
+            const opsCovered = new Set(); // مفتاح category:id
+
+            function passFilters(op, refDateStr) {
+                if (fEntity && (op.entity || '') !== fEntity) return false;
+                if (fType && (op.type || '') !== fType) return false;
+                if (fStatus && (op.status || '') !== fStatus) return false;
+                if (fromD || toD) {
+                    if (!refDateStr) {
+                        // عمليات تحت الطرح بدون تاريخ: تُعرض ما لم يُحدد فلتر تاريخ صارم
+                        return !(fromD && toD);
+                    }
+                    const rd = new Date(refDateStr);
+                    if (fromD && rd < fromD) return false;
+                    if (toD && rd > toD) return false;
+                }
+                return true;
+            }
+
+            (DB.awards || []).forEach(aw => {
+                const op = resolveOpForAward(aw);
+                const opCat = aw.opCategory || op.category || 'tender';
+                const refDateStr = aw.poDate || op.date6 || op.date1 || op.approvalDate || '';
+                if (!passFilters(op, refDateStr)) return;
+                const key = opCat + ':' + String(aw.opId);
+                opsCovered.add(key);
+                rows.push({ aw, op, opCat, isOpOnly: false });
+            });
+
+            // عمليات بلا أي ترسية مرتبطة (تحت الطرح، جاري البت، ...)
+            (DB.operations || []).forEach(op => {
+                const opCat = op.category || 'tender';
+                const key = opCat + ':' + String(op.id);
+                if (opsCovered.has(key)) return;
+                // هل لهذه العملية أي ترسية (حتى لو فلتر أخفاها)؟
+                const hasAnyAward = (DB.awards || []).some(a => {
+                    if (String(a.opId) !== String(op.id)) return false;
+                    if (a.opCategory) return a.opCategory === opCat;
+                    // بلا فئة (قديم): تُنسب للمناقصة فقط
+                    return opCat === 'tender';
+                });
+                if (hasAnyAward) {
+                    // لها ترسيات لكنها اختفت بالفلتر — لا تُكرر كصف عملية فارغ
+                    return;
+                }
+                const refDateStr = op.date6 || op.date1 || op.approvalDate || '';
+                if (!passFilters(op, refDateStr)) return;
+                rows.push({
+                    aw: {
+                        opId: op.id,
+                        item: op.name || '—',
+                        supp: '—',
+                        val: null,
+                        awardStatus: '',
+                        docOrderType: '',
+                        poNum: '',
+                        poDate: '',
+                        del: '',
+                        gType: '',
+                        gIssuance: ''
+                    },
+                    op: op,
+                    opCat: opCat,
+                    isOpOnly: true
+                });
+            });
+
+            const groups = {
+                tender: { title: 'أولًا: المناقصات والممارسات', rows: [] },
+                direct: { title: 'ثانيًا: الاتفاق المباشر والأوامر العاجلة', rows: [] },
+                renewal: { title: 'ثالثًا: تجديد وتمديد العقود', rows: [] }
+            };
+            rows.forEach(r => {
+                const c = r.opCat;
+                if (c === 'direct') groups.direct.rows.push(r);
+                else if (c === 'renewal') groups.renewal.rows.push(r);
+                else groups.tender.rows.push(r);
+            });
+
+            function rowHtml(aw, op, opCat, isOpOnly) {
                 const isAwarded = (aw.awardStatus === 'تم الترسية');
                 const pr = getProgress(op.status);
-                const gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: "قيد البت", class: "yellow" };
-                const dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: "قيد الإجراء", class: "blue" };
-                const docLabel = (aw.docOrderType === 'أمر إسناد') ? 'إسناد' : (aw.docOrderType === 'أمر توريد' ? 'توريد' : '—');
-                const displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : '-';
-                const displayPoText = isAwarded
-                    ? `${docLabel} ${aw.poNum || '-'} | ${aw.poDate || '-'}`
-                    : 'قيد البت';
-                
-                tb.innerHTML += `<tr>
-                    <td class="font-bold text-center">${formatOpDisplayId({ id: aw.opId, category: (op.category||'tender'), type: op.type })}</td>
-                    <td class="text-right"><b>${op.name || '-'}</b><br><span class="text-[10px] text-slate-500">${op.entity || '-'}</span></td>
-                    <td class="text-right font-bold">${aw.item || '-'}</td>
-                    <td class="text-right font-bold text-primary dark:text-indigo-400">${aw.supp || '-'}</td>
-                    <td class="text-xs font-bold text-center">${op.status || '-'}</td>
-                    <td class="text-center font-bold">${pr}%</td>
-                    <td class="font-black text-center">${displayVal}</td>
-                    <td class="text-[11px] text-center">${displayPoText}</td>
-                    <td class="text-center font-bold">${dSt.text}</td>
-                    <td class="text-center font-bold">${gSt.text}</td>
-                </tr>`;
+                let gSt, dSt, displayVal, displayPoText, itemText, suppText;
+                if (isOpOnly) {
+                    // عملية بلا ترسية بعد
+                    gSt = { text: '—', class: '' };
+                    dSt = { text: op.status === 'تحت الطرح' ? 'تحت الطرح' : 'قيد الإجراء', class: 'blue' };
+                    displayVal = op.est ? fmt.format(op.est) : (op.guideline ? fmt.format(op.guideline) : '—');
+                    displayPoText = 'لم تُرسَ بعد';
+                    itemText = op.name || '—';
+                    suppText = '—';
+                } else {
+                    gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: 'قيد البت', class: 'yellow' };
+                    dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: 'قيد الإجراء', class: 'blue' };
+                    const docLabel = (aw.docOrderType === 'أمر إسناد') ? 'إسناد' : (aw.docOrderType === 'أمر توريد' ? 'توريد' : '—');
+                    displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : (op.est ? fmt.format(op.est) : '—');
+                    displayPoText = isAwarded
+                        ? (docLabel + ' ' + (aw.poNum || '-') + ' | ' + (aw.poDate || '-'))
+                        : 'قيد البت';
+                    itemText = aw.item || op.name || '—';
+                    suppText = aw.supp || '—';
+                }
+                const catTypeLabel = opCat === 'direct' ? (op.type || 'اتفاق مباشر')
+                    : (opCat === 'renewal' ? (op.type || 'تجديد تعاقد')
+                    : (op.type || 'مناقصة عامة'));
+                return '<tr' + (isOpOnly ? ' class="bg-amber-50/50 dark:bg-amber-950/20"' : '') + '>' +
+                    '<td class="font-bold text-center">' + formatOpDisplayId({ id: aw.opId, category: opCat, type: op.type || catTypeLabel }) + '</td>' +
+                    '<td class="text-right"><b>' + (op.name || aw.item || '-') + '</b><br><span class="text-[10px] text-slate-500">' +
+                    (op.entity || '-') + ' · <span class="text-indigo-600 dark:text-indigo-300">' + catTypeLabel + '</span></span></td>' +
+                    '<td class="text-right font-bold">' + itemText + '</td>' +
+                    '<td class="text-right font-bold text-primary dark:text-indigo-400">' + suppText + '</td>' +
+                    '<td class="text-xs font-bold text-center">' + (op.status || '-') + '</td>' +
+                    '<td class="text-center font-bold">' + pr + '%</td>' +
+                    '<td class="font-black text-center">' + displayVal + '</td>' +
+                    '<td class="text-[11px] text-center">' + displayPoText + '</td>' +
+                    '<td class="text-center font-bold">' + dSt.text + '</td>' +
+                    '<td class="text-center font-bold">' + gSt.text + '</td>' +
+                    '</tr>';
+            }
+
+            const thead = '<thead><tr>' +
+                '<th>رقم</th><th>العملية والجهة</th><th>البند</th><th>الشركة الموردة</th><th>الموقف</th>' +
+                '<th>الإنجاز</th><th>قيمة الترسية</th><th>أمر التوريد / الإسناد</th><th>حالة التوريد / الخدمة</th><th>موقف الضمان</th>' +
+                '</tr></thead>';
+
+            // حاوية العرض: استبدل الجدول الواحد بجداول منفصلة
+            let host = document.getElementById('executive-report-host');
+            const oldTable = document.getElementById('tbl-executive');
+            if (!host) {
+                host = document.createElement('div');
+                host.id = 'executive-report-host';
+                host.className = 'space-y-4';
+                if (oldTable && oldTable.parentElement) {
+                    oldTable.parentElement.insertBefore(host, oldTable);
+                    // أخفِ الجدول القديم لكن أبقِ tbody للتوافق
+                    oldTable.style.display = 'none';
+                    const tb = document.getElementById('executive-tbody');
+                    if (tb) tb.innerHTML = '';
+                }
+            }
+            host.innerHTML = '';
+
+            const order = ['tender', 'direct', 'renewal'];
+            let any = false;
+            order.forEach(function(key) {
+                const g = groups[key];
+                if (!g.rows.length) return;
+                any = true;
+                const sec = document.createElement('div');
+                sec.className = 'executive-section excel-table-container bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700';
+                sec.setAttribute('data-exec-cat', key);
+                let h = '<div class="px-3 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">' +
+                    '<h3 class="font-black text-sm text-indigo-800 dark:text-indigo-200">' + g.title +
+                    ' <span class="text-[11px] font-bold text-slate-500">(' + g.rows.length + ')</span></h3></div>';
+                h += '<table class="excel-table exec-cat-table" style="min-width:0">' + thead + '<tbody>';
+                g.rows.forEach(function(r) { h += rowHtml(r.aw, r.op, r.opCat, r.isOpOnly); });
+                h += '</tbody></table>';
+                sec.innerHTML = h;
+                host.appendChild(sec);
             });
+
+            if (!any) {
+                host.innerHTML = '<div class="p-6 text-center text-slate-500 font-bold text-sm">لا توجد بنود مطابقة للفلاتر الحالية.</div>';
+            }
         }
 
-        function runQuery() {
+function runQuery() {
             if(!DB.operations) DB.operations = [];
             if(!DB.awards) DB.awards = [];
             const inputEl = document.getElementById('query-input');
             if(!inputEl) return;
             const id = inputEl.value.trim();
-            const op = DB.operations.find(o => String(o.id) === String(id));
-            const tb = document.getElementById('query-awards-tbody'); 
+            const tb = document.getElementById('query-awards-tbody');
             if(!tb) return;
             tb.innerHTML = '';
-            if (op) {
-                document.getElementById('q-name').innerText = op.name || '-'; 
-                document.getElementById('q-entity').innerText = op.entity || '-';
-                document.getElementById('q-type').innerText = op.type || '-'; 
-                document.getElementById('q-status').innerText = op.status || '-';
-                document.getElementById('q-est').innerText = op.est || '-'; 
-                document.getElementById('q-total').innerText = op.total ? fmt.format(op.total) : '-';
 
-                DB.awards.filter(a => String(a.opId) === String(id)).forEach(aw => {
-                    const isAwarded = (aw.awardStatus === 'تم الترسية');
-                    const gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: "قيد البت", class: "yellow" };
-                    const dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: "قيد الإجراء", class: "blue" };
-                    const docTag = (aw.docOrderType === 'أمر إسناد') ? '<span class="pill purple">أمر إسناد</span>' : (aw.docOrderType === 'أمر توريد' ? '<span class="pill blue">أمر توريد</span>' : '<span class="pill gray">—</span>');
-                    const displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : '-';
-                    const displayPo = (isAwarded && aw.poNum) ? `${docTag} (${aw.poNum})` : '<span class="text-slate-400">قيد البت</span>';
-
-                    tb.innerHTML += `<tr>
-                        <td class="text-right font-bold border border-slate-300 p-2">${aw.item || '-'}</td>
-                        <td class="text-right font-bold border border-slate-300 p-2">${aw.supp || '-'}</td>
-                        <td class="font-black border border-slate-300 p-2 text-center">${displayVal}</td>
-                        <td class="border border-slate-300 p-2 text-center">${gSt.text}</td>
-                        <td class="font-bold border border-slate-300 p-2 text-center">${isAwarded && aw.poNum ? (((aw.docOrderType === 'أمر إسناد') ? 'أمر إسناد' : (aw.docOrderType === 'أمر توريد' ? 'أمر توريد' : 'أمر')) + ' (' + aw.poNum + ')') : 'قيد البت'}</td>
-                        <td class="border border-slate-300 p-2 text-center">${dSt.text}</td>
-                    </tr>`;
-                });
-            } else {
-                ['q-name', 'q-entity', 'q-type', 'q-status', 'q-est', 'q-total'].forEach(i => {
+            // كل العمليات التي تحمل هذا الرقم (قد تكون مناقصة + تجديد + مباشر)
+            const matches = (DB.operations || []).filter(o => String(o.id) === String(id));
+            if (!matches.length) {
+                ['q-name', 'q-entity', 'q-type', 'q-status', 'q-est', 'q-total'].forEach(function(i) {
                     const el = document.getElementById(i);
-                    if(el) el.innerText = '-';
+                    if (el) el.innerText = '-';
                 });
                 tb.innerHTML = '<tr><td colspan="6" class="text-center text-red-500 font-bold py-4 text-xs">لا توجد بيانات مطابقة لهذا الرقم!</td></tr>';
+                return;
+            }
+
+            // عرض ملخص: إن وُجدت عدة فئات نوضّح ذلك
+            const catLabel = { tender: 'مناقصة', direct: 'مباشر', renewal: 'تجديد' };
+            if (matches.length === 1) {
+                const op = matches[0];
+                const oc = op.category || 'tender';
+                document.getElementById('q-name').innerText = op.name || '-';
+                document.getElementById('q-entity').innerText = op.entity || '-';
+                document.getElementById('q-type').innerText = (op.type || catLabel[oc] || oc) + (matches.length > 1 ? '' : '');
+                document.getElementById('q-status').innerText = op.status || '-';
+                document.getElementById('q-est').innerText = op.est || '-';
+                const tot = (typeof calcOpAwardTotal === 'function') ? calcOpAwardTotal(op) : (op.total || 0);
+                document.getElementById('q-total').innerText = tot ? fmt.format(tot) : '-';
+                const awards = (DB.awards || []).filter(a => {
+                    if (String(a.opId) !== String(id)) return false;
+                    if (typeof awardBelongsToOperation === 'function') return awardBelongsToOperation(a, op);
+                    if (a.opCategory) return a.opCategory === oc;
+                    return oc === 'tender';
+                });
+                awards.forEach(function(aw) {
+                    const isAwarded = (aw.awardStatus === 'تم الترسية');
+                    const gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: 'قيد البت', class: 'yellow' };
+                    const dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: 'قيد الإجراء', class: 'blue' };
+                    tb.innerHTML += '<tr><td class="text-right font-bold">' + (aw.item || '-') + '</td><td class="text-right">' + (aw.supp || '-') +
+                        '</td><td class="font-black">' + (isAwarded && aw.val ? fmt.format(aw.val) : '-') + '</td><td>' + (aw.awardStatus || '-') +
+                        '</td><td>' + gSt.text + '</td><td>' + dSt.text + '</td></tr>';
+                });
+                if (!awards.length) {
+                    tb.innerHTML = '<tr><td colspan="6" class="text-center text-slate-500 font-bold py-3 text-xs">لا توجد ترسيات مرتبطة بهذه العملية في فئتها.</td></tr>';
+                }
+            } else {
+                document.getElementById('q-name').innerText = matches.map(function(o){ return (o.name || '') + ' [' + (catLabel[o.category||'tender']||'') + ']'; }).join(' | ');
+                document.getElementById('q-entity').innerText = matches.map(function(o){ return o.entity || '-'; }).filter(Boolean).join(' | ');
+                document.getElementById('q-type').innerText = matches.length + ' عمليات بنفس الرقم (فئات مختلفة)';
+                document.getElementById('q-status').innerText = matches.map(function(o){ return (o.status||'-'); }).join(' | ');
+                document.getElementById('q-est').innerText = '-';
+                document.getElementById('q-total').innerText = '-';
+                matches.forEach(function(op) {
+                    const oc = op.category || 'tender';
+                    const awards = (DB.awards || []).filter(a => {
+                        if (String(a.opId) !== String(id)) return false;
+                        if (typeof awardBelongsToOperation === 'function') return awardBelongsToOperation(a, op);
+                        if (a.opCategory) return a.opCategory === oc;
+                        return oc === 'tender';
+                    });
+                    tb.innerHTML += '<tr class="bg-slate-100 dark:bg-slate-800"><td colspan="6" class="font-black text-right text-xs">' +
+                        formatOpDisplayId(op) + ' — ' + (op.name || '') + ' — ' + (op.status || '') + '</td></tr>';
+                    if (!awards.length) {
+                        tb.innerHTML += '<tr><td colspan="6" class="text-center text-slate-400 text-xs">لا ترسيات</td></tr>';
+                    }
+                    awards.forEach(function(aw) {
+                        const isAwarded = (aw.awardStatus === 'تم الترسية');
+                        const gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: 'قيد البت', class: 'yellow' };
+                        const dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: 'قيد الإجراء', class: 'blue' };
+                        tb.innerHTML += '<tr><td class="text-right font-bold">' + (aw.item || '-') + '</td><td class="text-right">' + (aw.supp || '-') +
+                            '</td><td class="font-black">' + (isAwarded && aw.val ? fmt.format(aw.val) : '-') + '</td><td>' + (aw.awardStatus || '-') +
+                            '</td><td>' + gSt.text + '</td><td>' + dSt.text + '</td></tr>';
+                    });
+                });
             }
         }
+
 
 
         function isDirectOpById(opId) {
@@ -8794,27 +9542,67 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
         });
 
         function exportExcel(tableId, filename) {
-            let table = document.getElementById(tableId);
-            let wb = XLSX.utils.table_to_book(table, {sheet:"Data"});
-            XLSX.writeFile(wb, filename + ".xlsx");
+            // تقرير تنفيذي: عدة جداول (مناقصات / مباشر / تجديد) → أوراق Excel منفصلة
+            if (tableId === 'tbl-executive' || tableId === 'executive-report-host') {
+                const host = document.getElementById('executive-report-host');
+                const tables = host ? host.querySelectorAll('table.exec-cat-table, table.excel-table') : [];
+                if (tables && tables.length) {
+                    const wb = XLSX.utils.book_new();
+                    const sheetNames = { tender: 'مناقصات', direct: 'مباشر', renewal: 'تجديد' };
+                    tables.forEach(function(tbl, i) {
+                        const sec = tbl.closest('[data-exec-cat]');
+                        const cat = sec ? sec.getAttribute('data-exec-cat') : null;
+                        let name = (cat && sheetNames[cat]) ? sheetNames[cat] : ('ورقة' + (i + 1));
+                        name = String(name).substring(0, 31);
+                        try {
+                            const ws = XLSX.utils.table_to_sheet(tbl);
+                            XLSX.utils.book_append_sheet(wb, ws, name);
+                        } catch (e) { console.warn('excel sheet', e); }
+                    });
+                    XLSX.writeFile(wb, (filename || 'تقرير_موقف_عمليات') + '.xlsx');
+                    return;
+                }
+            }
+            const table = document.getElementById(tableId);
+            if (!table) { alert('لا يوجد جدول للتصدير.'); return; }
+            const wb = XLSX.utils.table_to_book(table, { sheet: 'Data' });
+            XLSX.writeFile(wb, (filename || 'export') + '.xlsx');
         }
 
         function openOpModal() { 
              playSound('click');
              document.getElementById('form-op').reset();
              document.getElementById('f-op-category').value = currentOpSubTab;
-             document.getElementById('f-op-id').disabled = false;
+             const idEl = document.getElementById('f-op-id');
+             idEl.disabled = false;
+             delete idEl.dataset.originalId;
+             delete idEl.dataset.originalCategory;
+             // اقتراح رقم تالي داخل التبويب الحالي فقط
+             try {
+                 const cat = currentOpSubTab || 'tender';
+                 idEl.value = (typeof nextUniqueOpIdForCategory === 'function')
+                     ? nextUniqueOpIdForCategory(cat)
+                     : 1;
+             } catch (e) { idEl.value = ''; }
              openModal('modal-op'); 
         }
 
-        function editOp(id) {
+        function editOp(id, categoryHint) {
             playSound('click');
             if(!DB.operations) DB.operations = [];
-            const op = DB.operations.find(o => o.id === id);
+            let op = null;
+            if (categoryHint) op = (typeof findOperation === 'function') ? findOperation(id, categoryHint) : null;
+            if (!op && typeof findOperation === 'function') op = findOperation(id, currentOpSubTab);
+            if (!op) op = DB.operations.find(o => String(o.id) === String(id) && (o.category || 'tender') === (categoryHint || currentOpSubTab || 'tender'));
+            if (!op) op = DB.operations.find(o => String(o.id) === String(id));
             if(op) {
                 currentOpSubTab = op.category || 'tender';
                 setOpSubTab(currentOpSubTab);
-                document.getElementById('f-op-id').value = op.id; document.getElementById('f-op-id').disabled = true; 
+                const idEl = document.getElementById('f-op-id');
+                idEl.disabled = false; // تعديل رقم العملية يدوياً ثم حفظ
+                idEl.value = op.id;
+                idEl.dataset.originalId = String(op.id);
+                idEl.dataset.originalCategory = op.category || 'tender'; 
                 document.getElementById('f-op-name').value = op.name; document.getElementById('f-op-entity').value = op.entity;
                 document.getElementById('f-op-category').value = op.category || 'tender';
                 document.getElementById('f-op-budget').value = op.budget;
@@ -8951,10 +9739,74 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             return errors;
         }
 
+
+        /**
+         * تغيير رقم عملية مع تحديث كل المراجع المرتبطة (ترسيات، متقدمون، سرد، مقارنات، إصدارات AI، meta)
+         */
+        function cascadeChangeOpId(oldId, newId, category) {
+            ensureDBShape();
+            oldId = Number(oldId); newId = Number(newId);
+            const cat = category || null;
+            if (!oldId || !newId || oldId === newId) return;
+            // التعارض داخل نفس الفئة فقط
+            if ((DB.operations || []).some(o => Number(o.id) === newId && Number(o.id) !== oldId && (!cat || (o.category || 'tender') === cat))) {
+                throw new Error('رقم العملية ' + newId + ' مستخدم بالفعل في نفس التبويب');
+            }
+            // العملية نفسها (نفس الفئة)
+            (DB.operations || []).forEach(function(o) {
+                if (Number(o.id) === oldId && (!cat || (o.category || 'tender') === cat)) o.id = newId;
+            });
+            // الترسيات المرتبطة
+            (DB.awards || []).forEach(function(a) {
+                if (Number(a.opId) === oldId && (!cat || !a.opCategory || a.opCategory === cat)) {
+                    a.opId = newId;
+                    if (cat) a.opCategory = cat;
+                }
+            });
+            // المتقدمون
+            (DB.applicants || []).forEach(function(a) {
+                if (Number(a.opId) === oldId) a.opId = newId;
+            });
+            // مقارنات الأسعار
+            (DB.bidComparisons || []).forEach(function(c) {
+                if (Number(c.opId) === oldId) c.opId = newId;
+            });
+            // إصدارات الاستخراج
+            (DB.aiVersions || []).forEach(function(v) {
+                if (Number(v.opId) === oldId) v.opId = newId;
+            });
+            // سرد العملية
+            if (DB.opStories && DB.opStories[String(oldId)]) {
+                var story = DB.opStories[String(oldId)];
+                story.opId = newId;
+                DB.opStories[String(newId)] = story;
+                delete DB.opStories[String(oldId)];
+            }
+            // meta
+            if (DB.opMeta && DB.opMeta[String(oldId)]) {
+                DB.opMeta[String(newId)] = DB.opMeta[String(oldId)];
+                delete DB.opMeta[String(oldId)];
+            }
+            // المفضلة
+            if (Array.isArray(DB.favorites)) {
+                var fi = DB.favorites.indexOf(oldId);
+                if (fi >= 0) DB.favorites[fi] = newId;
+                // dedupe
+                DB.favorites = DB.favorites.filter(function(v, i, a) { return a.indexOf(v) === i; });
+            }
+            pushAudit('change_op_id', 'تغيير رقم العملية من ' + oldId + ' إلى ' + newId, {
+                entityType: 'operation', entityId: String(newId), opId: newId,
+                changes: [{ field: 'رقم العملية', from: String(oldId), to: String(newId) }]
+            });
+        }
+
         async function saveOperation() {
             if(!DB.operations) DB.operations = [];
             ensureDBShape();
-            const id = parseInt(document.getElementById('f-op-id').value); if(!id) return;
+            const idEl = document.getElementById('f-op-id');
+            const id = parseInt(idEl.value); if(!id || isNaN(id) || id < 1) return alert('رقم العملية غير صالح.');
+            const originalId = parseInt(idEl.dataset.originalId || idEl.value, 10);
+            const isIdChange = originalId && !isNaN(originalId) && Number(originalId) !== Number(id);
             // قفل العملية معطّل حسب طلب المستخدم
 
             const errors = validateOperationForm();
@@ -8964,6 +9816,20 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             }
 
             const category = document.getElementById('f-op-category').value || currentOpSubTab;
+            const originalCategory = idEl.dataset.originalCategory || category;
+
+            // إذا تغيّر رقم العملية: التكرار يُفحص داخل نفس الفئة فقط
+            if (isIdChange) {
+                if ((DB.operations || []).some(o => Number(o.id) === Number(id) && (o.category || 'tender') === (originalCategory || category))) {
+                    alert('رقم العملية الجديد (' + id + ') مستخدم بالفعل في نفس التبويب. اختر رقماً آخر.\n(يُسمح بنفس الرقم في تبويب مختلف: مناقصة / مباشر / تجديد)');
+                    return;
+                }
+                if (!(await showConfirm('تغيير رقم العملية من ' + originalId + ' إلى ' + id + '؟\nسيتم تحديث الترسيات والسرد والمتقدمين المرتبطين بهذه العملية تلقائياً.', { title: 'تغيير رقم العملية', confirmText: 'تأكيد التغيير' }))) {
+                    idEl.value = originalId;
+                    return;
+                }
+            }
+
             const newOp = { 
                 id, 
                 category,
@@ -8993,17 +9859,41 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 return;
             }
 
-            const idx = DB.operations.findIndex(o => o.id === id);
-            // duplicate id only on create
-            if (idx < 0 && DB.operations.some(o => Number(o.id) === Number(id))) {
-                alert('رقم العملية موجود مسبقاً.');
+            // عند تغيير الرقم نبحث بالرقم الأصلي + الفئة؛ وإلا بالرقم الحالي + الفئة
+            const idx = DB.operations.findIndex(o =>
+                Number(o.id) === Number(isIdChange ? originalId : id) &&
+                (o.category || 'tender') === (isIdChange ? (originalCategory || category) : category));
+            // تكرار الرقم داخل نفس الفئة فقط
+            if (!isIdChange && idx < 0 && DB.operations.some(o => Number(o.id) === Number(id) && (o.category || 'tender') === category)) {
+                alert('رقم العملية موجود مسبقاً في هذا التبويب.\nيمكن استخدام نفس الرقم في تبويب آخر (مناقصة / أمر مباشر / تجديد).');
                 return;
             }
-            // similar name warning
-            const similar = (DB.operations || []).find(o => Number(o.id) !== Number(id) && similarityScore(o.name, newOp.name) >= 0.85);
+            // similar name warning (نفس الفئة)
+            const similar = (DB.operations || []).find(o => Number(o.id) !== Number(id) && (o.category || 'tender') === category && similarityScore(o.name, newOp.name) >= 0.85);
             if (similar && !(await showConfirm('تنبيه تكرار ذكي: توجد عملية مشابهة رقم ' + similar.id + '. متابعة الحفظ؟', { title: 'تنبيه تكرار', confirmText: 'متابعة الحفظ' }))) return;
 
-            if (idx >= 0) {
+            if (isIdChange && originalId) {
+                // تحديث المراجع من الرقم القديم إلى الجديد داخل نفس الفئة
+                cascadeChangeOpId(originalId, id, originalCategory || category);
+                // بعد cascade العملية نفسها قد تكون حُدّثت id؛ نحدّث باقي الحقول
+                const idxAfter = DB.operations.findIndex(o => Number(o.id) === Number(id));
+                if (idxAfter >= 0) {
+                    const prev = DB.operations[idxAfter];
+                    newOp.total = prev.total || 0;
+                    if (prev.locked != null) newOp.locked = prev.locked;
+                    const changes = diffObjects(prev, newOp, ['name','entity','type','status','budget','isDivided','est','guideline','portal','approvalDate','date1','date2','date3','date4','date5','date6','category']);
+                    changes.unshift({ field: 'رقم العملية', from: String(originalId), to: String(id) });
+                    DB.operations[idxAfter] = Object.assign({}, prev, newOp);
+                    pushAudit('save_operation', 'تعديل عملية (تغيير رقم ' + originalId + ' → ' + id + ')' + (changes.length ? (' — ' + changes.length + ' حقل') : ''), {
+                        entityType: 'operation', entityId: String(id), opId: Number(id), changes
+                    });
+                } else {
+                    DB.operations.unshift(newOp);
+                    pushAudit('create_operation', 'إنشاء عملية ' + id + ' بعد تغيير رقم من ' + originalId, {
+                        entityType: 'operation', entityId: String(id), opId: Number(id)
+                    });
+                }
+            } else if (idx >= 0) {
                 const prev = DB.operations[idx];
                 newOp.total = prev.total || 0;
                 // احتفظ بحقول إضافية إن وجدت
@@ -9138,8 +10028,19 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             const calculatedGVal = (gTypeVal === 'إعفاء (توريد خلال 10 أيام)' || (gTypeVal && gTypeVal.indexOf('إعفاء') !== -1) || (gTypeVal && gTypeVal.indexOf('أمر مباشر') !== -1 && gTypeVal.indexOf('غير مطلوب') !== -1)) ? 0 : (parseFloat(document.getElementById('f-aw-gval').value)|| (fVal * 0.05));
             const docOrderTypeVal = document.getElementById('f-aw-doc-type').value;
 
+            // فئة العملية المرتبطة (مناقصة / مباشر / تجديد) — إلزامي لفصل التبويبات
+            let awOpCat = 'tender';
+            try {
+                const linked = (typeof findOperation === 'function')
+                    ? (findOperation(opId, currentAwardSubTab) || findOperation(opId, null))
+                    : (DB.operations || []).find(o => String(o.id) === String(opId));
+                if (linked) awOpCat = linked.category || 'tender';
+                else if (currentAwardSubTab) awOpCat = currentAwardSubTab;
+            } catch (e) {}
+
             const aw = { 
-                opId, 
+                opId,
+                opCategory: awOpCat,
                 item: document.getElementById('f-aw-item').value, 
                 supp, 
                 docOrderType: docOrderTypeVal,
@@ -9445,12 +10346,19 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
         function _preferLatest(oldVal, newVal) {
             return _nonEmpty(newVal) ? newVal : oldVal;
         }
-        function ensureOpStory(opId) {
+        function opStoryKey(opId, category) {
+            const cat = category || 'tender';
+            // مفتاح منفصل لكل فئة حتى لا يختلط سرد مناقصة 1 مع تجديد 1
+            if (cat && cat !== 'tender') return cat + ':' + String(opId);
+            return String(opId);
+        }
+        function ensureOpStory(opId, category) {
             ensureDBShape();
-            const key = String(opId);
+            const key = opStoryKey(opId, category || 'tender');
             if (!DB.opStories[key] || typeof DB.opStories[key] !== 'object') {
                 DB.opStories[key] = {
                     opId: Number(opId) || opId,
+                    category: category || 'tender',
                     updatedAt: null,
                     bookletPrice: null,
                     provisionalGuaranteeValue: null,
@@ -9488,9 +10396,20 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
          * يدمج نتيجة استخراج/اعتماد أخيرة في سرد العملية.
          * القاعدة: آخر قيمة غير فارغة تغلب؛ المصفوفات تُدمج بالاسم مع تحديث الحقول.
          */
-        function applyLatestExtractionToOpStory(opId, parsed, sourceLabel) {
+        function applyLatestExtractionToOpStory(opId, parsed, sourceLabel, categoryHint) {
             if (!opId || !parsed) return;
-            const story = ensureOpStory(opId);
+            // استنتج الفئة من العملية أو من نوع المستخرج
+            let cat = categoryHint || null;
+            if (!cat && parsed.opType) {
+                const t = String(parsed.opType);
+                if (/تجديد|تمديد/.test(t)) cat = 'renewal';
+                else if (/أمر\s*مباشر|مباشر/.test(t) && !/ممارسة/.test(t)) cat = 'direct';
+            }
+            if (!cat) {
+                const op = (typeof findOperation === 'function') ? findOperation(opId, null) : null;
+                cat = (op && op.category) || 'tender';
+            }
+            const story = ensureOpStory(opId, cat);
             const now = new Date().toISOString();
             story.updatedAt = now;
             story.sources = story.sources || [];
@@ -9581,23 +10500,37 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             (parsed.provisionalGuarantees || parsed.guarantees || []).forEach(mergeGuarantee);
 
             // نتائج فنية جدول
-            (parsed.technicalResults || parsed.techResults || []).forEach(function (t) {
-                if (!t) return;
-                story.technicalResults = story.technicalResults || [];
-                story.technicalResults.push({
-                    lot: t.lot || t.workshop || t.item || '',
-                    company: t.company || t.name || '',
-                    status: t.status || t.result || '',
-                    reason: t.reason || ''
+            (function() {
+                // استبدال ذكي لنتائج الفحص الفني: آخر استخراج يغلب على نفس (البند + الشركة)
+                var incoming = (parsed.technicalResults || parsed.techResults || []).filter(Boolean);
+                if (!incoming.length) return;
+                var map = new Map();
+                (story.technicalResults || []).forEach(function(t) {
+                    var key = (typeof _storyNormKey === 'function' ? _storyNormKey(t.lot) : String(t.lot||'').toLowerCase()) + '|' +
+                              (typeof _storyNormKey === 'function' ? _storyNormKey(t.company) : String(t.company||'').toLowerCase());
+                    map.set(key, t);
                 });
-                if (t.company || t.name) {
-                    const st = String(t.status || t.result || '');
-                    mergeBidder(t.company || t.name, {
-                        overallTech: /مرفوض|مستبعد/i.test(st) ? 'مستبعد' : (/مقبول/i.test(st) ? 'مقبول' : st),
-                        techByLot: t.lot ? { [t.lot]: st } : {}
+                incoming.forEach(function (t) {
+                    var lot = t.lot || t.workshop || t.item || '';
+                    var company = t.company || t.name || '';
+                    var key = (typeof _storyNormKey === 'function' ? _storyNormKey(lot) : String(lot).toLowerCase()) + '|' +
+                              (typeof _storyNormKey === 'function' ? _storyNormKey(company) : String(company).toLowerCase());
+                    map.set(key, {
+                        lot: lot,
+                        company: company,
+                        status: t.status || t.result || '',
+                        reason: t.reason || ''
                     });
-                }
-            });
+                    if (company) {
+                        var st = String(t.status || t.result || '');
+                        mergeBidder(company, {
+                            overallTech: /مرفوض|مستبعد/i.test(st) ? 'مستبعد' : (/مقبول/i.test(st) ? 'مقبول' : st),
+                            techByLot: lot ? (function(){ var o={}; o[lot]=st; return o; })() : {}
+                        });
+                    }
+                });
+                story.technicalResults = Array.from(map.values());
+            })();
 
             // أسباب رفض
             (parsed.rejectReasons || []).forEach(function (r) {
@@ -9794,6 +10727,43 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
         }
 
 
+        
+        /** تنظيف بيانات يتيمة لعمليات محذوفة (سرد / متقدمون / مقارنات) — يُستدعى مرة عند التحميل */
+        function cleanupOrphanedOpData(silent) {
+            ensureDBShape();
+            var liveIds = new Set((DB.operations || []).map(function(o){ return String(o.id); }));
+            var removed = 0;
+            // applicants
+            var beforeA = (DB.applicants || []).length;
+            DB.applicants = (DB.applicants || []).filter(function(a){ return liveIds.has(String(a.opId)); });
+            removed += beforeA - DB.applicants.length;
+            // bidComparisons
+            var beforeC = (DB.bidComparisons || []).length;
+            DB.bidComparisons = (DB.bidComparisons || []).filter(function(c){ return liveIds.has(String(c.opId)); });
+            removed += beforeC - DB.bidComparisons.length;
+            // aiVersions
+            var beforeV = (DB.aiVersions || []).length;
+            DB.aiVersions = (DB.aiVersions || []).filter(function(v){ return liveIds.has(String(v.opId)); });
+            removed += beforeV - DB.aiVersions.length;
+            // opStories
+            if (DB.opStories) {
+                Object.keys(DB.opStories).forEach(function(k){
+                    if (!liveIds.has(String(k))) { delete DB.opStories[k]; removed++; }
+                });
+            }
+            // opMeta
+            if (DB.opMeta) {
+                Object.keys(DB.opMeta).forEach(function(k){
+                    if (!liveIds.has(String(k))) { delete DB.opMeta[k]; removed++; }
+                });
+            }
+            if (removed > 0 && !silent) {
+                try { saveDB(); } catch(e){}
+                console.log('[cleanup] removed orphaned op-related records:', removed);
+            }
+            return removed;
+        }
+
         // ===== سرد العملية (تجميع حي من البيانات — بدون أرشفة مستندات) =====
         window._storyOpId = null;
 
@@ -9834,21 +10804,81 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             return Array.from(map.values());
         }
 
-        function collectOpStoryData(opId) {
+        function collectOpStoryData(opId, categoryHint) {
 
             ensureDBShape();
             const id = Number(opId);
-            const op = (DB.operations || []).find(o => Number(o.id) === id);
+            let op = null;
+            if (categoryHint) op = (typeof findOperation === 'function') ? findOperation(id, categoryHint) : null;
+            if (!op) op = (DB.operations || []).find(o => Number(o.id) === id && (o.category || 'tender') === (categoryHint || currentOpSubTab || 'tender'));
+            if (!op) op = (DB.operations || []).find(o => Number(o.id) === id);
             if (!op) return null;
+            const opCat = op.category || 'tender';
 
-            const awards = dedupeAwardsList((DB.awards || []).filter(a => Number(a.opId) === id));
+            const sameIdCount = (DB.operations || []).filter(o => Number(o.id) === id).length;
+            const normS = s => String(s || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/\s+/g,' ').trim().toLowerCase();
+            const opNameN = normS(op.name);
+            function itemFitsOp(item) {
+                if (!opNameN || opNameN.length < 6) return true;
+                const it = normS(item);
+                if (!it || it.length < 4) return true;
+                const ot = opNameN.split(' ').filter(t => t.length > 2);
+                const itt = it.split(' ').filter(t => t.length > 2);
+                let inter = 0;
+                const setO = new Set(ot);
+                itt.forEach(t => { if (setO.has(t)) inter++; });
+                // كلمات مميزة للعملية يجب أن تظهر في البند أو العكس لقبول الترسية داخل السرد
+                if (ot.length >= 3 && inter === 0 && itt.length >= 2) return false;
+                return true;
+            }
+            const awards = dedupeAwardsList((DB.awards || []).filter(a => {
+                if (Number(a.opId) !== id) return false;
+                if (a.opCategory && a.opCategory !== opCat) return false;
+                if (!a.opCategory && sameIdCount > 1 && opCat !== 'tender') return false;
+                // استبعاد بنود واضحة أنها لعملية أخرى (مثل شئون بيئة داخل سرد استئجار باصات)
+                if (!itemFitsOp(a.item)) return false;
+                return true;
+            }));
             const applicants = (DB.applicants || []).filter(a => String(a.opId) === String(id) || String(a.opId) === String(opId));
-            const comparisons = (DB.bidComparisons || []).filter(c => c.opId != null && Number(c.opId) === id);
-            const comparison = comparisons.length ? comparisons[0] : null;
-            const aiVers = (DB.aiVersions || []).filter(v => v.opId != null && Number(v.opId) === id);
-            const meta = (DB.opMeta && DB.opMeta[String(id)]) || {};
-            const manual = (DB.opStories && DB.opStories[String(id)]) || {};
-            const story = manual;
+            // مقارنات وكشوف مرتبطة بنفس الرقم — مع تفضيل تطابق الفئة إن وُجد
+            let comparisons = (DB.bidComparisons || []).filter(c => c.opId != null && Number(c.opId) === id);
+            if (comparisons.length > 1 && opCat) {
+                const byCat = comparisons.filter(c => !c.opCategory || c.opCategory === opCat);
+                if (byCat.length) comparisons = byCat;
+            }
+            // إن بقي أكثر من كشف: اختر الأقرب لاسم العملية
+            if (comparisons.length > 1 && op.name) {
+                const norm = s => String(s||'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/\s+/g,' ').trim().toLowerCase();
+                const on = norm(op.name);
+                comparisons.sort((a, b) => {
+                    const sa = norm(a.title || a.name || '');
+                    const sb = norm(b.title || b.name || '');
+                    const score = t => (t && on && (t.includes(on.slice(0,10)) || on.includes(t.slice(0,10)))) ? 1 : 0;
+                    return score(sb) - score(sa);
+                });
+            }
+            let comparison = comparisons.length ? comparisons[0] : null;
+            // في التجديد/المباشر: لا تعرض كشف تفريغ مناقصة أخرى حتى لو نفس الرقم
+            if (comparison && opCat !== 'tender' && op.name) {
+                const norm = s => String(s||'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/\s+/g,' ').trim().toLowerCase();
+                const on = norm(op.name);
+                const title = norm(comparison.title || comparison.name || '');
+                const sampleItems = ((comparison.unifiedItems || comparison.items || []).slice(0, 5).map(function(u){ return norm(u.item || u.name || ''); }).join(' '));
+                const blob = title + ' ' + sampleItems;
+                const ot = on.split(' ').filter(t => t.length > 2);
+                let inter = 0;
+                const setO = new Set(ot);
+                blob.split(' ').forEach(t => { if (t.length > 2 && setO.has(t)) inter++; });
+                if (ot.length >= 3 && inter === 0) comparison = null;
+            }
+            const aiVers = (DB.aiVersions || []).filter(v => v.opId != null && Number(v.opId) === id && (!v.opCategory || v.opCategory === opCat));
+            const storyKey = (typeof opStoryKey === 'function') ? opStoryKey(id, opCat) : String(id);
+            const meta = (DB.opMeta && (DB.opMeta[storyKey] || DB.opMeta[String(id)])) || {};
+            // سرد منفصل حسب الفئة — لا تستخدم لقطة المناقصة لتجديد بنفس الرقم
+            let manual = (DB.opStories && DB.opStories[storyKey]) || null;
+            if (!manual && opCat === 'tender') manual = (DB.opStories && DB.opStories[String(id)]) || null;
+            // لا نرجع لـ opStories["1"] العام إذا كانت العملية تجديد/مباشر
+            const story = manual || {};
 
             // من كشف التفريغ: شركات + فني + إجماليات
             let bidCompanies = [];
@@ -10073,14 +11103,20 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             return { pct: Math.round((filled / checks.length) * 100), filled, total: checks.length };
         }
 
-        function openOpStory(opId) {
+        function openOpStory(opId, categoryHint) {
             playSound('click');
-            const data = collectOpStoryData(opId);
+            try {
+                const cat = categoryHint || currentOpSubTab || 'tender';
+                if (typeof detachMismatchedAwards === 'function') detachMismatchedAwards(opId, cat);
+                if (typeof sanitizeOpStoryAwards === 'function') sanitizeOpStoryAwards(opId, cat);
+            } catch (e) {}
+            const data = collectOpStoryData(opId, categoryHint);
             if (!data) {
                 alert('العملية غير موجودة.');
                 return;
             }
             window._storyOpId = Number(opId);
+            window._storyOpCategory = (data.op && data.op.category) || categoryHint || 'tender';
             const op = data.op;
             document.getElementById('op-story-title').textContent = 'سرد العملية ' + formatOpDisplayId(op);
             document.getElementById('op-story-sub').textContent = (op.name || '') + (op.type ? (' · ' + op.type) : '');
@@ -10195,7 +11231,26 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
             // ===== جداول السرد الشامل من آخر الاستخراجات =====
             const stFull = data.story || {};
             // القيمة التقديرية
+            // صفّ بنود القيمة التقديرية إن كانت لعملية أخرى (مثل بنود باصات داخل سرد تجديد شئون بيئة)
             if (stFull.estimateItems && stFull.estimateItems.length) {
+                const _nEst = function(s){ return String(s||'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/\s+/g,' ').trim().toLowerCase(); };
+                const _opEst = _nEst(op.name);
+                const _opTok = _opEst.split(' ').filter(function(t){ return t.length>2; });
+                let _estItems = stFull.estimateItems;
+                if (_opTok.length >= 3) {
+                    const fitted = stFull.estimateItems.filter(function(e){
+                        const it = _nEst(e.item || e.name || '');
+                        if (!it) return true;
+                        let inter = 0; const sO = new Set(_opTok);
+                        it.split(' ').forEach(function(t){ if (t.length>2 && sO.has(t)) inter++; });
+                        return inter > 0 || it.length < 8;
+                    });
+                    // إن لم يتبقَّ أي بند مناسب وكانت الفئة تجديد: أخفِ الجدول بالكامل
+                    if (fitted.length === 0 && (op.category || 'tender') !== 'tender') _estItems = [];
+                    else if (fitted.length) _estItems = fitted;
+                }
+                if (_estItems.length) {
+                stFull = Object.assign({}, stFull, { estimateItems: _estItems });
                 html += '<section class="surface p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">';
                 html += '<h4 class="font-black text-xs text-primary mb-2"><i class="fa-solid fa-calculator"></i> جدول القيمة التقديرية</h4>';
                 html += '<div class="overflow-x-auto"><table class="excel-table" style="min-width:0"><thead><tr><th>م</th><th>البند</th><th>القيمة التقديرية</th></tr></thead><tbody>';
@@ -10208,9 +11263,25 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 const totalEst = (stFull.estimateTotal != null && !isNaN(stFull.estimateTotal)) ? Number(stFull.estimateTotal) : estSum;
                 html += '<tr class="bg-slate-100 dark:bg-slate-800"><td colspan="2" class="font-black text-left">الإجمالي</td><td class="font-black text-primary">' + fmtN(totalEst) + '</td></tr>';
                 html += '</tbody></table></div></section>';
+                } // end _estItems.length
             }
 
-            // كشف التفريغ المالي (مصفوفة من financialRows)
+            // كشف التفريغ المالي — لا تعرضه إن كانت البنود لعملية أخرى (تجديد ≠ مناقصة باصات)
+            if (stFull.financialRows && stFull.financialRows.length) {
+                const _nFr = function(s){ return String(s||'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/\s+/g,' ').trim().toLowerCase(); };
+                const _opFr = _nFr(op.name);
+                const _tokFr = _opFr.split(' ').filter(function(t){ return t.length>2; });
+                if (_tokFr.length >= 3 && (op.category || 'tender') !== 'tender') {
+                    let inter = 0;
+                    const sO = new Set(_tokFr);
+                    stFull.financialRows.forEach(function(r){
+                        _nFr(r.item||'').split(' ').forEach(function(t){ if (t.length>2 && sO.has(t)) inter++; });
+                    });
+                    if (inter === 0) {
+                        stFull = Object.assign({}, stFull, { financialRows: [] });
+                    }
+                }
+            }
             if (stFull.financialRows && stFull.financialRows.length) {
                 const items = [];
                 const companies = [];
@@ -10240,13 +11311,38 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 html += '</section>';
             }
 
-            // جدول قرارات الترسية بالقيم
+            // جدول قرارات الترسية بالقيم — فقط ما يخص هذه العملية (استبعاد تجديد/بنود غريبة من لقطة الاستخراج)
             if (stFull.awardDecisions && stFull.awardDecisions.length) {
+                const _normStory = function(s) {
+                    return String(s || '').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+                        .replace(/[^\w\u0600-\u06FF\s]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+                };
+                const _opN = _normStory(op.name);
+                const _opTokens = _opN.split(' ').filter(function(t){ return t.length > 2; });
+                const _fitsOp = function(item, note) {
+                    const blob = _normStory(item) + ' ' + _normStory(note);
+                    // ملاحظات تجديد صريحة → لا تخص سرد مناقصة الطرح
+                    if (/تجديد\s*تعاقد|تمديد\s*تعاقد|تجديد\s*لمدة|لعام\s*آخر/.test(blob) && (op.category || 'tender') === 'tender') {
+                        return false;
+                    }
+                    if (!_opN || _opN.length < 6) return true;
+                    const itTokens = blob.split(' ').filter(function(t){ return t.length > 2; });
+                    if (!itTokens.length) return true;
+                    let inter = 0;
+                    const setO = new Set(_opTokens);
+                    itTokens.forEach(function(t){ if (setO.has(t)) inter++; });
+                    if (_opTokens.length >= 3 && inter === 0 && itTokens.length >= 2) return false;
+                    return true;
+                };
+                const _filteredDecisions = stFull.awardDecisions.filter(function(a) {
+                    return _fitsOp(a.item || a.company, a.note);
+                });
+                if (_filteredDecisions.length) {
                 html += '<section class="surface p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">';
                 html += '<h4 class="font-black text-xs text-primary mb-2"><i class="fa-solid fa-gavel"></i> جدول الترسية بالقيم المالية</h4>';
                 html += '<div class="overflow-x-auto"><table class="excel-table" style="min-width:0"><thead><tr><th>م</th><th>البند</th><th>الشركة الفائزة</th><th>العطاء</th><th>قيمة الترسية</th><th>القيمة التقديرية</th><th>ملاحظة</th></tr></thead><tbody>';
                 let awSum = 0;
-                const _adList = dedupeAwardsList(stFull.awardDecisions.map(function (a) {
+                const _adList = dedupeAwardsList(_filteredDecisions.map(function (a) {
                     return { item: a.item, supp: a.company, val: a.val, estVal: a.estVal, bidNo: a.bidNo, note: a.note, company: a.company };
                 })).map(function (a) {
                     return { item: a.item, company: a.supp || a.company, bidNo: a.bidNo, val: a.val, estVal: a.estVal, note: a.note };
@@ -10265,12 +11361,20 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 html += '<tr class="bg-emerald-50 dark:bg-emerald-950/30"><td colspan="4" class="font-black text-left">إجمالي الترسية</td><td class="font-black text-emerald-700" colspan="3">' + fmtN(awSum) + '</td></tr>';
                 html += '</tbody></table></div>';
                 if (stFull.decisionDate || stFull.decisionText) {
-                    html += '<div class="mt-2 text-[11px] font-semibold text-slate-600 dark:text-slate-300">';
-                    if (stFull.decisionDate) html += '<div>تاريخ محضر البت: <b>' + escHtml(stFull.decisionDate) + '</b></div>';
-                    if (stFull.decisionText) html += '<div class="mt-1 whitespace-pre-wrap">' + escHtml(stFull.decisionText) + '</div>';
-                    html += '</div>';
+                    let _decText = stFull.decisionText || '';
+                    // لا تعرض نص تجديد داخل سرد مناقصة طرح
+                    if ((op.category || 'tender') === 'tender' && /تجديد\s*تعاقد|تمديد\s*تعاقد|تجديد\s*لمدة|لعام\s*آخر/.test(_decText)) {
+                        _decText = '';
+                    }
+                    if (stFull.decisionDate || _decText) {
+                        html += '<div class="mt-2 text-[11px] font-semibold text-slate-600 dark:text-slate-300">';
+                        if (stFull.decisionDate) html += '<div>تاريخ محضر البت: <b>' + escHtml(stFull.decisionDate) + '</b></div>';
+                        if (_decText) html += '<div class="mt-1 whitespace-pre-wrap">' + escHtml(_decText) + '</div>';
+                        html += '</div>';
+                    }
                 }
                 html += '</section>';
+                } // end _filteredDecisions.length
             }
 
             // كشف تفريغ مرتبط (من وحدة مقارنة العطاءات)
@@ -10853,11 +11957,18 @@ function switchTab(id) {
             }).join('');
         }
 
-        function jumpToOperation(opId) {
+        function jumpToOperation(opId, categoryHint) {
             playSound('click');
-            const op = (DB.operations || []).find(o => String(o.id) === String(opId));
+            let op = null;
+            if (categoryHint && typeof findOperation === 'function') op = findOperation(opId, categoryHint);
+            if (!op && typeof findOperation === 'function') op = findOperation(opId, categoryHint || null);
             if (!op) {
-                // maybe deleted → recycle
+                const cands = (DB.operations || []).filter(o => String(o.id) === String(opId));
+                if (cands.length === 1) op = cands[0];
+                else if (cands.length > 1 && categoryHint) op = cands.find(o => (o.category || 'tender') === categoryHint) || cands[0];
+                else if (cands.length) op = cands[0];
+            }
+            if (!op) {
                 const inBin = (DB.recycleBin || []).find(b => b.kind === 'operation' && b.data && b.data.operation && String(b.data.operation.id) === String(opId));
                 if (inBin) {
                     alert('العملية محذوفة وموجودة في سلة المحذوفات.');
@@ -10867,15 +11978,13 @@ function switchTab(id) {
                 alert('العملية غير موجودة حالياً.');
                 return;
             }
-            const cat = op.category || (String(op.type||'').includes('مباشر') ? 'direct' : 'tender');
+            const cat = op.category || categoryHint || 'tender';
             switchTab('operations');
             if (typeof setOpSubTab === 'function') setOpSubTab(cat === 'direct' ? 'direct' : (cat === 'renewal' ? 'renewal' : 'tender'));
-            // highlight / open edit
             setTimeout(() => {
                 try {
-                    if (typeof editOp === 'function') editOp(Number(opId));
-                    else if (typeof openOpModal === 'function') {
-                        // fallback search
+                    if (typeof editOp === 'function') editOp(Number(opId), cat);
+                    else {
                         const s = document.getElementById('ops-search-input');
                         if (s) { s.value = String(opId); if (typeof onOpsSearch === 'function') onOpsSearch(); }
                     }
@@ -10955,7 +12064,34 @@ function switchTab(id) {
                     }
                     DB.operations.unshift(op);
                     awards.forEach(aw => DB.awards.unshift(aw));
-                    pushAudit('restore_operation', 'استعادة عملية ' + op.id, {
+
+                    // استعادة البيانات المرتبطة (إصلاح السرد)
+                    (item.data.applicants || []).forEach(function(a) {
+                        if (!DB.applicants) DB.applicants = [];
+                        var already = DB.applicants.some(function(x) {
+                            return (typeof normalizeSupplierName === 'function' ? normalizeSupplierName(x.name) === normalizeSupplierName(a.name) : x.name === a.name)
+                                && String(x.opId) === String(op.id);
+                        });
+                        if (!already) DB.applicants.push(a);
+                    });
+                    (item.data.bidComparisons || []).forEach(function(c) {
+                        if (!DB.bidComparisons) DB.bidComparisons = [];
+                        DB.bidComparisons.unshift(c);
+                    });
+                    (item.data.aiVersions || []).forEach(function(v) {
+                        if (!DB.aiVersions) DB.aiVersions = [];
+                        DB.aiVersions.unshift(v);
+                    });
+                    if (item.data.opStory) {
+                        if (!DB.opStories) DB.opStories = {};
+                        DB.opStories[String(op.id)] = item.data.opStory;
+                    }
+                    if (item.data.opMeta) {
+                        if (!DB.opMeta) DB.opMeta = {};
+                        DB.opMeta[String(op.id)] = item.data.opMeta;
+                    }
+
+                    pushAudit('restore_operation', 'استعادة عملية ' + op.id + ' (كامل البيانات)', {
                         entityType: 'operation', entityId: String(op.id), opId: Number(op.id),
                         changes: [{ field: 'الحالة', from: 'سلة المحذوفات', to: 'مستعادة' }]
                     });
@@ -11200,8 +12336,12 @@ function switchTab(id) {
             const op = (DB.operations || []).find(o => Number(o.id) === Number(opId));
             if (!op) return alert('العملية غير موجودة');
             openOpModal();
-            const maxId = (DB.operations || []).reduce((m, o) => Math.max(m, Number(o.id) || 0), 0);
-            document.getElementById('f-op-id').value = maxId + 1;
+            const catClone = op.category || 'tender';
+            const maxId = (typeof nextUniqueOpIdForCategory === 'function')
+                ? nextUniqueOpIdForCategory(catClone)
+                : ((DB.operations || []).filter(o => (o.category || 'tender') === catClone)
+                    .reduce((m, o) => Math.max(m, Number(o.id) || 0), 0) + 1);
+            document.getElementById('f-op-id').value = maxId;
             document.getElementById('f-op-category').value = op.category || 'tender';
             document.getElementById('f-op-name').value = (op.name || '') + ' (نسخة)';
             document.getElementById('f-op-entity').value = op.entity || '';
