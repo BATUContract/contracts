@@ -4257,6 +4257,13 @@ body.dark #bid-side-cards select.bid-tech-sel {
 
             <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mb-3 no-print">
                 <input type="text" id="ops-search-input" oninput="opsSearchQ=this.value; opsPage=1; renderOperations();" placeholder="بحث برقم أو اسم العملية أو الجهة..." class="border dark:border-slate-600 rounded-xl px-3 py-1.5 bg-white dark:bg-slate-900 dark:text-white text-xs font-bold outline-none w-full sm:w-72">
+                <div id="ops-status-filters" class="flex flex-wrap gap-1.5 mt-2 w-full justify-end">
+                    <button type="button" onclick="opsStatusFilter='all';opsPage=1;renderOperations();" class="ops-fchip" data-f="all">الكل</button>
+                    <button type="button" onclick="opsStatusFilter='under';opsPage=1;renderOperations();" class="ops-fchip" data-f="under">تحت الطرح</button>
+                    <button type="button" onclick="opsStatusFilter='active';opsPage=1;renderOperations();" class="ops-fchip" data-f="active">جاري</button>
+                    <button type="button" onclick="opsStatusFilter='completed';opsPage=1;renderOperations();" class="ops-fchip" data-f="completed">مكتمل</button>
+                    <button type="button" onclick="opsStatusFilter='cancelled';opsPage=1;renderOperations();" class="ops-fchip" data-f="cancelled">ملغاة</button>
+                </div>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="toggleTableDetailMode()" class="px-2.5 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-xs font-bold transition border border-indigo-200 dark:border-indigo-800" title="تبديل عرض الأعمدة مختصر / كامل"><i class="fa-solid fa-table-columns"></i> <span data-cols-mode-label>أعمدة: مختصر</span></button>
                     <div id="ops-pagination" class="flex items-center gap-2 text-xs font-bold"></div>
@@ -5088,6 +5095,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
         // Pagination & search state
         let opsPage = 1, awardsPage = 1, suppliersPage = 1;
         const PAGE_SIZE = 20;
+        let opsStatusFilter = 'all'; // all | active | cancelled | completed | under
         let opsSearchQ = '', awardsSearchQ = '', suppliersSearchQ = '';
         let globalParsedData = null;
 
@@ -9375,6 +9383,47 @@ async function deleteOp(id, categoryHint) {
         }
 
         
+        
+        function daysUntil(dateStr) {
+            if (!dateStr) return null;
+            try {
+                let t = Date.parse(String(dateStr).replace(/(\d{2})-(\d{2})-(\d{4})/, '$3-$2-$1'));
+                if (!t) t = Date.parse(dateStr);
+                if (!t) return null;
+                const today = new Date(); today.setHours(0,0,0,0);
+                return Math.round((t - today.getTime()) / 86400000);
+            } catch (e) { return null; }
+        }
+        function opCompletenessBadge(op) {
+            try {
+                if (typeof isOpCancelled === 'function' && isOpCancelled(op)) {
+                    return '<span class="comp-badge" title="ملغاة">ملغاة</span>';
+                }
+                if (typeof computeOpCompleteness === 'function') {
+                    const c = computeOpCompleteness(op, (DB.awards || []).filter(function(a){ return String(a.opId)===String(op.id); }));
+                    const pct = (c && c.pct != null) ? c.pct : (c && c.percent != null ? c.percent : null);
+                    if (pct == null) return '';
+                    const cls = pct >= 80 ? 'hi' : (pct >= 50 ? 'mid' : 'low');
+                    return '<span class="comp-badge ' + cls + '" title="اكتمال الملف">' + pct + '%</span>';
+                }
+            } catch (e) {}
+            return '';
+        }
+        function pushAudit(action, detail) {
+            try {
+                if (!DB.auditLog) DB.auditLog = [];
+                DB.auditLog.unshift({
+                    at: new Date().toISOString(),
+                    user: (typeof currentUserName !== 'undefined' && currentUserName) ? currentUserName : (localStorage.getItem('contracts_user') || '—'),
+                    action: action,
+                    detail: detail || ''
+                });
+                if (DB.auditLog.length > 200) DB.auditLog = DB.auditLog.slice(0, 200);
+                if (typeof scheduleSave === 'function') scheduleSave();
+                else if (typeof saveDB === 'function') saveDB();
+            } catch (e) {}
+        }
+
         function isOpCancelled(opOrStatus) {
             if (opOrStatus == null) return false;
             if (typeof opOrStatus === 'object') {
@@ -9872,6 +9921,12 @@ async function deleteOp(id, categoryHint) {
                 let cat = op.category || 'tender';
                 if (cat !== currentOpSubTab) return false;
                 if (typeof showFavoritesOnly !== 'undefined' && showFavoritesOnly && typeof isFavoriteOp === 'function' && !isFavoriteOp(op.id)) return false;
+                const st = String(op.status || '');
+                const f = (typeof opsStatusFilter !== 'undefined' && opsStatusFilter) ? opsStatusFilter : 'all';
+                if (f === 'cancelled' && !/ملغ|إلغاء|الغاء/i.test(st)) return false;
+                if (f === 'completed' && !/مكتمل|تم الترسية|منته/i.test(st)) return false;
+                if (f === 'under' && !/تحت الطرح/i.test(st)) return false;
+                if (f === 'active' && (/ملغ|إلغاء|الغاء|مكتمل|تم الترسية|منته/i.test(st) || /تحت الطرح/i.test(st))) return false;
                 if (!q) return true;
                 return String(op.id).includes(q) ||
                     (op.name || '').toLowerCase().includes(q) ||
@@ -9879,6 +9934,11 @@ async function deleteOp(id, categoryHint) {
                     (op.status || '').toLowerCase().includes(q) ||
                     (op.type || '').toLowerCase().includes(q);
             });
+            try {
+                document.querySelectorAll('#ops-status-filters .ops-fchip').forEach(function(btn) {
+                    btn.classList.toggle('active-fchip', btn.getAttribute('data-f') === (opsStatusFilter || 'all'));
+                });
+            } catch (eF) {}
             filteredOps = sortOpsByIdAsc(filteredOps);
             const _opsTotalFiltered = filteredOps.length;
             renderPaginationBar('ops-pagination', opsPage, filteredOps.length, 'goOpsPage');
@@ -9956,7 +10016,7 @@ async function deleteOp(id, categoryHint) {
                     const _cancelTip = (/ملغ/.test(String(cleanStatus)) && op.cancelReason)
                         ? (' — السبب: ' + op.cancelReason + (op.cancelDate ? (' | ' + op.cancelDate) : '') + (op.cancelNote ? (' | ' + op.cancelNote) : ''))
                         : '';
-                    const statusCell = `<td title="${escHtml(String(cleanStatus) + _cancelTip)}"><span class="pill ${_stCls}">${_stIcon}${shortStatus}</span>${(op.cancelReason && /ملغ/.test(String(cleanStatus))) ? '<div class="text-[9px] text-red-600 font-bold mt-0.5 leading-snug" style="max-width:11rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+escHtml(op.cancelReason)+'</div>' : ''}</td>`;
+                    const statusCell = `<td title="${escHtml(String(cleanStatus) + _cancelTip)}"><span class="pill ${_stCls}">${_stIcon}${shortStatus}</span> ${(typeof opCompletenessBadge==='function')?opCompletenessBadge(op):''}${(op.cancelReason && /ملغ/.test(String(cleanStatus))) ? '<div class="text-[9px] text-red-600 font-bold mt-0.5 leading-snug" style="max-width:11rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+escHtml(op.cancelReason)+'</div>' : ''}</td>`;
                     const totalCell = `<td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>`;
                     const actCell = `${opEditDeleteBtns(op.id, op.category || 'tender')}`;
                     if (_fullCols) {
@@ -9967,7 +10027,7 @@ async function deleteOp(id, categoryHint) {
                 setTableBody(tb, tenderRows.length ? tenderRows : [`<tr><td colspan="${_fullCols ? 19 : 11}" class="empty-state"><i class="fa-solid fa-inbox"></i>لا توجد عمليات في هذا القسم — يمكن قيد عملية جديدة من الزر أعلاه</td></tr>`]);
             } else if (currentOpSubTab === 'direct') {
                 trHead.innerHTML = `
-                    <th>رقم</th><th class="op-name-th">اسم عملية الأمر المباشر</th><th>الجهة</th><th>اعتماد الموازنة</th><th>تاريخ الطرح</th><th>القيمة الاسترشادية</th><th>النشر على البوابة</th><th>الموقف الحالي</th><th>إجمالي الترسية</th><th>مرفقات</th><th class="no-print">إجراءات</th>
+                    <th>رقم</th><th class="op-name-th">اسم الأمر المباشر</th><th>الجهة الطالبة</th><th>اعتماد الموازنة</th><th>تاريخ الموافقة</th><th>القيمة الاسترشادية</th><th>النشر على البوابة</th><th>الموقف</th><th>قيمة الإسناد</th><th>مرفقات</th><th class="no-print">إجراءات</th>
                 `;
                 const directRows = filteredOps.map(op => {
                     const attach = attachmentMenu(
@@ -9991,7 +10051,7 @@ async function deleteOp(id, categoryHint) {
                 setTableBody(tb, directRows.length ? directRows : ['<tr><td colspan="11" class="empty-state"><i class="fa-solid fa-inbox"></i>لا توجد عمليات اتفاق مباشر — القسم جاهز لإضافة عملية</td></tr>']);
             } else {
                 trHead.innerHTML = `
-                    <th>رقم</th><th class="op-name-th">اسم العقد / التجديد</th><th>الجهة</th><th>النوع</th><th>الشركة المتعاقد معها</th><th>رقم أمر الإسناد</th><th>قيمة العقد</th><th>تاريخ البدء</th><th>تاريخ الانتهاء</th><th>الموقف</th><th>مرفقات</th><th class="no-print">إجراءات</th>
+                    <th>رقم</th><th class="op-name-th">اسم العقد / التجديد</th><th>الجهة</th><th>النوع</th><th>الشركة المتعاقد معها</th><th>رقم أمر الإسناد</th><th>قيمة العقد</th><th>تاريخ البدء</th><th>تاريخ الانتهاء</th><th>متبقي (يوم)</th><th>الموقف</th><th>مرفقات</th><th class="no-print">إجراءات</th>
                 `;
                 const renewalRows = filteredOps.map(op => {
                     const meta = (typeof getRenewalDisplayMeta === 'function') ? getRenewalDisplayMeta(op) : {};
@@ -10011,7 +10071,15 @@ async function deleteOp(id, categoryHint) {
                         <td class="font-black text-emerald-700">${valShow}</td>
                         <td class="text-[11px]">${formatDateTwoLine(op.contractStart || op.date1)}</td>
                         <td class="text-[11px]">${formatDateTwoLine(op.contractEnd || op.date2)}</td>
-                        <td>${statusPill(op.status || '—')}</td>
+                        <td class="text-center">${(function(){
+                            const d = (typeof daysUntil==='function') ? daysUntil(op.contractEnd || op.date2) : null;
+                            if (d == null) return '—';
+                            if (d < 0) return '<span class="renewal-days-crit">منتهٍ (' + Math.abs(d) + ')</span>';
+                            if (d <= 30) return '<span class="renewal-days-crit">' + d + ' يوم</span>';
+                            if (d <= 60) return '<span class="renewal-days-warn">' + d + ' يوم</span>';
+                            return '<span class="text-[11px] font-bold text-emerald-700">' + d + ' يوم</span>';
+                        })()}</td>
+                        <td>${statusPill(op.status || '—')} ${(typeof opCompletenessBadge==='function')?opCompletenessBadge(op):''}</td>
                         <td>${attach}</td>
                         ${opEditDeleteBtns(op.id, 'renewal')}
                     </tr>`;
@@ -10792,6 +10860,27 @@ function runQuery() {
                 }
             });
 
+
+
+            // تجديد: قرب انتهاء العقد 60/30 يوم
+            (DB.operations || []).forEach(function (op) {
+                if (!op || (op.category || '') !== 'renewal') return;
+                if (typeof isOpCancelled === 'function' && isOpCancelled(op)) return;
+                if (/ملغ|مكتمل|منته/i.test(String(op.status || ''))) return;
+                const end = op.contractEnd || op.date2;
+                const d = (typeof daysUntil === 'function') ? daysUntil(end) : null;
+                if (d == null) return;
+                if (d < 0) {
+                    alerts.push({ id: 'ren-exp-' + op.id, level: 'critical', type: 'renewal_expired',
+                        title: 'عقد منتهٍ — تجديد #' + op.id, detail: (op.name || '') + ' — منتهٍ منذ ' + Math.abs(d) + ' يوم', opId: op.id });
+                } else if (d <= 30) {
+                    alerts.push({ id: 'ren-30-' + op.id, level: 'critical', type: 'renewal_due',
+                        title: 'تجديد خلال 30 يوم — #' + op.id, detail: (op.name || '') + ' — متبقي ' + d + ' يوم', opId: op.id });
+                } else if (d <= 60) {
+                    alerts.push({ id: 'ren-60-' + op.id, level: 'warn', type: 'renewal_due',
+                        title: 'تجديد خلال 60 يوم — #' + op.id, detail: (op.name || '') + ' — متبقي ' + d + ' يوم', opId: op.id });
+                }
+            });
 
             // د) بت مالي معلّق — فتح مالي بدون بت بعد 14 يوماً
             (DB.operations || []).forEach(function (op) {
