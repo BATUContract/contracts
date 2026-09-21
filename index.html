@@ -1,16 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -96,7 +84,92 @@
         #top-nav-bar button { white-space: nowrap; }
         #nav-logout-btn { flex-shrink: 0 !important; }
         #nav-logout-btn span { display: inline !important; visibility: visible !important; opacity: 1 !important; }
-</style>
+
+        /* عمليات ملغاة — تمييز واضح في سجل الطرح */
+        .pill.status-cancelled {
+            background: #334155 !important;
+            color: #f8fafc !important;
+            border: 1px solid #1e293b !important;
+            font-weight: 800 !important;
+        }
+        tr.row-status-cancelled td {
+            background-color: #e2e8f0 !important;
+            color: #475569 !important;
+        }
+        tr.row-status-cancelled td:first-child {
+            box-shadow: inset -4px 0 0 #64748b !important;
+            background-color: #cbd5e1 !important;
+        }
+        tr.row-status-cancelled td:nth-child(2) {
+            background-color: #e2e8f0 !important;
+        }
+        tr.row-status-cancelled:hover td {
+            background-color: #cbd5e1 !important;
+        }
+        tr.row-status-cancelled:hover td:first-child {
+            background-color: #94a3b8 !important;
+            color: #0f172a !important;
+        }
+        body.dark tr.row-status-cancelled td {
+            background-color: rgba(51, 65, 85, 0.75) !important;
+            color: #cbd5e1 !important;
+        }
+        body.dark tr.row-status-cancelled td:first-child {
+            background-color: rgba(71, 85, 105, 0.9) !important;
+            box-shadow: inset -4px 0 0 #94a3b8 !important;
+        }
+
+        .excel-table tbody tr.row-status-cancelled td,
+        .excel-table tbody tr.row-status-cancelled:nth-child(even) td {
+            background-color: #e2e8f0 !important;
+        }
+        .excel-table tbody tr.row-status-cancelled td:first-child,
+        .excel-table tbody tr.row-status-cancelled:nth-child(even) td:first-child {
+            background-color: #cbd5e1 !important;
+        }
+
+    
+        /* ===== ملغاة: أحمر خفيف + حبة حمراء + شريط أحمر (أولوية عالية) ===== */
+        .pill.status-cancelled,
+        span.pill.status-cancelled {
+            background: #FEF2F2 !important;
+            color: #B91C1C !important;
+            border: 1.5px solid #F87171 !important;
+            font-weight: 800 !important;
+            text-decoration: none !important;
+        }
+        .pill.status-cancelled i {
+            color: #DC2626 !important;
+            margin-left: 3px;
+        }
+        .excel-table tbody tr.row-status-cancelled td,
+        .excel-table tbody tr.row-status-cancelled:nth-child(even) td,
+        .excel-table tbody tr.row-status-cancelled:hover td {
+            background-color: #FEF2F2 !important;
+            color: #7F1D1D !important;
+            opacity: 1 !important;
+        }
+        .excel-table tbody tr.row-status-cancelled td:first-child,
+        .excel-table tbody tr.row-status-cancelled:nth-child(even) td:first-child,
+        .excel-table tbody tr.row-status-cancelled:hover td:first-child {
+            background-color: #FEE2E2 !important;
+            box-shadow: inset -4px 0 0 #EF4444 !important;
+            color: #B91C1C !important;
+        }
+        .excel-table tbody tr.row-status-cancelled td:nth-child(2),
+        .excel-table tbody tr.row-status-cancelled:nth-child(even) td:nth-child(2) {
+            background-color: #FEF2F2 !important;
+        }
+        body.dark .excel-table tbody tr.row-status-cancelled td {
+            background-color: rgba(127, 29, 29, 0.28) !important;
+            color: #FECACA !important;
+        }
+        body.dark .excel-table tbody tr.row-status-cancelled td:first-child {
+            background-color: rgba(153, 27, 27, 0.4) !important;
+            box-shadow: inset -4px 0 0 #F87171 !important;
+        }
+
+    </style>
     <!-- ANIM-ICONS-FA -->
     <style>
       /* Font Awesome 6 animations already included — enhance */
@@ -218,6 +291,83 @@
             #modal-op-story { position: static !important; background: #fff !important; }
             #modal-op-story > div { max-height: none !important; box-shadow: none !important; border: none !important; }
         }
+
+
+        /* ===== مرحلة أ: ديزاين تشغيلي ===== */
+        /* قاموس لون الموقف */
+        .pill.status-open { background: #EEF2FF !important; color: #3730A3 !important; border: 1px solid #C7D2FE !important; }
+        .pill.status-progress { background: #FFFBEB !important; color: #B45309 !important; border: 1px solid #FDE68A !important; }
+        .pill.status-done { background: #ECFDF5 !important; color: #047857 !important; border: 1px solid #A7F3D0 !important; }
+        .pill.status-late { background: #FEF2F2 !important; color: #B91C1C !important; border: 1px solid #FECACA !important; }
+        .pill.status-hold { background: #F8FAFC !important; color: #475569 !important; border: 1px solid #E2E8F0 !important; }
+
+        /* شريط جانبي للموقف على الصف */
+        tr.row-status-progress td:first-child { box-shadow: inset -3px 0 0 #3B82F6 !important; }
+        tr.row-status-done td:first-child { box-shadow: inset -3px 0 0 #10B981 !important; }
+        tr.row-status-late td:first-child { box-shadow: inset -3px 0 0 #EF4444 !important; }
+        tr.row-status-hold td:first-child { box-shadow: inset -3px 0 0 #F59E0B !important; }
+        tr.row-status-open td:first-child { box-shadow: inset -3px 0 0 #6366F1 !important; }
+
+        /* تجميد عمود الرقم (RTL: يمين) */
+        .excel-table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .excel-table thead th:first-child,
+        .excel-table tbody td:first-child {
+            position: sticky;
+            right: 0;
+            z-index: 4;
+            background: #fff !important;
+            box-shadow: -4px 0 8px -4px rgba(15, 23, 42, 0.12);
+        }
+        .excel-table thead th:first-child {
+            z-index: 7;
+            background: linear-gradient(180deg, #3730A3 0%, #4F46E5 100%) !important;
+            color: #fff !important;
+            box-shadow: -4px 0 8px -4px rgba(49, 46, 129, 0.35);
+        }
+        body.dark .excel-table tbody td:first-child {
+            background: var(--bg-panel, #0f172a) !important;
+        }
+        body.dark .excel-table thead th:first-child {
+            background: linear-gradient(180deg, #1E1B4B 0%, #312E81 100%) !important;
+        }
+        .excel-table tbody tr:nth-child(even) td:first-child {
+            background: #F8FAFC !important;
+        }
+        body.dark .excel-table tbody tr:nth-child(even) td:first-child {
+            background: rgba(30, 41, 59, 0.5) !important;
+        }
+
+        /* ترويسة طباعة التقرير */
+        .print-header { display: none; }
+        .print-header .logo-print { height: 52px; margin: 0 auto 6px; display: block; }
+        #exec-print-meta { font-size: 11px; color: #475569; margin-top: 4px; font-weight: 600; }
+
+        @media print {
+            .no-print, button.no-print, .no-print * { display: none !important; }
+            #top-nav-bar, #app-datetime-bar, .subcat-tab, #ops-search-input,
+            [onclick*="toggleTableDetailMode"], #ops-pagination, #awards-pagination { display: none !important; }
+            .print-header { display: block !important; text-align: center; margin-bottom: 12px; }
+            body { background: #fff !important; color: #000 !important; font-size: 10.5pt !important; }
+            .excel-table thead th {
+                background: #e2e8f0 !important;
+                color: #0f172a !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .excel-table thead th:first-child,
+            .excel-table tbody td:first-child {
+                position: static !important;
+                box-shadow: none !important;
+            }
+            #view-executive .executive-section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 14px;
+            }
+            .pill { border: 1px solid #94a3b8 !important; }
+        }
+
+
 
         
         .excel-table tbody td {
@@ -378,8 +528,8 @@
         }
         /* قص الاسم بحد أقصى ~3 أسطر بدون كسر عرض الجدول */
         td.op-name-cell {
-            max-height: 4.2em !important;
-            overflow: hidden !important;
+            max-height: none !important;
+            overflow: visible !important;
         }
 
         /* رقم العملية أوضح */
@@ -504,6 +654,158 @@
         /* شريط علوي أوضح */
         #top-nav-bar, .top-nav, nav {
             font-family: 'Cairo', sans-serif !important;
+        }
+
+
+
+        /* ===== تحسينات UX شاملة (شكل · قراءة · طباعة) ===== */
+        :root {
+            --radius-card: 12px;
+            --radius-pill: 999px;
+            --nav-bg: #0f172a;
+        }
+        .surface, .app-card, .excel-table-container, .executive-section {
+            border-radius: var(--radius-card) !important;
+        }
+        .pill, .subcat-tab, .nav-btn, #top-nav-bar .nav-btn {
+            border-radius: var(--radius-pill) !important;
+        }
+
+        /* شريط علوي أهدى */
+        #top-nav-bar {
+            background: linear-gradient(180deg, #0f172a 0%, #111827 100%) !important;
+            box-shadow: 0 1px 0 rgba(148,163,184,0.12) !important;
+        }
+        #top-nav-bar .nav-btn.active-nav,
+        .nav-btn.active-nav {
+            background: rgba(99,102,241,0.65) !important;
+            box-shadow: inset 0 -2px 0 #a5b4fc !important;
+            border-color: rgba(165,180,252,0.55) !important;
+        }
+
+        /* جداول: صفوف أوضح + hover */
+        .excel-table tbody tr:nth-child(even) td {
+            background-color: #f1f5f9 !important;
+        }
+        body.dark .excel-table tbody tr:nth-child(even) td {
+            background-color: rgba(30, 41, 59, 0.55) !important;
+        }
+        .excel-table tbody tr:hover td {
+            background: rgba(79, 70, 229, 0.08) !important;
+            transition: background 0.12s ease;
+        }
+        body.dark .excel-table tbody tr:hover td {
+            background: rgba(129, 140, 248, 0.12) !important;
+        }
+        .excel-table tbody tr {
+            content-visibility: auto;
+            contain-intrinsic-size: auto 48px;
+        }
+
+        /* تجميد عمود الرقم فقط (بدون تجميد الاسم لتفادي تقطيع الجداول) */
+        .excel-table thead th:first-child,
+        .excel-table tbody td:first-child {
+            position: sticky;
+            right: 0;
+            z-index: 5;
+        }
+
+        /* اسم العملية: عرض أوضح — بدون قصّ قاسٍ */
+        td.op-name-cell, .op-name-cell,
+        td.op-name-cell b, .op-name-cell b {
+            max-width: 280px !important;
+            min-width: 160px !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: anywhere !important;
+            line-height: 1.4 !important;
+            max-height: none !important;
+            overflow: visible !important;
+            display: table-cell !important;
+            -webkit-line-clamp: unset !important;
+        }
+
+        /* الوضع الداكن: تباين أعلى */
+        body.dark {
+            color: #f1f5f9 !important;
+        }
+        body.dark .excel-table tbody td {
+            color: #e2e8f0 !important;
+            border-bottom-color: #334155 !important;
+        }
+
+        /* مودالات أعرض على الشاشات الكبيرة */
+        @media (min-width: 1280px) {
+            #modal-op-form > div,
+            #modal-award-form > div,
+            #modal-ai-staging > div {
+                max-width: min(1100px, 96vw) !important;
+            }
+        }
+
+        /* موبايل: تقليل ازدحام الشريط */
+        @media (max-width: 640px) {
+            #top-nav-bar .nav-btn span.nav-label-full { display: none; }
+            .excel-table { font-size: 11px !important; }
+            td.op-name-cell { max-width: 140px !important; }
+        }
+
+        /* رسالة فارغة */
+        .table-empty-hint {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #64748b;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        body.dark .table-empty-hint { color: #94a3b8; }
+
+        /* بطاقات KPI الرئيسية */
+        #home-kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.5rem;
+            width: min(920px, 96%);
+            margin: 0.5rem auto 0.75rem;
+        }
+        @media (min-width: 768px) {
+            #home-kpi-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        .home-kpi-card {
+            border-radius: 12px;
+            padding: 0.65rem 0.75rem;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(226,232,240,0.95);
+            box-shadow: 0 4px 14px rgba(15,23,42,0.06);
+            text-align: right;
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .home-kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15,23,42,0.1); }
+        body.dark .home-kpi-card {
+            background: rgba(30,41,59,0.9);
+            border-color: rgba(71,85,105,0.7);
+        }
+        .home-kpi-card .kpi-val { font-size: 1.25rem; font-weight: 900; color: #4f46e5; }
+        body.dark .home-kpi-card .kpi-val { color: #a5b4fc; }
+        .home-kpi-card .kpi-lbl { font-size: 10px; font-weight: 700; color: #64748b; }
+        body.dark .home-kpi-card .kpi-lbl { color: #94a3b8; }
+
+        /* معاينة اعتماد الاستخراج */
+        #staging-commit-preview {
+            font-size: 11px;
+            font-weight: 700;
+            color: #4338ca;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 10px;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+        }
+        body.dark #staging-commit-preview {
+            background: rgba(49,46,129,0.35);
+            color: #c7d2fe;
+            border-color: rgba(129,140,248,0.35);
         }
 
 </style>
@@ -3608,7 +3910,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
                 <div class="intro-logo-glow" aria-hidden="true"></div>
                 <div class="intro-logo-ring" aria-hidden="true"></div>
                 <div class="intro-logo-ring intro-logo-ring-2" aria-hidden="true"></div>
-                <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="intro-logo" width="260" height="150">
+                <img src="https://upload.wikimedia.org/wikipedia/ar/3/33/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%A8%D8%B1%D8%AC_%D8%A7%D9%84%D8%B9%D8%B1%D8%A8_%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A9.png" alt="شعار الجامعة" class="intro-logo" width="260" height="150">
             </div>
             <p class="intro-title">منظومة إدارة التعاقدات</p>
             <p class="intro-subtitle">Smart Contracts Platform</p>
@@ -3630,7 +3932,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
     </div>
 <nav id="top-nav-bar" class="hidden bg-[#0F172A] relative text-slate-100 px-3 py-1 z-40 shrink-0 justify-between items-center shadow-lg border-b border-indigo-900/40">
         <div class="flex items-center gap-3 flex-wrap">
-            <img src="https://batechu.com/assets/logo.png" alt="شعار جامعة برج العرب التكنولوجية" class="logo-nav" title="جامعة برج العرب التكنولوجية">
+            <img src="https://upload.wikimedia.org/wikipedia/ar/3/33/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%A8%D8%B1%D8%AC_%D8%A7%D9%84%D8%B9%D8%B1%D8%A8_%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A9.png" alt="شعار جامعة برج العرب التكنولوجية" class="logo-nav" title="جامعة برج العرب التكنولوجية">
             <div class="hidden lg:flex flex-col leading-tight ml-1 mr-2 border-r border-white/15 pr-3">
                 <span class="text-[11px] font-black text-white tracking-wide">منظومة التعاقدات</span>
                 <span class="text-[9px] font-semibold text-indigo-200/90">Smart Contracts Platform</span>
@@ -3753,7 +4055,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
 
             <div class="home-hero-block">
                 <div class="mb-1">
-                    <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="mx-auto home-hero-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/ar/3/33/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%A8%D8%B1%D8%AC_%D8%A7%D9%84%D8%B9%D8%B1%D8%A8_%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A9.png" alt="شعار الجامعة" class="mx-auto home-hero-logo">
                 </div>
                 <p class="home-dept-3d">إدارة التعاقدات</p>
                 <h1 class="home-main-title">منظومة إدارة ومتابعة التعاقدات</h1>
@@ -4053,13 +4355,14 @@ body.dark #bid-side-cards select.bid-tech-sel {
                 <h2 class="font-black text-slate-900 dark:text-white text-lg"><i class="fa-solid fa-clipboard-list fa-beat-fade text-lg icon-live"></i> تقرير بموقف عمليات إدارة التعاقدات</h2>
                 <div class="flex gap-2 w-full sm:w-auto">
                     <button onclick="playSound('click'); exportExcel('tbl-executive', 'التقرير_التنفيذي_الشامل')" class="bg-success text-white px-3 py-1.5 rounded-xl font-bold shadow-sm hover:bg-green-700 transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-file-arrow-down fa-bounce text-sm icon-live"></i> Excel</button>
-                    <button onclick="playSound('click'); window.print()" class="bg-slate-800 text-white px-4 py-1.5 rounded-xl font-bold shadow-sm hover:bg-black transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-print fa-beat-fade text-sm icon-live"></i> طباعة</button>
+                    <button onclick="playSound('click'); printExecutiveReport()" class="bg-slate-800 text-white px-4 py-1.5 rounded-xl font-bold shadow-sm hover:bg-black transition flex items-center gap-1.5 text-xs flex-1 sm:flex-initial justify-center"><i class="fa-solid fa-print fa-beat-fade text-sm icon-live"></i> طباعة</button>
                 </div>
             </div>
-            <div class="hidden print-header text-center">
-                <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="logo-print">
+            <div class="print-header text-center">
+                <img src="https://upload.wikimedia.org/wikipedia/ar/3/33/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%A8%D8%B1%D8%AC_%D8%A7%D9%84%D8%B9%D8%B1%D8%A8_%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A9.png" alt="شعار الجامعة" class="logo-print" onerror="this.style.display='none'">
                 <h2 class="font-black text-xl text-gray-900 mb-1">تقرير بموقف عمليات إدارة التعاقدات</h2>
-                <h3 class="font-bold text-gray-600 text-xs">جامعة برج العرب التكنولوجية</h3>
+                <h3 class="font-bold text-gray-600 text-xs">جامعة برج العرب التكنولوجية — إدارة التعاقدات</h3>
+                <p id="exec-print-meta" class="text-slate-600"></p>
             </div>
 
             <!-- فلاتر التقرير التنفيذي الشامل لموقف التعاقدات -->
@@ -4232,7 +4535,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
                     <button class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 px-4 py-1.5 rounded-xl font-bold flex items-center gap-1.5 text-xs transition" onclick="playSound('click'); window.print()"><i class="fa-solid fa-print fa-beat-fade text-sm icon-live"></i> طباعة</button>
                 </div>
                 <div class="hidden print-header text-center">
-                    <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="logo-print">
+                    <img src="https://upload.wikimedia.org/wikipedia/ar/3/33/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%A8%D8%B1%D8%AC_%D8%A7%D9%84%D8%B9%D8%B1%D8%A8_%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A9.png" alt="شعار الجامعة" class="logo-print">
                     <h2 class="font-black text-xl text-gray-900 mb-1">تقرير استعلام حالة عملية تعاقدية</h2>
                     <h3 class="font-bold text-gray-600 text-xs">جامعة برج العرب التكنولوجية</h3>
                 </div>
@@ -4303,7 +4606,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
                     <div class="login-logo-wrap">
                         <span class="login-logo-ring" aria-hidden="true"></span>
                         <span class="login-logo-ring login-logo-ring-2" aria-hidden="true"></span>
-                        <img src="https://batechu.com/assets/logo.png" alt="شعار الجامعة" class="login-logo">
+                        <img src="https://upload.wikimedia.org/wikipedia/ar/3/33/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%A8%D8%B1%D8%AC_%D8%A7%D9%84%D8%B9%D8%B1%D8%A8_%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A9.png" alt="شعار الجامعة" class="login-logo">
                     </div>
                     <h2 class="login-title">تسجيل الدخول</h2>
                     <p class="login-sub">منظومة إدارة ومتابعة التعاقدات</p>
@@ -4571,6 +4874,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
 
                 <!-- شريط الاعتماد ثابت أسفل المودال — دائماً ظاهر -->
                 <div id="ai-commit-footer" class="ai-commit-footer p-3 flex flex-col gap-2">
+                    <div id="staging-commit-preview" class="w-full">سيظهر هنا ملخص الاعتماد بعد اختيار النوع والرقم</div>
                     <button id="btn-commit-operation" onclick="commitStagingDataToDB()" class="hidden w-full ai-btn-commit flex items-center justify-center gap-2">
                         <i class="fa-solid fa-cloud-arrow-up"></i> اعتماد البيانات وترحيلها إلى النظام
                     </button>
@@ -4603,7 +4907,27 @@ body.dark #bid-side-cards select.bid-tech-sel {
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">هل مجزأة؟</label><select id="f-op-divided" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option>لا - ترسية كلية</option><option>نعم - قابلة للتجزئة</option></select></div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">المبلغ التقديري</label><input type="text" id="f-op-est" value="قيمة تقديرية في مظروف مغلق" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"></div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">القيمة الاسترشادية (أمر مباشر)</label><input type="number" step="0.01" id="f-op-guideline" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-amber-50 dark:bg-slate-900 text-amber-700 dark:text-amber-400 font-bold text-xs" placeholder="0.00"></div>
-                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">الموقف الحالي</label><select id="f-op-status" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-indigo-50 dark:bg-slate-900 text-primary dark:text-indigo-400 font-bold text-xs"><option>تحت الطرح</option><option>جاري الدراسة الفنية</option><option>جاري البت المالي</option><option>تم الترسية</option><option>مكتمل</option></select></div>
+                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">الموقف الحالي</label><select id="f-op-status" onchange="toggleCancelReasonFields()" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-indigo-50 dark:bg-slate-900 text-primary dark:text-indigo-400 font-bold text-xs"><option>تحت الطرح</option><option>جاري الدراسة الفنية</option><option>جاري البت المالي</option><option>تم الترسية</option><option>مكتمل</option><option value="ملغاة">ملغاة</option></select></div>
+            <div id="f-op-cancel-wrap" class="hidden col-span-full grid grid-cols-1 md:grid-cols-3 gap-2 p-2 rounded-xl border border-red-200 bg-red-50/50 dark:bg-red-950/20 dark:border-red-900">
+                <div><label class="text-[10px] font-bold text-red-700 dark:text-red-300">سبب الإلغاء *</label>
+                <select id="f-op-cancel-reason" class="w-full border dark:border-slate-600 rounded-xl px-2 py-1.5 text-xs font-bold bg-white dark:bg-slate-900">
+                    <option value="">— اختر السبب —</option>
+                    <option>الاستغناء النهائي عن العملية</option>
+                    <option>المصلحة العامة</option>
+                    <option>تواطؤ بين مقدمي العطاءات</option>
+                    <option>احتيال / فساد / احتكار</option>
+                    <option>عطاء وحيد أو عدم بقاء عطاء صالح</option>
+                    <option>تحفظات جوهرية على العطاءات</option>
+                    <option>عدم ملاءمة الأسعار للقيمة التقديرية</option>
+                    <option>أخطاء / عيوب جوهرية في المواصفات أو كراسة الشروط</option>
+                    <option>خلل جوهري في إجراءات الطرح</option>
+                    <option>أخرى</option>
+                </select></div>
+                <div><label class="text-[10px] font-bold text-red-700 dark:text-red-300">تاريخ قرار الإلغاء</label>
+                <input type="date" id="f-op-cancel-date" class="w-full border dark:border-slate-600 rounded-xl px-2 py-1.5 text-xs bg-white dark:bg-slate-900"></div>
+                <div><label class="text-[10px] font-bold text-red-700 dark:text-red-300">تفاصيل إضافية / رقم القرار</label>
+                <input type="text" id="f-op-cancel-note" placeholder="اختياري" class="w-full border dark:border-slate-600 rounded-xl px-2 py-1.5 text-xs bg-white dark:bg-slate-900"></div>
+            </div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">النشر على البوابة</label><select id="f-op-portal" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option value="نعم">تم النشر</option><option value="تعذر النشر">تعذر النشر</option></select></div>
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">تاريخ الموافقة للطرح</label><input type="date" id="f-op-approval" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"></div>
                         <div class="flex flex-col" id="wrap-date1-box"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400" id="label-date1">تاريخ الطرح</label><input type="date" id="f-op-date1" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs"></div>
@@ -4671,7 +4995,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400" id="lbl-aw-bank">البنك / جهة التحصيل</label><input type="text" id="f-aw-bank" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold" placeholder="اسم البنك أو خزينة الجامعة..."></div>
 
                         <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">رد التأمين الابتدائي</label><select id="f-aw-ret" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option>لا</option><option>نعم</option></select></div>
-                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">تم إبرام العقد؟</label><select id="f-aw-contract" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option>لا</option><option>نعم</option></select></div>
+                        <div class="flex flex-col"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">تم إبرام العقد؟</label><select id="f-aw-contract" class="border dark:border-slate-600 rounded-xl px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs font-bold"><option>لا</option><option>نعم</option><option value="غير مطلوب">غير مطلوب</option></select></div>
                         <div class="flex flex-col border-t dark:border-slate-700 pt-2"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400" id="label-aw-ponum">رقم أمر التوريد / الإسناد</label><div class="flex gap-1.5"><input type="number" id="f-aw-ponum" placeholder="رقم" class="border dark:border-slate-600 rounded-xl px-1.5 py-1 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs w-1/3"><input type="date" id="f-aw-podate" class="border dark:border-slate-600 rounded-xl px-1.5 py-1 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs w-2/3"></div></div>
                         <div class="flex flex-col border-t dark:border-slate-700 pt-2"><label class="text-[11px] font-bold mb-1 text-slate-600 dark:text-slate-400">مهلة التوريد (يوم) وحالة التنفيذ</label><div class="flex gap-1.5"><input type="number" id="f-aw-podays" value="30" class="border dark:border-slate-600 rounded-xl px-1.5 py-1 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs w-1/2 text-center font-bold"><select id="f-aw-del" class="border dark:border-slate-600 rounded-xl px-1.5 py-1 bg-slate-50 dark:bg-slate-900 dark:text-white text-xs w-1/2 font-bold text-primary dark:text-indigo-400"><option>لا</option><option>نعم</option></select></div></div>
                     </form>
@@ -5060,6 +5384,7 @@ body.dark #bid-side-cards select.bid-tech-sel {
         function rowStatusClass(status) {
             const s = String(status || '').trim();
             if (!s || s === '-') return '';
+            if (/ملغ|إلغاء|الغاء/i.test(s)) return 'row-status-cancelled';
             if (/مكتمل|تم الترسية|منته|مغلق|تم التنفيذ|تم الاستلام/i.test(s)) return 'row-status-done';
             if (/متأخر|انتهت المهلة|تأخير|منتهية المهلة/i.test(s)) return 'row-status-late';
             if (/موقوف|معلق|إيقاف|تجميد/i.test(s)) return 'row-status-hold';
@@ -5817,18 +6142,25 @@ body.dark #bid-side-cards select.bid-tech-sel {
                 // لا نمسح البيانات — التصنيف للعرض فقط
             }
 
-            // حاسم: عنوان مناقصة لا يتحول لتجديد
+            // حسم النوع من نص المستند — التجديد أولوية على ذكر «كراسة» العرضية
             try {
-                const blob = String(parsed.opName || parsed.name || parsed.title || '') + ' ' + String(parsed.opType || '');
-                if (/مناقصة\s*عامة|مناقصة\s*محدودة|ممارسة\s*عامة|ممارسة\s*محدودة|كراسة\s*شروط/.test(blob)) {
-                    if (/تجديد|تمديد/.test(String(parsed.opType || ''))) {
-                        parsed.opType = /ممارسة\s*محدودة/.test(blob) ? 'ممارسة محدودة'
-                            : /ممارسة/.test(blob) ? 'ممارسة عامة'
-                            : /مناقصة\s*محدودة/.test(blob) ? 'مناقصة محدودة'
-                            : 'مناقصة عامة';
-                    }
-                    if (!parsed.opType || /تجديد|تمديد/.test(String(parsed.opType))) {
+                const blob = String(parsed.opName || parsed.name || parsed.title || '') + ' ' + String(parsed.opType || '') + ' ' + String(parsed.decisionText || '');
+                const isRenewalDoc = /تجديد\s*التعاقد|تمديد\s*التعاقد|تجديد\s*عقد/.test(blob)
+                    || (/أمر\s*إسناد/.test(blob) && /تجديد|تمديد/.test(blob));
+                const isTenderDoc = /مناقصة\s*(عامة|محدودة)?\s*رقم|ممارسة\s*(عامة|محدودة)?\s*رقم/.test(blob);
+                if (isRenewalDoc && !isTenderDoc) {
+                    parsed.opType = /تمديد/.test(blob) ? 'تمديد تعاقد' : 'تجديد تعاقد';
+                } else if (isTenderDoc && !isRenewalDoc) {
+                    parsed.opType = /ممارسة\s*محدودة/.test(blob) ? 'ممارسة محدودة'
+                        : /ممارسة/.test(blob) ? 'ممارسة عامة'
+                        : /مناقصة\s*محدودة/.test(blob) ? 'مناقصة محدودة'
+                        : 'مناقصة عامة';
+                } else if (isTenderDoc && isRenewalDoc) {
+                    // مستند مختلط نادر: غلّب رقم المناقصة إن وُجد صراحة
+                    if (/مناقصة\s*(عامة|محدودة)?\s*رقم/.test(blob)) {
                         parsed.opType = 'مناقصة عامة';
+                    } else {
+                        parsed.opType = 'تجديد تعاقد';
                     }
                 }
             } catch (eForce) {}
@@ -5841,30 +6173,29 @@ body.dark #bid-side-cards select.bid-tech-sel {
                     };
                     const nName = norm(parsed.opName || parsed.name || parsed.title || '');
                     let hit = null;
+                    // استنتج الفئة المرغوبة من النوع قبل المطابقة
+                    let wantCat = 'tender';
+                    const pt = String(parsed.opType || '');
+                    if (/تجديد|تمديد/.test(pt)) wantCat = 'renewal';
+                    else if (/أمر\s*مباشر|مباشر/.test(pt) && !/ممارسة/.test(pt)) wantCat = 'direct';
+
                     if (parsed.opId != null && !isNaN(Number(parsed.opId))) {
                         const sameId = DB.operations.filter(function(o){ return String(o.id) === String(parsed.opId); });
-                        if (sameId.length === 1) hit = sameId[0];
-                        else if (sameId.length > 1 && nName.length >= 6) {
-                            hit = sameId.find(function(o){
-                                const on = norm(o.name);
-                                return on && (on === nName || on.indexOf(nName) >= 0 || nName.indexOf(on) >= 0);
-                            }) || sameId[0];
-                        }
+                        // فضّل نفس الفئة دائمًا
+                        hit = sameId.find(function(o){ return (o.category || 'tender') === wantCat; }) || null;
+                        if (!hit && sameId.length === 1 && (sameId[0].category || 'tender') === wantCat) hit = sameId[0];
+                        // لا تأخذ مناقصة رقم 1 عندما المستند تجديد إسناد رقم 1
                     }
                     if (!hit && nName.length >= 8) {
                         hit = DB.operations.find(function(o){
+                            if ((o.category || 'tender') !== wantCat) return false;
                             const on = norm(o.name);
                             return on && (on === nName || on.indexOf(nName) >= 0 || nName.indexOf(on) >= 0);
                         });
                     }
-                    if (hit) {
+                    if (hit && (hit.category || 'tender') === wantCat) {
                         parsed.opId = hit.id;
-                        // لا تغيّر نوع عملية موجودة بمجرد كشف تفريغ
-                        if (hit.type && (!parsed.opType || parsed.opType === 'مناقصة عامة' || parsed.opType === 'مناقصة')) {
-                            const t = String(hit.type);
-                            if (/أمر\s*مباشر|تجديد|تمديد/.test(t)) parsed.opType = hit.type;
-                            else if (hit.type) parsed.opType = hit.type;
-                        }
+                        if (hit.type) parsed.opType = hit.type;
                     }
                 }
             } catch (eMatch) { console.warn(eMatch); }
@@ -6268,8 +6599,13 @@ JSON فقط.`;
 
 
 === قواعد حاسمة لدقة 2026 (إلزامية) ===
-A0) إن ورد في المستند «مناقصة عامة رقم» أو «ممارسة رقم» أو «كراسة شروط» لمناقصة → opType يجب أن يكون مناقصة/ممارسة المناسبة، وcategory ضمنيًا tender. ممنوع تمامًا opType=تجديد تعاقد أو تمديد لهذه المستندات حتى لو وُجدت تواريخ عقد أو أمر إسناد.
-A) مطابقة عمليات المنظومة: إن وُجد في «السياق المرفق» عملية بنفس الرقم أو اسم متقارب جدًا → استخدم نفس opId و opType ولا تغيّر الفئة (مناقصة/مباشر/تجديد). كشف تفريغ بدون «مناقصة عامة رقم» لا يحوّل مباشر إلى مناقصة.
+A00) أمر إسناد / تجديد تعاقد (حاسم — لا يُكسر):
+   - إن ورد «تجديد التعاقد» أو «تمديد» مع «أمر إسناد رقم (N)» → opType="تجديد تعاقد" (أو تمديد)، و opId = N فقط، والفئة renewal.
+   - رقم أمر الإسناد N ≠ مناقصة عامة رقم N. ممنوع تحديث أو دمج عملية مناقصة/ممارسة لها نفس الرقم.
+   - لا تستخدم حقول date1–date6 للطرح؛ استخدم contractStart/contractEnd من مدة التعاقد.
+   - awards[0].poNum = رقم أمر الإسناد، opCategory عند الاعتماد = renewal.
+A0) إن ورد «مناقصة عامة رقم» أو «ممارسة رقم» صراحة → opType مناقصة/ممارسة المناسبة. مجرد ذكر «كراسة الشروط» داخل أمر إسناد تجديد لا يحوّل العملية لمناقصة.
+A) مطابقة عمليات المنظومة (داخل نفس الفئة فقط): إن وُجد في «السياق المرفق» عملية بنفس الرقم أو اسم متقارب جدًا → استخدم نفس opId و opType ولا تغيّر الفئة (مناقصة/مباشر/تجديد). كشف تفريغ بدون «مناقصة عامة رقم» لا يحوّل مباشر إلى مناقصة.
 B) كشف التفريغ / المقارنة المالية:
    - إن وُجد صف صريح «الإجمالي الشهري» أو «الإجمالي السنوي» أو «قيمة العملية» لشركة → استخدمه كإجمالي تلك الشركة؛ ممنوع استبدالها بمجموع بنود جزئية إن وُجد الإجمالي.
    - المستبعد فنيًا (rejectReasons / مادة 63 / غير مسجل ض.ق.م) لا يُدرج في financialRows كعرض مالي معتبر للبت، إلا للذكر في rejectReasons.
@@ -7354,7 +7690,38 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
         }
 
         // دالة الدمج التراكمي الذكي للعمليات والبنود وترحيل كافة بيانات الشركات بدقة متناهية
+
+        function updateStagingCommitPreview() {
+            try {
+                let box = document.getElementById('staging-commit-preview');
+                if (!box) {
+                    const btn = document.getElementById('btn-commit-operation');
+                    if (btn && btn.parentNode) {
+                        box = document.createElement('div');
+                        box.id = 'staging-commit-preview';
+                        box.className = 'w-full';
+                        btn.parentNode.insertBefore(box, btn);
+                    }
+                }
+                if (!box) return;
+                const typeEl = document.getElementById('st-op-type');
+                const idEl = document.getElementById('st-op-id');
+                const nameEl = document.getElementById('st-op-name');
+                const typ = (typeEl && typeEl.value) || (typeof globalParsedData !== 'undefined' && globalParsedData && globalParsedData.opType) || '';
+                let cat = 'مناقصة / ممارسة';
+                if (/تجديد|تمديد/.test(String(typ))) cat = 'تجديد وتمديد';
+                else if (/مباشر/.test(String(typ)) && !/ممارسة/.test(String(typ))) cat = 'أمر مباشر';
+                const id = (idEl && idEl.value) || (typeof globalParsedData !== 'undefined' && globalParsedData && globalParsedData.opId) || '؟';
+                const nm = (nameEl && nameEl.value) ? String(nameEl.value).slice(0, 48) : '';
+                const prefix = (cat.indexOf('تجديد') === 0) ? 'تجديد-' : (cat.indexOf('أمر') === 0) ? 'مباشر-' : '';
+                box.innerHTML = 'سيُعتمد كـ <b dir="ltr">' + prefix + id + '</b> في تبويب <b>' + cat + '</b>' +
+                    (nm ? (' — ' + nm) : '') +
+                    '<br><span style="font-weight:600;opacity:.85">نفس الرقم يمكن أن يوجد في تبويب آخر دون دمج تلقائي.</span>';
+            } catch (e) { console.warn(e); }
+        }
+
         function commitStagingDataToDB() {
+            try { updateStagingCommitPreview(); } catch (e0) {}
             try {
                 if (typeof DB === 'undefined' || !DB) {
                     window.DB = { operations: [], awards: [], suppliers: [], archives: {} };
@@ -7394,11 +7761,32 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                 }
 
                 let category = 'tender';
-                const _sig = String(opType || '') + ' ' + String(opName || '');
-                // حاسم: مناقصة/ممارسة في الاسم أو النوع → tender دائماً (حتى لو النموذج رجّع تجديد بالغلط)
-                if (/مناقصة|ممارسة/.test(_sig) && !/تجديد\s*مناقصة/.test(_sig)) {
+                const _sig = String(opType || '') + ' ' + String(opName || '') + ' ' + String((typeof globalParsedData !== 'undefined' && globalParsedData && globalParsedData.decisionText) || '');
+                // ترتيب الحسم: تجديد/أمر إسناد أولاً — ثم مباشر — ثم مناقصة (منع خلط رقم الإسناد مع رقم المناقصة)
+                const _isRenewalSig = (/تجديد\s*التعاقد|تمديد\s*التعاقد|تجديد\s*عقد/.test(_sig)
+                    || (/أمر\s*إسناد/.test(_sig) && /تجديد|تمديد|شئون\s*بيئة|صيانة\s*دورية/.test(_sig)))
+                    && !/مناقصة\s*(عامة|محدودة)?\s*رقم/.test(_sig);
+                const _isTenderNumSig = /مناقصة\s*(عامة|محدودة)?\s*رقم|ممارسة\s*(عامة|محدودة)?\s*رقم/.test(_sig);
+                const _isDirectSig = (/أمر\s*مباشر|اتفاق\s*مباشر/.test(_sig) || (/أمر\s*توريد/.test(_sig) && !/مناقصة/.test(_sig)))
+                    && !/تجديد\s*التعاقد/.test(_sig) && !_isTenderNumSig;
+
+                if (_isRenewalSig || (opType && (String(opType).includes('تجديد') || String(opType).includes('تمديد')))) {
+                    category = 'renewal';
+                    if (!opType || /مناقصة|ممارسة/.test(String(opType))) {
+                        opType = /تمديد/.test(_sig + String(opType||'')) ? 'تمديد تعاقد' : 'تجديد تعاقد';
+                        const tsFix = document.getElementById('st-op-type');
+                        if (tsFix) { try { tsFix.value = opType; } catch(e) {} }
+                    }
+                } else if (_isDirectSig || (opType && (String(opType).includes('أمر مباشر') || (String(opType).includes('مباشر') && !String(opType).includes('ممارسة'))))) {
+                    category = 'direct';
+                    if (!opType || /مناقصة|ممارسة|تجديد/.test(String(opType))) {
+                        opType = 'أمر مباشر';
+                        const tsFix = document.getElementById('st-op-type');
+                        if (tsFix) { try { tsFix.value = opType; } catch(e) {} }
+                    }
+                } else if (_isTenderNumSig || (/مناقصة|ممارسة/.test(_sig) && !/تجديد\s*التعاقد/.test(_sig))) {
                     category = 'tender';
-                    if (opType && /تجديد|تمديد/.test(opType) && /مناقصة|ممارسة/.test(_sig)) {
+                    if (opType && /تجديد|تمديد/.test(String(opType))) {
                         opType = /ممارسة\s*محدودة/.test(_sig) ? 'ممارسة محدودة'
                             : /ممارسة/.test(_sig) ? 'ممارسة عامة'
                             : /مناقصة\s*محدودة/.test(_sig) ? 'مناقصة محدودة'
@@ -7406,9 +7794,9 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         const tsFix = document.getElementById('st-op-type');
                         if (tsFix) { try { tsFix.value = opType; } catch(e) {} }
                     }
-                } else if (opType && (opType.includes('أمر مباشر') || (opType.includes('مباشر') && !opType.includes('ممارسة')))) {
+                } else if (opType && (String(opType).includes('أمر مباشر') || (String(opType).includes('مباشر') && !String(opType).includes('ممارسة')))) {
                     category = 'direct';
-                } else if (opType && (opType.includes('تجديد') || opType.includes('تمديد'))) {
+                } else if (opType && (String(opType).includes('تجديد') || String(opType).includes('تمديد'))) {
                     category = 'renewal';
                 }
 
@@ -7505,14 +7893,10 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         if (sameId.length) {
                             const inCat = sameId.find(o => (o.category || 'tender') === category);
                             const byName = pickBest(sameId);
+                            // ممنوع سحب فئة مناقصة على تجديد/مباشر بنفس الرقم (رقم إسناد 1 ≠ مناقصة 1)
                             if (byName && (byName.category || 'tender') !== category) {
-                                // اسم يطابق عملية موجودة بفئة أخرى → حدّث الموجودة ولا تنشئ مكرر
-                                category = byName.category || category;
-                                opType = byName.type || opType;
-                                const ts = document.getElementById('st-op-type');
-                                if (ts && byName.type) { try { ts.value = byName.type; } catch(e) {} }
-                            } else if (!inCat && byName) {
-                                category = byName.category || category;
+                                // اترك category كما استُنتجت من المستند؛ المطابقة لاحقًا داخل نفس الفئة فقط
+                            } else if (!inCat && byName && (byName.category || 'tender') === category) {
                                 opType = byName.type || opType;
                             }
                         }
@@ -7523,11 +7907,12 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                         if (!byName) byName = pickBest(DB.operations || []);
                         if (byName) {
                             opId = byName.id;
-                            if ((byName.category || 'tender') !== category) {
-                                category = byName.category || category;
+                            // لا تغيّر الفئة المستنتجة من المستند
+                            if ((byName.category || 'tender') === category) {
                                 opType = byName.type || opType;
-                                const ts = document.getElementById('st-op-type');
-                                if (ts && byName.type) { try { ts.value = byName.type; } catch(e) {} }
+                            } else {
+                                // اسم متشابه في فئة أخرى → لا تسرق الرقم/الفئة؛ ابحث أو أنشئ في فئتك
+                                opId = null;
                             }
                         }
                     }
@@ -7550,12 +7935,12 @@ table{border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif
                             const on = norm(o.name);
                             return on && nn && (on === nn || on.includes(nn) || nn.includes(on));
                         });
-                        if (alt) {
+                        if (alt && (alt.category || 'tender') === category) {
                             existingOp = alt;
                             existingOpIndex = DB.operations.indexOf(alt);
-                            category = alt.category || category;
                             opType = alt.type || opType;
                         }
+                        // إن وُجدت مناقصة بنفس الرقم وتجديد جديد → لا تُحدَّث المناقصة؛ تُنشأ/تُحدَّث فئة التجديد فقط
                     }
                     if (existingOp && category === 'tender' && looksLikeTenderRef) {
                         opType = existingOp.type || opType;
@@ -8572,8 +8957,17 @@ async function deleteOp(id, categoryHint) {
             function belongsToOp(entityOpId, entityCat) {
                 if (String(entityOpId) !== String(id)) return false;
                 if (entityCat) return entityCat === opCat;
-                // قديم بلا فئة: يُنسب للمناقصة فقط
-                return opCat === 'tender';
+                // يتيم بلا فئة: يُنسب للعملية المحذوفة فقط إن تطابق المجال التقريبي مع اسمها (منع حذف/نقل خاطئ)
+                try {
+                    const opN = String(op.name || '');
+                    // عند حذف تجديد/مباشر: لا تسحب يتيمًا لمجرد تطابق الرقم
+                    if (opCat === 'renewal' || opCat === 'direct') return false;
+                    // عند حذف مناقصة: اليتيم ينضم إن لم يكن اسم العملية تجديدًا واضحًا
+                    if (/تجديد|تمديد/.test(opN)) return false;
+                    return true;
+                } catch (e) {
+                    return opCat === 'tender';
+                }
             }
 
             const relatedAwards = (DB.awards || []).filter(a => belongsToOp(a.opId, a.opCategory));
@@ -8931,6 +9325,7 @@ async function deleteOp(id, categoryHint) {
 
         function getProgress(status) {
             const s = String(status || '');
+            if (/ملغ|إلغاء|الغاء/.test(s)) return 0;
             if (s === 'مكتمل' || s === 'تم الترسية') return 100;
             if (s === 'جاري البت المالي' || s.indexOf('بت مالي') !== -1) return 75;
             if (s === 'جاري الدراسة الفنية' || s.indexOf('فني') !== -1) return 50;
@@ -8967,6 +9362,60 @@ async function deleteOp(id, categoryHint) {
         function pill(text, colorClass) {
             return `<span class="pill ${colorClass || 'blue'}">${text}</span>`;
         }
+        /** قاموس لون الموقف التشغيلي */
+        
+        function toggleCancelReasonFields() {
+            try {
+                const st = document.getElementById('f-op-status');
+                const wrap = document.getElementById('f-op-cancel-wrap');
+                if (!wrap) return;
+                const isCancel = st && String(st.value || '').indexOf('ملغ') !== -1;
+                wrap.classList.toggle('hidden', !isCancel);
+            } catch (e) {}
+        }
+
+        
+        function isOpCancelled(opOrStatus) {
+            if (opOrStatus == null) return false;
+            if (typeof opOrStatus === 'object') {
+                return /ملغ|إلغاء|الغاء/i.test(String(opOrStatus.status || ''));
+            }
+            return /ملغ|إلغاء|الغاء/i.test(String(opOrStatus || ''));
+        }
+        function findOpByIdAny(opId) {
+            const id = String(opId);
+            return (DB.operations || []).find(function(o){ return String(o.id) === id; }) || null;
+        }
+
+        function statusColorClass(status) {
+            const s = String(status || '').trim();
+            if (!s || s === '-') return 'status-hold';
+            if (/ملغ|إلغاء|الغاء/i.test(s)) return 'status-cancelled';
+            if (/متأخر|انتهت المهلة|تأخير|منتهية المهلة/i.test(s)) return 'status-late';
+            if (/مكتمل|تم الترسية|منته|مغلق|تم التنفيذ|تم الاستلام/i.test(s)) return 'status-done';
+            if (/موقوف|معلق|إيقاف|مؤجل/i.test(s)) return 'status-hold';
+            if (/تحت الطرح|طرح/i.test(s)) return 'status-open';
+            if (/جاري|بت|فني|دراسة|فحص|تنفيذ|توريد/i.test(s)) return 'status-progress';
+            return 'status-hold';
+        }
+        function statusPill(status) {
+            const t = String(status || '—');
+            const cls = statusColorClass(t);
+            const icon = (cls === 'status-cancelled' || /ملغ|إلغاء|الغاء/i.test(t))
+                ? '<i class="fa-solid fa-ban" aria-hidden="true"></i> '
+                : '';
+            return '<span class="pill ' + cls + '">' + icon + t + '</span>';
+        }
+        function statusRowClass(status) {
+            const c = statusColorClass(status);
+            if (c === 'status-cancelled') return 'row-status-cancelled';
+            if (c === 'status-done') return 'row-status-done';
+            if (c === 'status-late') return 'row-status-late';
+            if (c === 'status-open') return 'row-status-open';
+            if (c === 'status-progress') return 'row-status-progress';
+            if (c === 'status-hold') return 'row-status-hold';
+            return '';
+        }
         function portalPill(val) {
             const s = String(val || '').trim();
             if (s === 'نعم' || s === 'تم النشر' || s === 'منشور') return pill('تم النشر', 'green');
@@ -8975,7 +9424,10 @@ async function deleteOp(id, categoryHint) {
             return pill(s, 'blue');
         }
         function yesNoPill(val, yesClass, noClass) {
-            return val === 'نعم' ? pill('نعم', yesClass || 'green') : pill('لا', noClass || 'yellow');
+            const v = String(val || '').trim();
+            if (v === 'نعم') return pill('نعم', yesClass || 'green');
+            if (v === 'غير مطلوب' || v === 'لا يتطلب' || v === 'معفى') return pill(v || 'غير مطلوب', 'slate');
+            return pill(v || 'لا', noClass || 'yellow');
         }
         function fmtMoney(v) {
             if (v === null || v === undefined || v === '' || isNaN(parseFloat(v))) return '-';
@@ -9428,9 +9880,16 @@ async function deleteOp(id, categoryHint) {
                     (op.type || '').toLowerCase().includes(q);
             });
             filteredOps = sortOpsByIdAsc(filteredOps);
+            const _opsTotalFiltered = filteredOps.length;
             renderPaginationBar('ops-pagination', opsPage, filteredOps.length, 'goOpsPage');
             const start = (opsPage - 1) * PAGE_SIZE;
             filteredOps = filteredOps.slice(start, start + PAGE_SIZE);
+
+            if (_opsTotalFiltered === 0) {
+                trHead.innerHTML = '';
+                tb.innerHTML = '<tr><td colspan="20" class="table-empty-hint">لا توجد عمليات في هذا التبويب — ابدأ بـ «قيد عملية جديدة» أو «الاستخراج الذكي»</td></tr>';
+                return;
+            }
 
             if (currentOpSubTab === 'tender') {
                 if (typeof opsViewMode !== 'undefined' && opsViewMode === 'cards') {
@@ -9492,7 +9951,12 @@ async function deleteOp(id, categoryHint) {
                     const nameCell = `<td class="op-name-cell" title="${escHtml(op.name || '')}">${escHtml(op.name || '')}</td>`;
                     const entCell = `<td class="wrap-text">${op.entity || ''}</td>`;
                     const typeCell = `<td>${op.type || ''}</td>`;
-                    const statusCell = `<td title="${escHtml(cleanStatus)}"><span class="pill blue truncate max-w-[150px] inline-block">${shortStatus}</span></td>`;
+                    const _stCls = (typeof statusColorClass === 'function') ? statusColorClass(cleanStatus) : 'blue';
+                    const _stIcon = (_stCls === 'status-cancelled' || /ملغ/.test(String(cleanStatus))) ? '<i class="fa-solid fa-ban"></i> ' : '';
+                    const _cancelTip = (/ملغ/.test(String(cleanStatus)) && op.cancelReason)
+                        ? (' — السبب: ' + op.cancelReason + (op.cancelDate ? (' | ' + op.cancelDate) : '') + (op.cancelNote ? (' | ' + op.cancelNote) : ''))
+                        : '';
+                    const statusCell = `<td title="${escHtml(String(cleanStatus) + _cancelTip)}"><span class="pill ${_stCls}">${_stIcon}${shortStatus}</span>${(op.cancelReason && /ملغ/.test(String(cleanStatus))) ? '<div class="text-[9px] text-red-600 font-bold mt-0.5 leading-snug" style="max-width:11rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+escHtml(op.cancelReason)+'</div>' : ''}</td>`;
                     const totalCell = `<td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>`;
                     const actCell = `${opEditDeleteBtns(op.id, op.category || 'tender')}`;
                     if (_fullCols) {
@@ -9518,7 +9982,7 @@ async function deleteOp(id, categoryHint) {
                         <td class="text-[11px] date-cell">${formatDateTwoLine(op.date1)}</td>
                         <td class="font-bold text-amber-600">${op.guideline ? fmt.format(op.guideline) : '-'}</td>
                         <td>${portalPill(op.portal || 'نعم')}</td>
-                        <td>${pill(op.status || '-', 'blue')}</td>
+                        <td>${statusPill(op.status || '—')}</td>
                         <td class="font-black text-slate-700 dark:text-slate-300">${op.total ? fmt.format(op.total) : '-'}</td>
                         <td>${attach}</td>
                         ${opEditDeleteBtns(op.id, op.category || 'tender')}
@@ -9547,7 +10011,7 @@ async function deleteOp(id, categoryHint) {
                         <td class="font-black text-emerald-700">${valShow}</td>
                         <td class="text-[11px]">${formatDateTwoLine(op.contractStart || op.date1)}</td>
                         <td class="text-[11px]">${formatDateTwoLine(op.contractEnd || op.date2)}</td>
-                        <td>${pill(op.status || '-', 'blue')}</td>
+                        <td>${statusPill(op.status || '—')}</td>
                         <td>${attach}</td>
                         ${opEditDeleteBtns(op.id, 'renewal')}
                     </tr>`;
@@ -9825,7 +10289,28 @@ async function deleteOp(id, categoryHint) {
             fill('exec-filter-status', statuses);
         }
 
-                function renderExecutive() {
+        
+        function printExecutiveReport() {
+            try {
+                const meta = document.getElementById('exec-print-meta');
+                const fromStr = (document.getElementById('exec-filter-from') || {}).value || '';
+                const toStr = (document.getElementById('exec-filter-to') || {}).value || '';
+                const fEntity = (document.getElementById('exec-filter-entity') || {}).value || '';
+                const fType = (document.getElementById('exec-filter-type') || {}).value || '';
+                const fStatus = (document.getElementById('exec-filter-status') || {}).value || '';
+                const now = new Date();
+                const ds = now.toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' });
+                const parts = ['تاريخ الطباعة: ' + ds];
+                if (fromStr || toStr) parts.push('الفترة: ' + (fromStr || '…') + ' → ' + (toStr || '…'));
+                if (fEntity) parts.push('الجهة: ' + fEntity);
+                if (fType) parts.push('النوع: ' + fType);
+                if (fStatus) parts.push('الموقف: ' + fStatus);
+                if (meta) meta.textContent = parts.join('  |  ');
+            } catch (e) {}
+            window.print();
+        }
+
+        function renderExecutive() {
             if (!DB.awards) DB.awards = [];
             if (!DB.operations) DB.operations = [];
             populateExecutiveFilters();
@@ -9954,50 +10439,117 @@ async function deleteOp(id, categoryHint) {
                 else groups.tender.rows.push(r);
             });
 
+            function safeMoney(v) {
+                if (v == null || v === '' || v === '-') return null;
+                if (typeof v === 'number' && !isNaN(v)) return v;
+                const n = parseFloat(String(v).replace(/[^\d.-]/g, ''));
+                return (isNaN(n) ? null : n);
+            }
+            function fmtMoneyOrDash(v) {
+                const n = safeMoney(v);
+                return n == null ? '—' : fmt.format(n);
+            }
+            function fmtDateShort(d) {
+                if (!d || d === '-' || d === 'null') return '—';
+                const s = String(d).trim();
+                // YYYY-MM-DD → DD-MM-YYYY للعرض
+                const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+                if (m) return m[3] + '-' + m[2] + '-' + m[1];
+                return s;
+            }
             function rowHtml(aw, op, opCat, isOpOnly) {
-                const isAwarded = (aw.awardStatus === 'تم الترسية');
-                const pr = getProgress(op.status);
-                let gSt, dSt, displayVal, displayPoText, itemText, suppText;
+                const isCancelled = (typeof isOpCancelled === 'function')
+                    ? isOpCancelled(op)
+                    : /ملغ|إلغاء|الغاء/i.test(String(op.status || ''));
+                const catTypeLabel0 = opCat === 'direct' ? (op.type || 'اتفاق مباشر')
+                    : (opCat === 'renewal' ? (op.type || 'تجديد تعاقد')
+                    : (op.type || 'مناقصة عامة'));
+                // عمليات ملغاة: عرض مختصر — إلغاء + سبب + تاريخ + قرار فقط (نفس عدد الأعمدة)
+                if (isCancelled) {
+                    const reason = op.cancelReason || '—';
+                    const cDate = (op.cancelDate && String(op.cancelDate).trim())
+                        ? ((typeof fmtDateShort === 'function') ? fmtDateShort(op.cancelDate) : op.cancelDate)
+                        : '—';
+                    const cNote = (op.cancelNote && String(op.cancelNote).trim()) ? op.cancelNote : '—';
+                    const stPill = (typeof statusPill === 'function') ? statusPill(op.status || 'ملغاة') : 'ملغاة';
+                    return '<tr class="row-status-cancelled">' +
+                        '<td class="font-bold text-center">' + formatOpDisplayId({ id: aw.opId || op.id, category: opCat, type: op.type || catTypeLabel0 }) + '</td>' +
+                        '<td class="text-right"><b>' + (op.name || aw.item || '-') + '</b><br><span class="text-[10px] text-slate-500">' +
+                        (op.entity || '-') + ' · <span class="text-indigo-600">' + catTypeLabel0 + '</span></span></td>' +
+                        '<td class="text-right font-bold text-red-700">أُلغيت — لا طرح/بت/ترسية</td>' +
+                        '<td class="text-center">—</td>' +
+                        '<td class="text-center">' + stPill + '</td>' +
+                        '<td class="text-center font-bold">0%</td>' +
+                        '<td class="text-center text-[11px] font-bold text-red-700" title="سبب الإلغاء">' + reason + '</td>' +
+                        '<td class="text-center">—</td>' +
+                        '<td class="text-center text-[11px]">إلغاء</td>' +
+                        '<td class="text-center">—</td>' +
+                        '<td class="text-center text-[11px]" title="تاريخ قرار الإلغاء">' + cDate + '</td>' +
+                        '<td class="text-center">—</td>' +
+                        '<td class="text-center text-[11px] text-red-700" title="قرار / مرجع الإلغاء">' + cNote + '</td>' +
+                        '<td class="text-center">—</td>' +
+                        '</tr>';
+                }
+                const isAwarded = !isOpOnly && (aw.awardStatus === 'تم الترسية');
+                const pr = (typeof getProgress === 'function') ? (getProgress(op.status) || 0) : 0;
+                let gSt, dSt, estVal, awardVal, itemText, suppText;
+                let docKind = '—', poNumDisp = '—', poDateDisp = '—', daysDisp = '—';
                 if (isOpOnly) {
-                    // عملية بلا ترسية بعد
                     gSt = { text: '—', class: '' };
                     dSt = { text: op.status === 'تحت الطرح' ? 'تحت الطرح' : 'قيد الإجراء', class: 'blue' };
-                    displayVal = op.est ? fmt.format(op.est) : (op.guideline ? fmt.format(op.guideline) : '—');
-                    displayPoText = 'لم تُرسَ بعد';
+                    estVal = fmtMoneyOrDash(op.est != null ? op.est : op.guideline);
+                    awardVal = '—';
                     itemText = op.name || '—';
                     suppText = '—';
+                    poNumDisp = 'لم تُرسَ بعد';
                 } else {
                     gSt = isAwarded ? getGuaranteeStatus(aw.gType, aw.gIssuance) : { text: 'قيد البت', class: 'yellow' };
                     dSt = isAwarded ? getDeliveryStatus(aw.del, aw.poDate, aw.days) : { text: 'قيد الإجراء', class: 'blue' };
-                    const docLabel = (aw.docOrderType === 'أمر إسناد') ? 'إسناد' : (aw.docOrderType === 'أمر توريد' ? 'توريد' : '—');
-                    displayVal = (isAwarded && aw.val) ? fmt.format(aw.val) : (op.est ? fmt.format(op.est) : '—');
-                    displayPoText = isAwarded
-                        ? (docLabel + ' ' + (aw.poNum || '-') + ' | ' + (aw.poDate || '-'))
-                        : 'قيد البت';
+                    if (aw.docOrderType === 'أمر إسناد') docKind = 'إسناد';
+                    else if (aw.docOrderType === 'أمر توريد') docKind = 'توريد';
+                    else if (aw.docOrderType) docKind = String(aw.docOrderType);
+                    estVal = fmtMoneyOrDash(aw.estVal != null ? aw.estVal : (op.est != null ? op.est : op.guideline));
+                    awardVal = isAwarded ? fmtMoneyOrDash(aw.val) : '—';
                     itemText = aw.item || op.name || '—';
                     suppText = aw.supp || '—';
+                    if (isAwarded) {
+                        poNumDisp = (aw.poNum && aw.poNum !== '-') ? String(aw.poNum) : '—';
+                        poDateDisp = fmtDateShort(aw.poDate);
+                        daysDisp = (aw.days != null && aw.days !== '' && aw.days !== '-') ? String(aw.days) : '—';
+                    } else {
+                        poNumDisp = 'قيد البت';
+                        docKind = '—';
+                    }
                 }
                 const catTypeLabel = opCat === 'direct' ? (op.type || 'اتفاق مباشر')
                     : (opCat === 'renewal' ? (op.type || 'تجديد تعاقد')
                     : (op.type || 'مناقصة عامة'));
-                return '<tr' + (isOpOnly ? ' class="bg-amber-50/50 dark:bg-amber-950/20"' : '') + '>' +
+                const gValExtra = (!isOpOnly && isAwarded && safeMoney(aw.gVal) != null)
+                    ? ('<div class="text-[9px] text-slate-500 font-semibold">' + fmt.format(safeMoney(aw.gVal)) + '</div>') : '';
+                return '<tr class="' + (isOpOnly ? 'bg-amber-50/50 dark:bg-amber-950/20 ' : '') + (typeof statusRowClass === 'function' ? statusRowClass(op.status) : '') + '">' +
                     '<td class="font-bold text-center">' + formatOpDisplayId({ id: aw.opId, category: opCat, type: op.type || catTypeLabel }) + '</td>' +
                     '<td class="text-right"><b>' + (op.name || aw.item || '-') + '</b><br><span class="text-[10px] text-slate-500">' +
                     (op.entity || '-') + ' · <span class="text-indigo-600 dark:text-indigo-300">' + catTypeLabel + '</span></span></td>' +
                     '<td class="text-right font-bold">' + itemText + '</td>' +
                     '<td class="text-right font-bold text-primary dark:text-indigo-400">' + suppText + '</td>' +
-                    '<td class="text-xs font-bold text-center">' + (op.status || '-') + '</td>' +
+                    '<td class="text-center">' + statusPill(op.status || '—') + '</td>' +
                     '<td class="text-center font-bold">' + pr + '%</td>' +
-                    '<td class="font-black text-center">' + displayVal + '</td>' +
-                    '<td class="text-[11px] text-center">' + displayPoText + '</td>' +
+                    '<td class="text-center text-[11px] font-bold">' + estVal + '</td>' +
+                    '<td class="font-black text-center">' + awardVal + '</td>' +
+                    '<td class="text-center text-[11px] font-bold">' + docKind + '</td>' +
+                    '<td class="text-center font-black text-indigo-700 dark:text-indigo-300">' + poNumDisp + '</td>' +
+                    '<td class="text-center text-[11px] date-cell">' + poDateDisp + '</td>' +
+                    '<td class="text-center text-[11px]">' + daysDisp + '</td>' +
                     '<td class="text-center font-bold">' + dSt.text + '</td>' +
-                    '<td class="text-center font-bold">' + gSt.text + '</td>' +
+                    '<td class="text-center font-bold">' + gSt.text + gValExtra + '</td>' +
                     '</tr>';
             }
 
             const thead = '<thead><tr>' +
                 '<th>رقم</th><th>العملية والجهة</th><th>البند</th><th>الشركة الموردة</th><th>الموقف</th>' +
-                '<th>الإنجاز</th><th>قيمة الترسية</th><th>أمر التوريد / الإسناد</th><th>حالة التوريد / الخدمة</th><th>موقف التأمين النهائي</th>' +
+                '<th>الإنجاز</th><th>تقديري / استرشادي</th><th>قيمة الترسية</th>' +
+                '<th>نوع الأمر</th><th>رقم الأمر</th><th>تاريخ الأمر</th><th>مهلة (يوم)</th>' +
+                '<th>حالة التوريد / الخدمة</th><th>موقف التأمين النهائي</th>' +
                 '</tr></thead>';
 
             // حاوية العرض: استبدل الجدول الواحد بجداول منفصلة
@@ -10029,9 +10581,22 @@ async function deleteOp(id, categoryHint) {
                 let h = '<div class="px-3 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">' +
                     '<h3 class="font-black text-sm text-indigo-800 dark:text-indigo-200">' + g.title +
                     ' <span class="text-[11px] font-bold text-slate-500">(' + g.rows.length + ')</span></h3></div>';
+                let sumAward = 0, cntAwarded = 0, cntOpen = 0;
+                g.rows.forEach(function(r) {
+                    if (r.isOpOnly) { cntOpen++; return; }
+                    if (r.aw && r.aw.awardStatus === 'تم الترسية') {
+                        cntAwarded++;
+                        const n = safeMoney(r.aw.val);
+                        if (n != null) sumAward += n;
+                    } else cntOpen++;
+                });
                 h += '<table class="excel-table exec-cat-table" style="min-width:0">' + thead + '<tbody>';
                 g.rows.forEach(function(r) { h += rowHtml(r.aw, r.op, r.opCat, r.isOpOnly); });
                 h += '</tbody></table>';
+                h += '<div class="px-3 py-1.5 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-700 flex flex-wrap gap-3 text-[11px] font-bold text-slate-600 dark:text-slate-300">' +
+                    '<span>ترسية: ' + cntAwarded + '</span>' +
+                    '<span>قيد الإجراء / بلا ترسية: ' + cntOpen + '</span>' +
+                    '<span class="text-indigo-700 dark:text-indigo-300">إجمالي قيم الترسية: ' + (sumAward ? fmt.format(sumAward) : '—') + '</span></div>';
                 sec.innerHTML = h;
                 host.appendChild(sec);
             });
@@ -10153,6 +10718,13 @@ function runQuery() {
 
             DB.awards.forEach((aw, idx) => {
                 if ((aw.awardStatus || '').trim() !== 'تم الترسية') return;
+                // عملية ملغاة: لا تنبيهات توريد/تأمين/مسار
+                try {
+                    const _opC = (typeof findOpByIdAny === 'function')
+                        ? findOpByIdAny(aw.opId)
+                        : (DB.operations || []).find(function(o){ return String(o.id) === String(aw.opId) && (!aw.opCategory || (o.category || 'tender') === aw.opCategory); });
+                    if (_opC && (typeof isOpCancelled === 'function' ? isOpCancelled(_opC) : /ملغ|إلغاء|الغاء/i.test(String(_opC.status || '')))) return;
+                } catch (eSkip) {}
                 const item = aw.item || '—';
                 const supp = aw.supp || '—';
                 const opId = aw.opId != null ? aw.opId : '—';
@@ -10224,6 +10796,7 @@ function runQuery() {
             // د) بت مالي معلّق — فتح مالي بدون بت بعد 14 يوماً
             (DB.operations || []).forEach(function (op) {
                 if (!op) return;
+                if (typeof isOpCancelled === 'function' ? isOpCancelled(op) : /ملغ|إلغاء|الغاء/i.test(String(op.status || ''))) return;
                 const st = String(op.status || '');
                 if (st.indexOf('ترسية') !== -1 || st.indexOf('عقد') !== -1 || st.indexOf('منته') !== -1) return;
                 if (!op.date5) return;
@@ -10247,6 +10820,7 @@ function runQuery() {
             // هـ) تظلمات / مهلة بعد التقرير الفني
             (DB.operations || []).forEach(function (op) {
                 if (!op || !op.date3) return;
+                if (typeof isOpCancelled === 'function' ? isOpCancelled(op) : /ملغ|إلغاء|الغاء/i.test(String(op.status || ''))) return;
                 if (op.date4 || op.date5 || op.date6) return;
                 let d3;
                 try { d3 = new Date(op.date3); } catch (e) { return; }
@@ -10545,7 +11119,16 @@ function runQuery() {
                 document.getElementById('f-op-divided').value = op.isDivided || 'لا - ترسية كلية';
                 document.getElementById('f-op-est').value = op.est; 
                 document.getElementById('f-op-guideline').value = op.guideline || '';
-                document.getElementById('f-op-status').value = op.status;
+                document.getElementById('f-op-status').value = op.status || 'تحت الطرح';
+                try {
+                    const cr = document.getElementById('f-op-cancel-reason');
+                    const cd = document.getElementById('f-op-cancel-date');
+                    const cn = document.getElementById('f-op-cancel-note');
+                    if (cr) cr.value = op.cancelReason || '';
+                    if (cd) cd.value = op.cancelDate || '';
+                    if (cn) cn.value = op.cancelNote || '';
+                    if (typeof toggleCancelReasonFields === 'function') toggleCancelReasonFields();
+                } catch (eC) {}
                 document.getElementById('f-op-portal').value = op.portal || 'نعم';
                 document.getElementById('f-op-approval').value = op.approvalDate || '';
                 document.getElementById('f-op-date1').value = op.date1 || '';
@@ -10784,7 +11367,10 @@ function runQuery() {
                 isDivided: document.getElementById('f-op-divided').value,
                 est: document.getElementById('f-op-est').value, 
                 guideline: parseFloat(document.getElementById('f-op-guideline').value) || 0,
-                status: document.getElementById('f-op-status').value, 
+                status: document.getElementById('f-op-status').value,
+                cancelReason: (document.getElementById('f-op-cancel-reason') || {}).value || '',
+                cancelDate: (document.getElementById('f-op-cancel-date') || {}).value || '',
+                cancelNote: (document.getElementById('f-op-cancel-note') || {}).value || '',
                 portal: document.getElementById('f-op-portal').value,
                 approvalDate: document.getElementById('f-op-approval').value,
                 date1: document.getElementById('f-op-date1').value,
@@ -12200,6 +12786,13 @@ function runQuery() {
             const fmtN = (n) => (typeof fmt !== 'undefined' && n != null && !isNaN(n)) ? fmt.format(Number(n)) : (n != null && n !== '' ? String(n) : '—');
             const lines = [];
 
+            if (/ملغ|إلغاء|الغاء/.test(String(op.status || ''))) {
+                lines.push('⚠ تم إلغاء هذه العملية (الموقف: ملغاة).');
+                if (op.cancelReason) lines.push('سبب الإلغاء: ' + op.cancelReason + (op.cancelDate ? (' — بتاريخ ' + op.cancelDate) : '') + '.');
+                if (op.cancelNote) lines.push('ملاحظات الإلغاء: ' + op.cancelNote + '.');
+                lines.push('المرجع الاسترشادي: المادة 37 من قانون 182 لسنة 2018 ولائحته التنفيذية.');
+            }
+
             // —— تصنيف طريق التعاقد ——
             let pathKind = 'tender'; // tender | practice | direct | renewal
             if (cat === 'renewal' || /تجديد|تمديد/.test(typeStr)) pathKind = 'renewal';
@@ -12504,6 +13097,32 @@ function runQuery() {
             const fmtN = (n) => (typeof fmt !== 'undefined' && n != null && !isNaN(n)) ? fmt.format(Number(n)) : (n != null ? String(n) : '—');
 
             let html = '';
+            const _storyCancelled = (typeof isOpCancelled === 'function')
+                ? isOpCancelled(op)
+                : /ملغ|إلغاء|الغاء/i.test(String(op.status || ''));
+
+            // عمليات ملغاة: سرد مختصر فقط
+            if (_storyCancelled) {
+                html += '<section class="surface p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900">';
+                html += '<h4 class="font-black text-sm text-red-700 mb-3 flex items-center gap-2"><i class="fa-solid fa-ban"></i> عملية ملغاة</h4>';
+                html += '<table class="w-full text-[12px] font-bold"><tbody>';
+                html += '<tr><td class="py-1.5 text-slate-500 w-36">رقم العملية</td><td>' + escHtml(formatOpDisplayId(op)) + '</td></tr>';
+                html += '<tr><td class="py-1.5 text-slate-500">اسم العملية</td><td>' + escHtml(op.name || '—') + '</td></tr>';
+                if (op.entity) html += '<tr><td class="py-1.5 text-slate-500">الجهة</td><td>' + escHtml(op.entity) + '</td></tr>';
+                if (op.type) html += '<tr><td class="py-1.5 text-slate-500">النوع</td><td>' + escHtml(op.type) + '</td></tr>';
+                html += '<tr><td class="py-1.5 text-slate-500">الموقف</td><td class="text-red-700">ملغاة</td></tr>';
+                html += '<tr><td class="py-1.5 text-slate-500">سبب الإلغاء</td><td class="text-red-700">' + escHtml(op.cancelReason || '—') + '</td></tr>';
+                html += '<tr><td class="py-1.5 text-slate-500">تاريخ الإلغاء</td><td>' + escHtml(op.cancelDate || '—') + '</td></tr>';
+                html += '<tr><td class="py-1.5 text-slate-500">قرار / مرجع الإلغاء</td><td>' + escHtml(op.cancelNote || '—') + '</td></tr>';
+                html += '</tbody></table>';
+                html += '<p class="text-[11px] text-slate-500 mt-3 font-semibold">لا تُعرض مراحل الطرح أو البت أو الترسية بعد الإلغاء.</p>';
+                html += '</section>';
+                document.getElementById('op-story-body').innerHTML = html;
+                document.getElementById('op-story-completeness').textContent = 'عملية ملغاة — سرد مختصر';
+                openModal('modal-op-story');
+                return;
+            }
+
             // السرد
             html += '<section class="surface p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">';
             html += '<h4 class="font-black text-xs text-primary mb-2 flex items-center gap-1"><i class="fa-solid fa-align-right"></i> السرد التشغيلي</h4>';
@@ -12843,6 +13462,49 @@ function runQuery() {
                 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             const nowStr = new Date().toLocaleString('ar-EG');
             const narrative = (typeof buildOpStoryNarrative === 'function') ? buildOpStoryNarrative(data) : '';
+            const _printCancelled = (typeof isOpCancelled === 'function')
+                ? isOpCancelled(op)
+                : /ملغ|إلغاء|الغاء/i.test(String(op.status || ''));
+
+            // طباعة مختصرة للعمليات الملغاة
+            if (_printCancelled) {
+                const logo = 'https://upload.wikimedia.org/wikipedia/ar/3/33/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%A8%D8%B1%D8%AC_%D8%A7%D9%84%D8%B9%D8%B1%D8%A8_%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A9.png';
+                const htmlC = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>سرد إلغاء — ${esc(formatOpDisplayId(op))}</title>
+<style>
+body{font-family:'Cairo',Tahoma,sans-serif;font-size:12pt;color:#111;padding:16px 20px;max-width:800px;margin:0 auto}
+h1{font-size:16pt;text-align:center;margin:4px 0} h2{font-size:13pt;text-align:center;color:#444;margin:0 0 12px}
+.logo{height:52px;display:block;margin:0 auto 6px}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+td,th{border:1px solid #999;padding:8px 10px;text-align:right}
+th{background:#fee2e2;width:32%}
+.banner{background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px;text-align:center;font-weight:800;color:#b91c1c;margin:10px 0}
+.foot{margin-top:24px;font-size:9pt;color:#666;text-align:center}
+@media print{body{padding:0}}
+</style></head><body>
+<img class="logo" src="${logo}" alt="شعار" onerror="this.style.display='none'">
+<h1>جامعة برج العرب التكنولوجية</h1>
+<h2>الإدارة العامة للتعاقدات — تقرير إلغاء عملية</h2>
+<div class="banner">🚫 تم إلغاء العملية</div>
+<table>
+<tr><th>رقم العملية</th><td>${esc(formatOpDisplayId(op))}</td></tr>
+<tr><th>اسم العملية</th><td>${esc(op.name || '—')}</td></tr>
+<tr><th>الجهة الطالبة</th><td>${esc(op.entity || '—')}</td></tr>
+<tr><th>النوع</th><td>${esc(op.type || '—')}</td></tr>
+<tr><th>الموقف</th><td style="color:#b91c1c;font-weight:800">ملغاة</td></tr>
+<tr><th>سبب الإلغاء</th><td style="color:#b91c1c;font-weight:700">${esc(op.cancelReason || '—')}</td></tr>
+<tr><th>تاريخ الإلغاء</th><td>${esc(op.cancelDate || '—')}</td></tr>
+<tr><th>قرار / مرجع الإلغاء</th><td>${esc(op.cancelNote || '—')}</td></tr>
+</table>
+<p class="foot">جامعة برج العرب التكنولوجية — إدارة التعاقدات · ${esc(nowStr)}<br>
+لا يُتابع مسار الطرح أو البت أو الترسية بعد الإلغاء · مرجع استرشادي: م37 قانون 182/2018</p>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+                const w = window.open('', '_blank');
+                if (!w) { alert('اسمح بالنوافذ المنبثقة للطباعة'); return; }
+                w.document.write(htmlC);
+                w.document.close();
+                return;
+            }
 
             let guarRows = '';
             (st.provisionalGuarantees || []).forEach(function (g) {
@@ -12950,7 +13612,7 @@ function runQuery() {
             html += '<title>سرد العملية رقم ' + esc(op.id) + ' — جامعة برج العرب التكنولوجية</title>';
             html += '<style>' + css + '</style></head><body><div class="sheet">';
             html += '<div class="header">';
-            html += '<img src="https://batechu.com/assets/logo.png" alt="شعار جامعة برج العرب التكنولوجية">';
+            html += '<img src="https://upload.wikimedia.org/wikipedia/ar/3/33/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%A8%D8%B1%D8%AC_%D8%A7%D9%84%D8%B9%D8%B1%D8%A8_%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A9.png" alt="شعار جامعة برج العرب التكنولوجية">';
             html += '<div class="univ">جامعة برج العرب التكنولوجية</div>';
             html += '<div class="dept">الإدارة العامة للتعاقدات</div>';
             html += '<div class="doc-title">تقرير سرد العملية رقم ' + esc(op.id) + '</div>';
@@ -13728,6 +14390,24 @@ function switchTab(id) {
         /** 2) مسار زمني من التواريخ */
         function buildOpTimeline(op) {
             if (!op) return [];
+            // ملغاة: خط زمني مختصر فقط
+            if (typeof isOpCancelled === 'function' ? isOpCancelled(op) : /ملغ|إلغاء|الغاء/i.test(String(op.status || ''))) {
+                const items = [];
+                if (op.date1 || op.approvalDate) {
+                    items.push({ key: 'start', label: 'بدء الإجراءات / الطرح', date: op.date1 || op.approvalDate, done: true });
+                }
+                items.push({
+                    key: 'cancel',
+                    label: 'إلغاء العملية' + (op.cancelReason ? (' — ' + op.cancelReason) : ''),
+                    date: op.cancelDate || '',
+                    done: true,
+                    critical: true
+                });
+                if (op.cancelNote) {
+                    items.push({ key: 'cancelRef', label: 'قرار / مرجع: ' + op.cancelNote, date: op.cancelDate || '', done: true });
+                }
+                return items;
+            }
             const cat = op.category || 'tender';
             const typeStr = String(op.type || '');
             let stages;
@@ -13889,6 +14569,7 @@ function switchTab(id) {
             today.setHours(0, 0, 0, 0);
             (DB.operations || []).forEach(function (op) {
                 if (!op || /مكتمل|مغلق|منته/i.test(String(op.status || ''))) return;
+                if (typeof isOpCancelled === 'function' ? isOpCancelled(op) : /ملغ|إلغاء|الغاء/i.test(String(op.status || ''))) return;
                 const cat = op.category || 'tender';
                 if (cat !== 'tender') return;
                 const start = op.date1 || op.approvalDate;
@@ -14337,6 +15018,12 @@ function switchTab(id) {
             document.getElementById('f-op-est').value = op.est || '';
             document.getElementById('f-op-guideline').value = op.guideline || '';
             document.getElementById('f-op-status').value = 'تحت الطرح';
+            try {
+                ['f-op-cancel-reason','f-op-cancel-date','f-op-cancel-note'].forEach(function(id){
+                    const el = document.getElementById(id); if (el) el.value = '';
+                });
+                if (typeof toggleCancelReasonFields === 'function') toggleCancelReasonFields();
+            } catch(e) {}
             document.getElementById('f-op-portal').value = op.portal || 'نعم';
             document.getElementById('f-op-approval').value = '';
             ['date1','date2','date3','date4','date5','date6'].forEach(d => {
@@ -15005,9 +15692,30 @@ ${LEGAL_AI_KNOWLEDGE}
             try { setTableDetailMode(getTableDetailMode()); } catch (eC) {}
             try { if (typeof handleOpViewHash === 'function') handleOpViewHash(); } catch (eH) {}
             try { setInterval(function(){ if (typeof checkSessionStillValid === 'function') checkSessionStillValid(); }, 120000); } catch (eS) {}
+
+            try {
+                const stType = document.getElementById('st-op-type');
+                const stId = document.getElementById('st-op-id');
+                if (stType) {
+                    stType.addEventListener('change', function(){ if (typeof updateStagingCommitPreview === 'function') updateStagingCommitPreview(); });
+                }
+                if (stId) {
+                    stId.addEventListener('input', function(){ if (typeof updateStagingCommitPreview === 'function') updateStagingCommitPreview(); });
+                }
+            } catch (ePrev) {}
+
         });
 
-        function renderAll() { renderDashboard(); renderOperations(); renderAwards(); renderSuppliers(); renderExecutive(); updateNotifications(); }
+        
+        function updateHomeKpis() {
+            /* تم إيقاف شريط KPI الإضافي لتفادي تكرار التنبيهات مع بطاقات الرئيسية الأصلية */
+            try {
+                const el = document.getElementById('home-kpi-strip');
+                if (el) el.remove();
+            } catch (e) {}
+        }
+        
+        function renderAll() { renderDashboard(); renderOperations(); renderAwards(); renderSuppliers(); renderExecutive(); updateNotifications(); try{updateHomeKpis();}catch(e){} }
     </script>
 
 
